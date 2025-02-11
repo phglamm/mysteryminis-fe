@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Card } from 'antd';
 import Search from './Search/Search';
+import { UserOutlined } from '@ant-design/icons';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -75,6 +76,7 @@ export default function Header() {
           transition={{ duration: 1 }}
           style={{ userSelect: 'none' }}>
           <motion.span 
+            whileTap={() => setIsHovered(false)}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.5  }}
@@ -82,16 +84,17 @@ export default function Header() {
 
           </motion.span>
           <motion.span 
+            onMouseEnter={() => setIsHovered(false)}
+            whileHover={{ scale: 1.1, color: 'red' }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.5  }}
-          > Search Bar
+            className='border-l-1 border-l-gray-200 p-2'
+          > <UserOutlined /> Phong Lam
 
           </motion.span>
           <motion.span 
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5  }}
+            animate={animate}
           > Search Bar
 
           </motion.span>

@@ -14,9 +14,10 @@ return (
             onMouseLeave={() => setIsHovered(false)}
             initial={{ width: 40, height: 40 }}
             animate={isHovered ? { width: 200, height: 40 } : { width: 40, height: 40 }}
-            className='bg-gray-300 flex rounded-4xl border-1 text-center justify-center items-center'
+            transition={{ type: 'spring', stiffness: 300, damping: 20 , duration: 2}}
+            className=' flex rounded-4xl border-1 text-center justify-center items-center'
         >
-            {isHovered ? <Input placeholder="Borderless" variant="borderless" /> : <SearchOutlined />}
+            {isHovered ? <Input placeholder="Search" variant="borderless" /> : <SearchOutlined />}
         </motion.div>
     </div>
 )
