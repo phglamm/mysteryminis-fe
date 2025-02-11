@@ -7,11 +7,11 @@ import { route } from "./routes";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
-import AdminLayout from "./layouts/AdminLayout";
-import Homepage from "./pages/UserPages/Homepage";
-import LoginPage from "./pages/UserPages/LoginPage";
-import ManageUser from "./pages/AdminPages/ManageUser";
-import ManageRole from "./pages/AdminPages/ManageRole";
+import Homepage from "./pages/UserPages/Homepage/Homepage";
+import LoginPage from "./pages/UserPages/LoginPage/LoginPage";
+import ManageUser from "./pages/AdminPages/ManageUser/ManageUser";
+import ManageRole from "./pages/AdminPages/ManageRole/ManageRole";
+import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 
 function App() {
   const router = createBrowserRouter([
