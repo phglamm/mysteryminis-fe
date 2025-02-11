@@ -3,10 +3,11 @@ import Logo from '../../assets/images/Logo.png';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Card } from 'antd';
+import Search from './Search/Search';
 
 export default function Header() {
   const navigate = useNavigate();
-  const [isHovered, setIsHovered] = useState(false); // State for hover effect
+  const [isHovered, setIsHovered] = useState(false);
 
   // Sample data for My Collection
   const myCollection = [
@@ -40,6 +41,8 @@ export default function Header() {
   return (
     <div className='fixed top-0 w-full bg-white'>
       <div className="grid grid-cols-2 pr-6 pl-8 shadow-2xl h-24 border-b-1 items-center justify-center border-b-gray-300">
+
+        {/* Logo and other navigations */}
         <motion.div 
           className="flex justify-between font-sans font-bold text-[1vw] items-center"
           initial={{ opacity: 0 }}
@@ -63,9 +66,46 @@ export default function Header() {
             </motion.span>
           ))}
         </motion.div>
+
+        {/* Login and Register */}
+        <motion.div 
+          className="flex gap-3 justify-end font-sans font-bold text-[1vw] items-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          style={{ userSelect: 'none' }}>
+          <motion.span 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5  }}
+          > <Search />
+
+          </motion.span>
+          <motion.span 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5  }}
+          > Search Bar
+
+          </motion.span>
+          <motion.span 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5  }}
+          > Search Bar
+
+          </motion.span>
+          <motion.span 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5  }}
+          > Search Bar
+
+          </motion.span>
+          </motion.div>
       </div>
 
-      {/* Animated My Collection */}
+      {/* Animated Dropdown */}
       {isHovered && (
         <motion.div 
           initial={{ height: 0, opacity: 0 }} 
