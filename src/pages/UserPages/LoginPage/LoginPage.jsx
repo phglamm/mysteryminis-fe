@@ -4,15 +4,18 @@ import { Button, Form, Input } from "antd";
 import { Link } from "react-router-dom";
 import BlurText from "../../../components/BlurText/BlurText";
 import "./LoginPage.scss";
+import { route } from "./../../../routes/index";
 export default function LoginPage() {
   const [form] = useForm();
 
-  const handleLogin = () => {};
+  const handleLogin = (value) => {
+    console.log(value);
+  };
 
   const handleLoginGG = () => {};
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen mt-24">
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -27,11 +30,23 @@ export default function LoginPage() {
           className="text-5xl text-center mb-10 font-bold"
         />
 
-        <Form form={form} name="login" onFinish={handleLogin} layout="vertical">
+        <Form
+          form={form}
+          name="login"
+          onFinish={handleLogin}
+          layout="vertical"
+          requiredMark={false}
+        >
           <Form.Item
             label={<span className="text-lg font-medium">Email</span>}
             name="email"
-            rules={[{ required: true, message: "Please input your email!" }]}
+            rules={[
+              { required: true, message: "Please input your email!" },
+              {
+                pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
+                message: "Please enter a valid email address!",
+              },
+            ]}
           >
             <Input
               placeholder="Enter your email"
@@ -43,7 +58,14 @@ export default function LoginPage() {
           <Form.Item
             label={<span className="text-lg font-medium">Password</span>}
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            rules={[
+              { required: true, message: "Please input your password!" },
+              {
+                pattern: /^(?=.*[A-Z])(?=.*[a-z]).{8,}$/,
+                message:
+                  "Password must be at least 8 characters long and include at least 1 uppercase and 1 lowercase letter!",
+              },
+            ]}
           >
             <Input.Password
               placeholder="Enter your password"
@@ -52,7 +74,15 @@ export default function LoginPage() {
             />
           </Form.Item>
 
-          <Form.Item>
+          <div className="flex justify-end items-center">
+            <Link
+              className=" !hover:underline font-bold !text-[#598099]"
+              to={""}
+            >
+              Forgot Password ?
+            </Link>
+          </div>
+          <Form.Item className="!mt-3">
             <Button
               type="primary"
               htmlType="submit"
@@ -62,9 +92,11 @@ export default function LoginPage() {
               Login
             </Button>
 
+            <p className="text-center text-2xl font-bold mt-3 mb-3">or</p>
+
             <div className="google-btn-container ">
               <button
-                className="google-button flex items-center w-full border-2 border-black-500 justify-center gap-5 text-2xl font-bold mt-8 p-1 rounded-md cursor-pointer"
+                className="google-button flex items-center w-full border-2 border-black-500 justify-center gap-5 text-xl font-bold p-2 rounded-md cursor-pointer"
                 onClick={handleLoginGG}
               >
                 <svg
@@ -90,17 +122,15 @@ export default function LoginPage() {
                     d="M130.55 50.479c24.514 0 41.05 10.589 50.479 19.438l36.844-35.974C195.245 12.91 165.798 0 130.55 0 79.49 0 35.393 29.301 13.925 71.947l42.211 32.783c10.59-31.477 39.891-54.251 74.414-54.251"
                   ></path>
                 </svg>
-                Đăng nhập bằng Google
+                Login By Google
               </button>
             </div>
           </Form.Item>
         </Form>
-        <div className="flex flex-col justify-center items-center font-bold">
-          <Link to="" className="hover:underline ">
-            Quên mật khẩu
-          </Link>
-          <Link to="" className="hover:underline mt-2 ">
-            BẠN CHƯA CÓ TÀI KHOẢN. ĐĂNG KÍ TẠI ĐÂY
+        <div className="flex justify-center gap-1 items-center font-bold">
+          {"Don't"} have an account ?
+          <Link to={route.register} className="hover:underline text-[#598099]">
+            <span>Sign up</span>
           </Link>
         </div>
       </motion.div>

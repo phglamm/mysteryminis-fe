@@ -12,6 +12,7 @@ import LoginPage from "./pages/UserPages/LoginPage/LoginPage";
 import ManageUser from "./pages/AdminPages/ManageUser/ManageUser";
 import ManageRole from "./pages/AdminPages/ManageRole/ManageRole";
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
+import RegisterPage from "./pages/UserPages/RegisterPage/RegisterPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -26,6 +27,10 @@ function App() {
         {
           path: route.login,
           element: <LoginPage />,
+        },
+        {
+          path: route.register,
+          element: <RegisterPage />,
         },
       ],
     },
