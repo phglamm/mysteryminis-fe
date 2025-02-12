@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import BlurText from "../../../components/BlurText/BlurText";
 import { Button, Form, Input, Radio } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { route } from "../../../routes";
+import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 
 export default function RegisterPage() {
   const [form] = useForm();

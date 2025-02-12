@@ -44,9 +44,9 @@ export default function Header() {
 
   // Define navigation links
   const navItems = [
-    { label: "ONLINE BLINDBOX", path: "/online-blindbox" },
-    { label: "RATING", path: "/rating" },
-    { label: "BLOGS", path: "/blogs" },
+    { label: "Online Blindbox", path: "/online-blindbox" },
+    { label: "Rating", path: "/rating" },
+    { label: "Blogs", path: "/blogs" },
   ];
 
   return (
@@ -73,7 +73,7 @@ export default function Header() {
               onClick={navigateToHome}
               whileTap={{ scale: 0.9 }}
             >
-              COLLECTION
+              Collection
             </motion.div>
           </motion.span>
 
@@ -88,7 +88,7 @@ export default function Header() {
               onClick={navigateToHome}
               whileTap={{ scale: 0.9 }}
             >
-              OUR BLINDBOX
+              Our Blindbox
             </motion.div>
           </motion.span>
 

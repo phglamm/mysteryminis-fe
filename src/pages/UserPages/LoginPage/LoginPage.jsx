@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { useForm } from "antd/es/form/Form";
 import { Button, Form, Input } from "antd";
 import { Link } from "react-router-dom";
-import BlurText from "../../../components/BlurText/BlurText";
 import "./LoginPage.scss";
 import { route } from "./../../../routes/index";
+import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 export default function LoginPage() {
   const [form] = useForm();
 
