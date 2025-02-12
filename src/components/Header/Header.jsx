@@ -45,7 +45,7 @@ export default function Header() {
   ];
 
   return (
-    <div className='fixed top-0 w-full bg-white'>
+    <div className='fixed top-0 w-full z-50 bg-white'>
       <div className="grid grid-cols-2 pr-6 pl-8 shadow-2xl h-24 border-b-1 items-center justify-center border-b-gray-300">
 
         {/* Logo and other navigations */}
