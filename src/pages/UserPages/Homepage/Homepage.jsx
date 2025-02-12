@@ -3,13 +3,15 @@ import Labubu from '../../../assets/images/Labubu.png';
 import Yooki from '../../../assets/images/yooki.png';
 import Skull from '../../../assets/images/SkullPanda.png';
 import BB3 from '../../../assets/images/BABY3.png';
-import TiltedCard from '../../../components/TiltedCard/TiltedCard';
-import BlurText from '../../../components/BlurText/BlurText';
+import TiltedCard from '../../../components/React_Bits/TiltedCard/TiltedCard';
+import BlurText from '../../../components/React_Bits/BlurText/BlurText';
+import FadeContent from '../../../components/React_Bits/FadeContent/FadeContent';
 export default function Homepage() {
   return (
     <div className=" mt-24">
 
       {/* Image Content */}
+      <FadeContent blur={true} duration={1000} easing="ease-out" initialOpacity={0}>
       <div className="grid grid-cols-3 p-14 pr-36 pl-36 gap-4">
         <div className=" col-span-2 rounded-3xl h-96">
         <TiltedCard
@@ -103,6 +105,8 @@ export default function Homepage() {
         </div>
         
       </div>
+      </FadeContent>
+      
 
 
       {/* Content */}
@@ -118,7 +122,7 @@ export default function Homepage() {
         />
         <BlurText
           text="Unbox the Unexpected! Every Box Holds a Secret!"
-          delay={150}
+          delay={80}
           animateBy="letters"
           direction="bottom"
           className="text-3xl mb-8 text-gray-500 font-sans"
