@@ -1,17 +1,16 @@
 import { useState } from 'react';
-import Logo from '../../assets/images/Logo.png';
+import Logo from '../../assets/images/Logo-removebg.png';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Card } from 'antd';
-import Search from './Search/Search';
-import { UserOutlined } from '@ant-design/icons';
+import { HeartOutlined, MessageOutlined, ShoppingCartOutlined, UserOutlined } from '@ant-design/icons';
+import Search from '../Search/Search';
 
 export default function Header() {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
 
-  // Sample data for My Collection
-  const myCollection = [
+  const BlindBoxCategories = [
     { name: 'Item 1' },
     { name: 'Item 2' },
     { name: 'Item 3' },
@@ -31,13 +30,19 @@ export default function Header() {
 
   const animate = { 
     opacity: 1,
-    borderRadius:'30px',
     padding: '10px',
   };
 
   const navigateToHome = () => {
     navigate('/');
   };
+
+  // Define navigation links
+  const navItems = [
+    { label: 'ONLINE BLINDBOX', path: '/online-blindbox' },
+    { label: 'RATING', path: '/rating' },
+    { label: 'BLOGS', path: '/blogs' },
+  ];
 
   return (
     <div className='fixed top-0 w-full bg-white'>
@@ -53,16 +58,43 @@ export default function Header() {
         >
           <img src={Logo} alt="Logo" className="w-24 h-fit"/>
 
-          {/* Other menu items */}
-          {["COLLECTION","OUR BLINDBOX", "ONLINE BLINDBOX", "RATING", "BLOGS"].map((item, index) => (
-            <motion.span key={item} initial={initial} animate={animate} transition={{ delay: 0.5 + index * 0.3 }}>
+          <motion.span initial={initial} animate={animate} transition={{ delay: 0.5 }}>
+            <motion.div 
+              whileHover={{ scale: 1.1, color: 'red' }}
+              onMouseEnter={() => setIsHovered(true)}
+              onClick={navigateToHome}
+              whileTap={{ scale: 0.9 }}
+            >
+              COLLECTION
+            </motion.div>
+          </motion.span>
+
+          <motion.span initial={initial} animate={animate} transition={{ delay: 0.8 }}>
+            <motion.div 
+              whileHover={{ scale: 1.1, color: 'red' }}
+              onMouseEnter={() => setIsHovered(true)}
+              onClick={navigateToHome}
+              whileTap={{ scale: 0.9 }}
+            >
+              OUR BLINDBOX
+            </motion.div>
+          </motion.span>
+          
+          {/* Dynamic Navigation Links */}
+          {navItems.map((item, index) => (
+            <motion.span 
+              key={item.label} 
+              initial={initial} 
+              animate={animate} 
+              transition={{ delay: 1.2 + index * 0.3 }}
+            >
               <motion.div 
                 whileHover={{ scale: 1.1, color: 'red' }}
-                onMouseEnter={() => setIsHovered(true)}
-                onClick={navigateToHome}
+                onMouseEnter={() => setIsHovered(false)}
+                onClick={() => navigate(item.path)}
                 whileTap={{ scale: 0.9 }}
               >
-                {item}
+                {item.label}
               </motion.div>
             </motion.span>
           ))}
@@ -74,38 +106,50 @@ export default function Header() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
-          style={{ userSelect: 'none' }}>
+          style={{ userSelect: 'none' }}
+        >
           <motion.span 
             whileTap={() => setIsHovered(false)}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5  }}
-          > <Search />
-
+            animate={animate}
+            className='border-r-1 border-l-gray-100 p-2'
+          > 
+            <Search />
           </motion.span>
+
           <motion.span 
             onMouseEnter={() => setIsHovered(false)}
             whileHover={{ scale: 1.1, color: 'red' }}
+            whileTap={{ scale: 0.9, color: 'black' }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className='border-l-1 border-l-gray-200 p-2'
-          > <UserOutlined /> Phong Lam
-
+            animate={animate}
+          > 
+            <UserOutlined /> Phong Lam
           </motion.span>
+
           <motion.span 
             initial={{ opacity: 0 }}
             animate={animate}
-          > Search Bar
-
+            className='justify-between flex items-center gap-4 p-2'
+          >
+            <motion.span whileHover={{ scale: 1.1, color: 'red' }} whileTap={{ scale: 0.9, color: 'black' }}>
+              <MessageOutlined className='text-2xl' />
+            </motion.span> 
+            <motion.span whileHover={{ scale: 1.1, color: 'red' }} whileTap={{ scale: 0.9, color: 'black' }}>
+              <HeartOutlined className='text-2xl' />
+            </motion.span>
           </motion.span>
+
           <motion.span 
+            whileHover={{ scale: 1.1, color: 'red' }}
+            whileTap={{ scale: 0.9, color: 'black' }}
             initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5  }}
-          > Search Bar
-
+            animate={animate}
+            className='border-1 rounded-3xl text-xl w-[6vw] flex justify-center items-center'
+          > 
+            <ShoppingCartOutlined />
           </motion.span>
-          </motion.div>
+        </motion.div>
       </div>
 
       {/* Animated Dropdown */}
@@ -120,17 +164,14 @@ export default function Header() {
           style={{ userSelect: 'none' }}
         >
           <div className="grid pr-64 pl-64 grid-cols-5 justify-center items-center gap-4 p-4 ">
-            {myCollection.map((item, index) => (
+            {BlindBoxCategories.map((item, index) => (
               <motion.div 
                 key={index}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 + index * 0.1 }}
               >
-                <Card 
-                  bordered={false} 
-                  className="shadow-md w-36"
-                >
+                <Card bordered={false} className="shadow-md w-36">
                   {item.name}
                 </Card>
               </motion.div>
