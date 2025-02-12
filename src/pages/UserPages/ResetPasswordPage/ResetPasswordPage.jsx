@@ -1,9 +1,7 @@
-import React from "react";
 import { motion } from "framer-motion";
-import BlurText from "../../../components/BlurText/BlurText";
 import { Button, Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
-import { Link } from "react-router-dom";
+import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 
 export default function ResetPasswordPage() {
   const [form] = useForm();
@@ -19,7 +17,7 @@ export default function ResetPasswordPage() {
         className=" p-8 rounded-2xl w-180"
       >
         <BlurText
-          text="Reset Password"
+          text="Recovery Password"
           delay={150}
           animateBy="words"
           direction="top"

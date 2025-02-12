@@ -1,9 +1,7 @@
 import { useForm } from "antd/es/form/Form";
-import { Link } from "react-router-dom";
-import { route } from "../../../routes";
 import { Button, Form, Input } from "antd";
-import BlurText from "../../../components/BlurText/BlurText";
 import { motion } from "framer-motion";
+import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 
 export default function ForgotPasswordPage() {
   const [form] = useForm();
