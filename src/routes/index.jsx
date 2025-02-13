@@ -18,4 +18,6 @@ export const route = {
   feedbackManagement: "feedback-management",
   blogManagement: "blog-management",
   chatWithCustomer: "chat-box",
+
+  productDetail: "product/:id",
 };
