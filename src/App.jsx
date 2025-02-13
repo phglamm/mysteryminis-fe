@@ -3,15 +3,15 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { route } from "./routes";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 
-import ProtectedRoute from "./routes/ProtectedRoute";
 import Homepage from "./pages/UserPages/Homepage/Homepage";
 import LoginPage from "./pages/UserPages/LoginPage/LoginPage";
-import ManageUser from "./pages/AdminPages/ManageUser/ManageUser";
-import ManageRole from "./pages/AdminPages/ManageRole/ManageRole";
+
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import RegisterPage from "./pages/UserPages/RegisterPage/RegisterPage";
 import ForgotPasswordPage from "./pages/UserPages/ForgotPasswordPage/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/UserPages/ResetPasswordPage/ResetPasswordPage";
+import ManageAccount from "./pages/AdminPages/ManageAccount/ManageAccount";
+import ManageBox from "./pages/AdminPages/ManageBox/ManageBox";
 
 function App() {
   const router = createBrowserRouter([
@@ -44,27 +44,30 @@ function App() {
 
     {
       path: route.admin,
-      element: (
-        <ProtectedRoute roles={["admin"]}>
-          <AdminLayout />
-        </ProtectedRoute>
-      ),
+      element: <AdminLayout />,
       children: [
         {
-          path: route.userManagement,
-          element: (
-            <ProtectedRoute roles={["admin"]}>
-              <ManageUser />
-            </ProtectedRoute>
-          ),
+          path: route.accountManagement,
+          element: <ManageAccount />,
         },
         {
-          path: route.roleManagement,
-          element: (
-            <ProtectedRoute roles={["admin"]}>
-              <ManageRole />
-            </ProtectedRoute>
-          ),
+          path: route.boxManagement,
+          element: <ManageBox />,
+        },
+      ],
+    },
+
+    {
+      path: route.staff,
+      element: <AdminLayout />,
+      children: [
+        {
+          path: route.accountManagement,
+          element: <ManageAccount />,
+        },
+        {
+          path: route.boxManagement,
+          element: <ManageBox />,
         },
       ],
     },

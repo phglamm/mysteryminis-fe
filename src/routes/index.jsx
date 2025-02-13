@@ -5,6 +5,17 @@ export const route = {
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
 
-  userManagement: "/userManagement",
-  roleManagement: "/roleManagement",
+  admin: "/admin",
+  dashboard: "dashboard",
+  discountManagement: "discount-management",
+
+  accountManagement: "account-management",
+  orderManagement: "order-management",
+  boxManagement: "box-management",
+  boxItemManagement: "box-items-management",
+
+  staff: "/staff",
+  feedbackManagement: "feedback-management",
+  blogManagement: "blog-management",
+  chatWithCustomer: "chat-box",
 };
