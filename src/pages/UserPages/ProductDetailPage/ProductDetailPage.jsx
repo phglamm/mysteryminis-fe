@@ -22,7 +22,7 @@ const ProductDetailPage = () => {
   };
 
   return (
-    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "32px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px", paddingTop: "80px" }}>
+    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "32px", display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px" }}>
       {/* Left: Image Section */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <img
