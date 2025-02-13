@@ -5,4 +5,5 @@ export const route = {
 
   userManagement: "/userManagement",
   roleManagement: "/roleManagement",
+  productDetail: "product/:id",
 };

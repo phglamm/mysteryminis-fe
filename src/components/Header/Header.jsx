@@ -40,8 +40,8 @@ export default function Header() {
   };
 
   return (
-    <div className="fixed top-0 w-full bg-white z-50">
-      <div className="grid grid-cols-2 pr-6 pl-8 shadow-2xl h-24 border-b-1 items-center justify-center border-b-gray-300">
+    <div className=" top-0 w-full bg-white z-50">
+      <div className="grid grid-cols-2 pr-6 pl-8 shadow-2xl h-24 border-b-1 items-center justify-center border-b-gray-300 navbar">
         {/* Logo and other navigations */}
         <motion.div
           className="flex justify-between font-sans font-bold text-[1vw] items-center"
@@ -119,34 +119,35 @@ export default function Header() {
           </motion.span>
         </motion.div>
       </div>
-
-      {/* Animated Dropdown */}
-      {isHovered && (
-        <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          transition={{ type: "spring", stiffness: 300, damping: 20 }}
-          className="text-center font-bold bg-gray-200 "
-          style={{ userSelect: "none" }}
-        >
-          <div className="grid pr-64 pl-64 grid-cols-5 justify-center items-center gap-4 p-4 ">
-            {myCollection.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 + index * 0.1 }}
-              >
-                <Card bordered={false} className="shadow-md w-36">
-                  {item.name}
-                </Card>
-              </motion.div>
-            ))}
-          </div>
-        </motion.div>
-      )}
+      <div className="dropdown">
+        {/* Animated Dropdown */}
+        {isHovered && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "0", opacity: 1 }}
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            transition={{ type: "spring", stiffness: 300, damping: 20 }}
+            className="text-center font-bold bg-gray-200 "
+            style={{ userSelect: "none" }}
+          >
+            <div className="grid pr-64 pl-64 grid-cols-5 justify-center items-center gap-4 p-4 ">
+              {myCollection.map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
+                >
+                  <Card bordered={false} className="shadow-md w-36">
+                    {item.name}
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </div>
     </div>
   );
 }

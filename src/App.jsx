@@ -13,6 +13,7 @@ import ManageUser from "./pages/AdminPages/ManageUser/ManageUser";
 import ManageRole from "./pages/AdminPages/ManageRole/ManageRole";
 import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import RegisterPage from "./pages/UserPages/RegisterPage/RegisterPage";
+import ProductDetailPage from "./pages/UserPages/ProductDetailPage/ProductDetailPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -32,6 +33,10 @@ function App() {
           path: route.register,
           element: <RegisterPage />,
         },
+        {
+          path: route.productDetail,
+          element: <ProductDetailPage/>
+        }
       ],
     },
 
