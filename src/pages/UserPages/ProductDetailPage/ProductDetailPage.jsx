@@ -14,8 +14,8 @@ const ProductDetailPage = () => {
       { name: "Jingle All the Way", dimensions: "19*26cm" }
     ],
     images: [
-      "/images/bag1.png",
-      "/images/bag2.png",
+      "https://prod-hk.oss-eu-central-1.aliyuncs.com/default/20241107_102350_385156____2_____1200x1200.jpg?x-oss-process=image/format,webp",
+      "https://prod-hk.oss-eu-central-1.aliyuncs.com/default/20241107_102350_385156____2_____1200x1200.jpg?x-oss-process=image/format,webp",
       "/images/bag3.png",
       "/images/bag4.png"
     ]
