@@ -38,7 +38,7 @@ export default function Sidebar() {
 
   const [openKeys, setOpenKeys] = useState(dataOpen);
 
-  const role = "STAFF";
+  const role = "ADMIN";
   useEffect(() => {
     if (role === "ADMIN") {
       setItems([
