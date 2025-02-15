@@ -1,15 +1,15 @@
 .sidebar {
+  .ant-menu-submenu-title {
+    color: inherit !important;
+  }
   .ant-menu {
-    background: #495278 !important;
+    background: #313857 !important;
   }
   .ant-menu-item-selected {
     background: #edbabc !important;
-    // background: #faedcd !important;
     background: #bb7b85 !important;
-    // background: #facfd1 !important;
   }
   .ant-layout-sider-trigger {
     background: #415d6f !important;
-    // border: 1px solid #313857 !important;
   }
 }

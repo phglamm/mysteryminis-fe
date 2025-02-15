@@ -13,6 +13,9 @@ export const route = {
   orderManagement: "order-management",
   boxManagement: "box-management",
   boxItemManagement: "box-items-management",
+  brandManagement: "brand-management",
+  boxImageManagement: "box-image-management",
+  boxVariant: "box-variant-management",
 
   staff: "/staff",
   feedbackManagement: "feedback-management",
