@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Table, Button, Space, Modal, Input, Form, message, Tabs } from "antd";
+import { Table, Button, Space, Modal, Input, Form, message, Tabs, Select } from "antd";
 
 const { TabPane } = Tabs;
 
@@ -95,7 +95,22 @@ const ManageAccount = () => {
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id", width: 80 },
-    { title: "Name", dataIndex: "name", key: "name", width: 200 },
+    // { title: "Name", dataIndex: "name", key: "name", width: 200, },
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+      filters: [
+        ...new Set(
+          accounts.map((item) => ({
+            text: item.name,
+            value: item.name,
+          }))
+        ),
+      ], 
+      onFilter: (value, record) => record.name === value,
+      filterSearch: true,
+    },
     { title: "Email", dataIndex: "email", key: "email", width: 250 },
     { title: "Status", dataIndex: "status", key: "status", width: 120 },
     {
@@ -223,14 +238,10 @@ const ManageAccount = () => {
             label="Role"
             rules={[{ required: true, message: "Please enter role" }]}
           >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name="status"
-            label="Status"
-            rules={[{ required: true, message: "Please enter status" }]}
-          >
-            <Input />
+            <Select>
+              <Select.Option value="User">User</Select.Option>
+              <Select.Option value="Staff">Staff</Select.Option>
+            </Select>
           </Form.Item>
         </Form>
       </Modal>
