@@ -1,5 +1,5 @@
 import { Button, Table, Tabs } from "antd";
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function ManageBox() {
   const [activeTab, setActiveTab] = useState("1");
@@ -28,6 +28,14 @@ export default function ManageBox() {
       IsDeleted: true,
       SoldQuantity: 200,
       BrandName: "Brand Z",
+    },
+    {
+      BoxId: 1,
+      BoxName: "sasasASsS Box A",
+      BoxDescription: "A surprise box containing exclusive items",
+      IsDeleted: false,
+      SoldQuantity: 120,
+      BrandName: "Brand X",
     },
   ];
 

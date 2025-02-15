@@ -13,6 +13,9 @@ import ResetPasswordPage from "./pages/UserPages/ResetPasswordPage/ResetPassword
 import ManageAccount from "./pages/AdminPages/ManageAccount/ManageAccount";
 import ManageBox from "./pages/AdminPages/ManageBox/ManageBox";
 import ProductDetailPage from "./pages/UserPages/ProductDetailPage/ProductDetailPage";
+import ManageBoxImage from "./pages/AdminPages/ManageBoxImage/ManageBoxImage";
+import ManageBoxItem from "./pages/AdminPages/ManageBoxItem/ManageBoxItem";
+import ManageBoxOption from "./pages/AdminPages/ManageBoxOption/ManageBoxOption";
 
 function App() {
   const router = createBrowserRouter([
@@ -59,6 +62,18 @@ function App() {
           path: route.boxManagement,
           element: <ManageBox />,
         },
+        {
+          path: route.boxImageManagement,
+          element: <ManageBoxImage />,
+        },
+        {
+          path: route.boxItemManagement,
+          element: <ManageBoxItem />,
+        },
+        {
+          path: route.boxOption,
+          element: <ManageBoxOption />,
+        },
       ],
     },
 
@@ -73,6 +88,18 @@ function App() {
         {
           path: route.boxManagement,
           element: <ManageBox />,
+        },
+        {
+          path: route.boxImageManagement,
+          element: <ManageBoxImage />,
+        },
+        {
+          path: route.boxItemManagement,
+          element: <ManageBoxItem />,
+        },
+        {
+          path: route.boxOption,
+          element: <ManageBoxOption />,
         },
       ],
     },

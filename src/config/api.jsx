@@ -1,10 +1,6 @@
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
-import { route } from "../Routes";
 import Cookies from "js-cookie";
-
-import { logout } from "../Redux/features/counterSlice";
-import { useNavigate } from "react-router-dom";
 
 const INACTIVITY_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
 // const INACTIVITY_TIMEOUT = 1 * 2 * 60 * 1000; // 3 hours in milliseconds

@@ -38,7 +38,7 @@ export default function Sidebar() {
 
   const [openKeys, setOpenKeys] = useState(dataOpen);
 
-  const role = "ADMIN";
+  const role = "STAFF";
   useEffect(() => {
     if (role === "ADMIN") {
       setItems([
@@ -46,7 +46,7 @@ export default function Sidebar() {
         getItem("Manage Account", route.accountManagement, <UserOutlined />),
         getItem("Manage Order", route.orderManagement, <AuditOutlined />),
 
-        getItem("Manage Product", route.boxManagement, <DropboxOutlined />, [
+        getItem("Manage Product", "", <DropboxOutlined />, [
           getItem("Manage Box", route.boxManagement, <DropboxOutlined />),
           getItem(
             "Manage Box Image",
@@ -58,7 +58,7 @@ export default function Sidebar() {
             route.boxItemManagement,
             <MdOutlineSmartToy />
           ),
-          getItem("Manage Box Variants", route.boxVariant, <DropboxOutlined />),
+          getItem("Manage Box Options", route.boxOption, <DropboxOutlined />),
         ]),
         getItem("Manage Brand", route.brandManagement, <DropboxOutlined />),
         getItem("Manage Discount", route.discountManagement, <CiDiscount1 />),
@@ -70,12 +70,20 @@ export default function Sidebar() {
       setItems([
         getItem("Manager Account", route.accountManagement, <UserOutlined />),
         getItem("Manager Order", route.orderManagement, <AuditOutlined />),
-        getItem("Manager Box", route.boxManagement, <DropboxOutlined />),
-        getItem(
-          "Manager Box Item",
-          route.boxItemManagement,
-          <MdOutlineSmartToy />
-        ),
+        getItem("Manage Product", "", <DropboxOutlined />, [
+          getItem("Manage Box", route.boxManagement, <DropboxOutlined />),
+          getItem(
+            "Manage Box Image",
+            route.boxImageManagement,
+            <BarChartOutlined />
+          ),
+          getItem(
+            "Manage Box Item",
+            route.boxItemManagement,
+            <MdOutlineSmartToy />
+          ),
+          getItem("Manage Box Options", route.boxOption, <DropboxOutlined />),
+        ]),
         getItem(
           "Manage Feedback",
           route.feedbackManagement,
@@ -115,7 +123,7 @@ export default function Sidebar() {
       initial={{ x: -250 }}
       animate={{ x: 0 }}
       transition={{ type: "spring", stiffness: 60 }}
-      className="h-screen !bg-[#313857] text-white font-bold"
+      className="min-h-screen !bg-[#313857] text-white font-bold"
     >
       <Sider
         collapsible

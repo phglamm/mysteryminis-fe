@@ -15,7 +15,7 @@ export const route = {
   boxItemManagement: "box-items-management",
   brandManagement: "brand-management",
   boxImageManagement: "box-image-management",
-  boxVariant: "box-variant-management",
+  boxOption: "box-option-management",
 
   staff: "/staff",
   feedbackManagement: "feedback-management",
