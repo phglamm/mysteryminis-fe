@@ -38,27 +38,31 @@ export default function Sidebar() {
 
   const [openKeys, setOpenKeys] = useState(dataOpen);
 
-  const role = "STAFF";
+  const role = "ADMIN";
   useEffect(() => {
     if (role === "ADMIN") {
       setItems([
         getItem("Dashboard", route.dashboard, <BarChartOutlined />),
-        getItem("Manager Account", route.accountManagement, <UserOutlined />),
-        getItem("Manager Order", route.orderManagement, <AuditOutlined />),
-        getItem("Manager Box", route.boxManagement, <DropboxOutlined />),
-        getItem(
-          "Manager Box Item",
-          route.boxItemManagement,
-          <MdOutlineSmartToy />
-        ),
-        getItem("Manager Discount", route.discountManagement, <CiDiscount1 />),
+        getItem("Manage Account", route.accountManagement, <UserOutlined />),
+        getItem("Manage Order", route.orderManagement, <AuditOutlined />),
+
+        getItem("Manage Product", route.boxManagement, <DropboxOutlined />, [
+          getItem("Manage Box", route.boxManagement, <DropboxOutlined />),
+          getItem(
+            "Manage Box Image",
+            route.boxImageManagement,
+            <BarChartOutlined />
+          ),
+          getItem(
+            "Manage Box Item",
+            route.boxItemManagement,
+            <MdOutlineSmartToy />
+          ),
+          getItem("Manage Box Variants", route.boxVariant, <DropboxOutlined />),
+        ]),
+        getItem("Manage Brand", route.brandManagement, <DropboxOutlined />),
+        getItem("Manage Discount", route.discountManagement, <CiDiscount1 />),
         getItem("Back to Home", "/", <HomeOutlined />),
-        // getItem("Statistics", "/statistics", <BarChartOutlined />, [
-        //   getItem("Club 1", "statistics"),
-        //   getItem("Club 2", "stats-club-2"),
-        //   getItem("Club 3", "stats-club-3"),
-        //   getItem("All Clubs", "all-clubs"),
-        // ]),
       ]);
     }
 
@@ -73,7 +77,7 @@ export default function Sidebar() {
           <MdOutlineSmartToy />
         ),
         getItem(
-          "Manager Feedback",
+          "Manage Feedback",
           route.feedbackManagement,
           <RiFeedbackLine />
         ),
