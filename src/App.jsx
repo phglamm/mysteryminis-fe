@@ -13,6 +13,7 @@ import ResetPasswordPage from "./pages/UserPages/ResetPasswordPage/ResetPassword
 import ManageAccount from "./pages/AdminPages/ManageAccount/ManageAccount";
 import ManageBox from "./pages/AdminPages/ManageBox/ManageBox";
 import ProductDetailPage from "./pages/UserPages/ProductDetailPage/ProductDetailPage";
+import ManageOrder from "./pages/AdminPages/ManageOrder/ManageOrder";
 
 function App() {
   const router = createBrowserRouter([
@@ -59,6 +60,10 @@ function App() {
           path: route.boxManagement,
           element: <ManageBox />,
         },
+        {
+          path: route.orderManagement,
+          element: <ManageOrder/>
+        }        
       ],
     },
 
@@ -74,6 +79,10 @@ function App() {
           path: route.boxManagement,
           element: <ManageBox />,
         },
+        {
+          path: route.orderManagement,
+          element: <ManageOrder/>
+        }   
       ],
     },
   ]);
