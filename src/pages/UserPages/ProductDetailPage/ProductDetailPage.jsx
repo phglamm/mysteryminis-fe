@@ -12,7 +12,6 @@ const ProductDetailPage = () => {
   const [isOutOfStock, setIsOutOfStock] = useState(true);
   const [isWishlisted, setIsWishlisted] = useState(false);
 
-
   // Thông tin sản phẩm chính
   const product = {
     name: "SKULLPANDA Tell Me What You Want Series Crossbody Bag",
@@ -42,35 +41,47 @@ const ProductDetailPage = () => {
     {
       name: "Pikacat Figurine - Yellow",
       price: "3.490.000đ",
-      image: "https://bizweb.dktcdn.net/thumb/1024x1024/100/357/932/products/image-1729312623540.png?v=1729312629110",
-      hoverImage: "https://bizweb.dktcdn.net/thumb/1024x1024/100/357/932/products/image-1729312623556.png?v=1729312630210",
+      image:
+        "https://bizweb.dktcdn.net/thumb/1024x1024/100/357/932/products/image-1729312623540.png?v=1729312629110",
+      hoverImage:
+        "https://bizweb.dktcdn.net/thumb/1024x1024/100/357/932/products/image-1729312623556.png?v=1729312630210",
       inStock: false, // Hết hàng
     },
     {
       name: "Freeny's Hidden Dissectibles: One Piece",
       price: "2.990.000đ",
-      image: "https://bizweb.dktcdn.net/thumb/1024x1024/100/357/932/products/screenshot-2025-01-11-150103.png?v=1736583743830",
-      hoverImage: "https://bizweb.dktcdn.net/thumb/1024x1024/100/357/932/products/f5326b-41f55cd48127481bb11b847dae593cf8-mv2.png?v=1736583743830",
+      image:
+        "https://bizweb.dktcdn.net/thumb/1024x1024/100/357/932/products/screenshot-2025-01-11-150103.png?v=1736583743830",
+      hoverImage:
+        "https://bizweb.dktcdn.net/thumb/1024x1024/100/357/932/products/f5326b-41f55cd48127481bb11b847dae593cf8-mv2.png?v=1736583743830",
       inStock: true, // Còn hàng
     },
     {
       name: "SKULLPANDA Dark Series",
       price: "1.990.000đ",
       image: "https://i.ebayimg.com/images/g/p~UAAOSwcpFlq3p1/s-l1200.jpg",
-      hoverImage: "https://ae01.alicdn.com/kf/H51c23c653c234b11845382ca5da4c076n.jpg",
+      hoverImage:
+        "https://ae01.alicdn.com/kf/H51c23c653c234b11845382ca5da4c076n.jpg",
       inStock: true,
     },
     {
       name: "Molly Space Traveler",
       price: "2.490.000đ",
-      image: "https://prod-america-res.popmart.com/default/20250122_114429_314413____1_____1200x1200.jpg?x-oss-process=image/resize,p_40,format,webp",
+      image:
+        "https://prod-america-res.popmart.com/default/20250122_114429_314413____1_____1200x1200.jpg?x-oss-process=image/resize,p_40,format,webp",
       hoverImage: "https://i.ebayimg.com/images/g/hBgAAOSwrk5k7wmj/s-l1200.jpg",
       inStock: false,
     },
   ];
 
   return (
-    <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "32px" }}>
+    <div
+      style={{
+        maxWidth: "1200px",
+        margin: "96px auto",
+        padding: "32px",
+      }}
+    >
       {/* Chi tiết sản phẩm */}
       <div
         style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px" }}
