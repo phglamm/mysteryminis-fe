@@ -51,7 +51,7 @@ export default function Header() {
 
   return (
     <div className="fixed top-0 w-full z-50 bg-white">
-      <div className="grid grid-cols-2 pr-6 pl-8 shadow-2xl h-24 border-b-1 items-center justify-center border-b-gray-300">
+      <div className="grid grid-cols-2 p-4 pr-6 pl-10 shadow-2xl h-fit border-b-1 items-center justify-center border-b-gray-300">
         {/* Logo and other navigations */}
         <motion.div
           className="flex justify-between font-sans font-bold text-[1vw] items-center"
@@ -113,64 +113,65 @@ export default function Header() {
         </motion.div>
 
         {/* Login and Register */}
-        <motion.div
-          className="flex gap-3 justify-end font-sans font-bold text-[1vw] items-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1 }}
-          style={{ userSelect: "none" }}
-        >
-          <motion.span
-            whileTap={() => setIsHovered(false)}
+          <motion.div
+            className="flex gap-3 justify-end font-sans font-bold text-[1vw] items-center"
             initial={{ opacity: 0 }}
-            animate={animate}
-            className="border-r-1 border-l-gray-100 p-2"
+            animate={{ opacity: 1 }}
+            transition={{ duration: 1 }}
+            style={{ userSelect: "none" }}
           >
-            <Search />
-          </motion.span>
+            <motion.span
+              whileTap={() => setIsHovered(false)}
+              initial={{ opacity: 0 }}
+              animate={animate}
+              className="border-r-1 border-l-gray-100 p-2"
+            >
+              <Search />
+            </motion.span>
 
-          <motion.span
-            onMouseEnter={() => setIsHovered(false)}
-            whileHover={{ scale: 1.1, color: "red" }}
-            whileTap={{ scale: 0.9, color: "black" }}
-            initial={{ opacity: 0 }}
-            animate={animate}
-          >
-            <UserOutlined /> Phong Lam
-          </motion.span>
+            <motion.span
+              onMouseEnter={() => setIsHovered(false)}
+              whileHover={{ scale: 1.1, color: "red" }}
+              whileTap={{ scale: 0.9, color: "black" }}
+              initial={{ opacity: 0 }}
+              animate={animate}
+              onClick={() => navigate("/userProfile")}
+            >
+              <UserOutlined /> Phong Lam
+            </motion.span>
 
-          <motion.span
-            initial={{ opacity: 0 }}
-            animate={animate}
-            className="justify-between flex items-center gap-4 p-2"
-          >
+            <motion.span
+              initial={{ opacity: 0 }}
+              animate={animate}
+              className="justify-between flex items-center gap-4 p-2"
+            >
+              <motion.span
+                whileHover={{ scale: 1.1, color: "red" }}
+                whileTap={{ scale: 0.9, color: "black" }}
+              >
+                <MessageOutlined className="text-2xl" />
+              </motion.span>
+              <motion.span
+                whileHover={{ scale: 1.1, color: "red" }}
+                whileTap={{ scale: 0.9, color: "black" }}
+              >
+                <HeartOutlined className="text-2xl" />
+              </motion.span>
+            </motion.span>
+
             <motion.span
               whileHover={{ scale: 1.1, color: "red" }}
               whileTap={{ scale: 0.9, color: "black" }}
+              initial={{ opacity: 0 }}
+              animate={animate}
+              className="border-1 rounded-3xl text-xl w-[6vw] flex justify-center items-center"
             >
-              <MessageOutlined className="text-2xl" />
+              <ShoppingCartOutlined />
             </motion.span>
-            <motion.span
-              whileHover={{ scale: 1.1, color: "red" }}
-              whileTap={{ scale: 0.9, color: "black" }}
-            >
-              <HeartOutlined className="text-2xl" />
-            </motion.span>
-          </motion.span>
+          </motion.div>
+              </div>
 
-          <motion.span
-            whileHover={{ scale: 1.1, color: "red" }}
-            whileTap={{ scale: 0.9, color: "black" }}
-            initial={{ opacity: 0 }}
-            animate={animate}
-            className="border-1 rounded-3xl text-xl w-[6vw] flex justify-center items-center"
-          >
-            <ShoppingCartOutlined />
-          </motion.span>
-        </motion.div>
-      </div>
-
-      {/* Animated Dropdown */}
+              {/* Animated Dropdown */}
       {isHovered && (
         <motion.div
           initial={{ height: 0, opacity: 0 }}

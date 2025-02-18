@@ -12,6 +12,7 @@ import AdminLayout from "./layouts/AdminLayout/AdminLayout";
 import RegisterPage from "./pages/UserPages/RegisterPage/RegisterPage";
 import ForgotPasswordPage from "./pages/UserPages/ForgotPasswordPage/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/UserPages/ResetPasswordPage/ResetPasswordPage";
+import UserProfile from "./pages/UserPages/UserProfile/UserProfile";
 
 function App() {
   const router = createBrowserRouter([
@@ -38,6 +39,10 @@ function App() {
         {
           path: route.resetPassword,
           element: <ResetPasswordPage />,
+        },
+        {
+          path: route.userProfile,
+          element: <UserProfile />,
         },
       ],
     },

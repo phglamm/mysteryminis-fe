@@ -41,7 +41,7 @@ const Search = () => {
 
   return (
     <div>
-      <Dropdown arrow placement='bottom' overlay={inputValue ? menu : <></>} trigger={['click']}>
+      <Dropdown arrow placement='bottom' overlay={isHovered ? menu : <></>} >
         <motion.div
           onClick={() => setIsHovered(true)}
           onMouseLeave={() => !inputValue && setIsHovered(false)}
