@@ -53,7 +53,7 @@ export default function Header() {
   const user = useSelector(selectUser);
   return (
     <div className="fixed top-0 w-full z-50 bg-white">
-      <div className="grid grid-cols-2 pr-6 pl-8 shadow-md h-24 border-b-1 items-center justify-center border-b-gray-300">
+      <div className="grid grid-cols-2 p-4 pr-6 pl-10 shadow-2xl h-fit border-b-1 items-center justify-center border-b-gray-300">
         {/* Logo and other navigations */}
         <motion.div
           className="flex justify-between font-sans font-bold text-[1vw] items-center"
@@ -137,6 +137,7 @@ export default function Header() {
             whileTap={{ scale: 0.9, color: "black" }}
             initial={{ opacity: 0 }}
             animate={animate}
+            onClick={() => navigate("/userProfile")}
           >
             <UserOutlined /> {user.username}
           </motion.span>

@@ -52,15 +52,16 @@ export default function Footer() {
         { name: 'BestSellers', link: '/best-sellers' },
         { name: 'Return Policy', link: '/return-policy' },
         { name: 'Sale Off', link: '/sale-off' }
+        
       ]
     },
     {
       title: 'CONTACT',
       items: [
-        { name: 'Email: swdblindbox@fpt.vn', link: '/contact' },
-        { name: 'Hotline : +849088989889', link: '/contact' },
-        { name: 'All days of the week', link: '/contact' },
-        { name: '83 Le Loi, Ward Ben Nghe, District 1, HCMC, VietNam', link: '/contact' }
+        { name: 'Email: swdblindbox@fpt.vn' },
+        { name: 'Hotline : +849088989889' },
+        { name: 'All days of the week' },
+        { name: '83 Le Loi, District 1, HCMC, VietNam' }
       ],
       span: 2
     }
@@ -68,8 +69,8 @@ export default function Footer() {
   ];
 
   return(
-    <div className="bg-black text-white">
-      <div className="grid grid-cols-7 p-6">
+    <div className="bg-black bottom-0 text-white">
+      <div className="grid grid-cols-7 text-center p-6">
         {footerSections.map((section, index) => (
           <div 
             key={index} 
@@ -82,7 +83,7 @@ export default function Footer() {
               </>
             ) : (
               <>
-                <div className="font-bold flex justify-center text-[2vw] mb-4">{section.title}</div>
+                <div className="font-bold flex justify-center text-[1.6vw] mb-4 whitespace-nowrap ">{section.title}</div>
                 {section.items.map((item, idx) => (
                   <motion.div
                     key={idx}
@@ -90,7 +91,7 @@ export default function Footer() {
                     whileHover={hoverEffect}
                     whileTap={tapEffect}
                     onClick={() => navigate(item.link)}
-                    className='lg:text-[1.2vw] md:[1.3vw] sm:text-[1.5vw] '
+                    className='lg:text-[1vw] md:[1.2vw] sm:text-[1.3vw] text-[1.3vw] '
                     style={{ userSelect: 'none' }}
                   >
                     {item.name}
@@ -101,7 +102,7 @@ export default function Footer() {
           </div>
         ))}
       </div>
-      <div className='text-center border-t border-red-800 py-4'>
+      <div className='text-center h-fit g:tlext-[1vw] md:[1.2vw] sm:text-[1.3vw] text-[1.3vw] border-t border-red-800 '>
         © 2025 Luxury Orchids Official Store. All Rights Reserved.
       </div>
     </div>

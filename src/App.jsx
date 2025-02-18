@@ -13,6 +13,7 @@ import ResetPasswordPage from "./pages/UserPages/ResetPasswordPage/ResetPassword
 import ManageAccount from "./pages/AdminPages/ManageAccount/ManageAccount";
 import ManageBox from "./pages/AdminPages/ManageBox/ManageBox";
 import ProductDetailPage from "./pages/UserPages/ProductDetailPage/ProductDetailPage";
+import UserProfile from "./pages/UserPages/UserProfile/UserProfile";
 
 function App() {
   const router = createBrowserRouter([
@@ -43,6 +44,10 @@ function App() {
         {
           path: route.productDetail,
           element: <ProductDetailPage />,
+        },
+        {
+          path: route.userProfile,
+          element: <UserProfile />,
         },
       ],
     },
