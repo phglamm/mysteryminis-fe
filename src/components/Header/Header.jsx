@@ -11,6 +11,7 @@ import {
 } from "@ant-design/icons";
 import Search from "../Search/Search";
 import { useSelector } from "react-redux";
+import { route } from "../../routes";
 import { selectUser } from "../../Redux/features/counterSlice";
 
 export default function Header() {
@@ -137,9 +138,11 @@ export default function Header() {
             whileTap={{ scale: 0.9, color: "black" }}
             initial={{ opacity: 0 }}
             animate={animate}
-            onClick={() => navigate("/userProfile")}
+            onClick={() =>
+              user ? navigate("/userProfile") : navigate(route.login)
+            }
           >
-            <UserOutlined /> {user.username}
+            <UserOutlined /> {user ? user.username : "Sign In"}
           </motion.span>
 
           <motion.span
