@@ -5,12 +5,15 @@ const { Content, Footer, Header } = Layout;
 
 import { Outlet, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../Redux/features/counterSlice";
 
 export default function AdminLayout() {
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
   const location = useLocation();
+  const user = useSelector(selectUser);
   return (
     <Layout className="min-h-screen">
       <Sidebar />
@@ -28,8 +31,8 @@ export default function AdminLayout() {
               className="h-[50px] rounded-[100%] border border-black"
             />
             <div className="flex flex-col justify-start items-start">
-              <p className="font-bold text-xl">Phong Lâm</p>
-              <p className="text-sm">Admin</p>
+              <p className="font-bold text-xl">{user.username}</p>
+              <p className="text-sm">{user.roleId === 1 ? "Admin" : "Staff"}</p>
             </div>
           </Header>
           <Content

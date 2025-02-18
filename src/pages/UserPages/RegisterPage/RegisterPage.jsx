@@ -4,11 +4,23 @@ import { Button, Form, Input, Radio } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { route } from "../../../routes";
 import BlurText from "../../../components/React_Bits/BlurText/BlurText";
+import api from "../../../config/api";
 
 export default function RegisterPage() {
   const [form] = useForm();
 
-  const handleRegister = () => {};
+  const handleRegister = async (values) => {
+    values.roleId = 3;
+    values.isTestAccount = false;
+    console.log(values);
+    try {
+      const response = await api.post("Account/register", values);
+      console.log(response.data);
+      console.log("register success");
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
   return (
     <div className="flex items-center justify-center min-h-screen mt-24">
       <motion.div
@@ -34,7 +46,7 @@ export default function RegisterPage() {
         >
           <Form.Item
             label={<span className="text-lg font-medium">Username</span>}
-            name="username"
+            name="userName"
             rules={[
               { required: true, message: "Please type in your Username!" },
             ]}
@@ -47,7 +59,7 @@ export default function RegisterPage() {
           </Form.Item>
           <Form.Item
             label={<span className="text-lg font-medium">Fullname</span>}
-            name="Fullname"
+            name="fullName"
             rules={[
               { required: true, message: "Please type in your Fullname!" },
             ]}
@@ -76,7 +88,7 @@ export default function RegisterPage() {
 
           <Form.Item
             label={<span className="text-lg font-medium">Phone</span>}
-            name="phone"
+            name="phoneNumber"
             rules={[
               { required: true, message: "Please type in your phone number!" },
             ]}
@@ -157,7 +169,6 @@ export default function RegisterPage() {
           <Form.Item>
             <Button
               type="primary"
-              htmlType="submit"
               className="w-full !bg-[#598099] !text-[#ffffff] !text-2xl !p-8 !font-bold"
               onClick={() => form.submit()}
             >

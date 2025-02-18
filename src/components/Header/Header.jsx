@@ -10,6 +10,8 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import Search from "../Search/Search";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../Redux/features/counterSlice";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -48,7 +50,7 @@ export default function Header() {
     { label: "Rating", path: "/rating" },
     { label: "Blogs", path: "/blogs" },
   ];
-
+  const user = useSelector(selectUser);
   return (
     <div className="fixed top-0 w-full z-50 bg-white">
       <div className="grid grid-cols-2 pr-6 pl-8 shadow-md h-24 border-b-1 items-center justify-center border-b-gray-300">
@@ -136,7 +138,7 @@ export default function Header() {
             initial={{ opacity: 0 }}
             animate={animate}
           >
-            <UserOutlined /> Phong Lam
+            <UserOutlined /> {user.username}
           </motion.span>
 
           <motion.span
