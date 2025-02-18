@@ -53,7 +53,16 @@ export default function LoginPage() {
         expires: 7,
         secure: true,
       });
-      dispatch(login());
+      const user = response.data.user;
+      dispatch(login(user));
+      if (user.roleId === 3) {
+        navigate(route.home);
+      } else if (user.roleId === 2) {
+        navigate(`${route.staff}/${route.blogManagement}`);
+      } else if (user.roleId === 1) {
+        navigate(`${route.admin}/${route.boxManagement}`);
+      }
+      toast.success("Login Success");
     } catch (error) {
       console.log(error.response.data);
     }
