@@ -1,16 +1,37 @@
 import React, { useState } from "react";
 import { Card, Button, Tag } from "antd";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import { route } from "../../routes";
 
 const { Meta } = Card;
 
 const CardProduct = ({ product }) => {
   const [hovered, setHovered] = useState(false);
 
+  const firstImageUrl = product.boxImage[0]?.boxImageUrl;
+  const hoverImageUrl = product.boxImage[1]?.boxImageUrl;
+  const brandName = product.brandName;
+  const boxName = product.boxName;
+  const inStock = product.boxOptions.some(
+    (option) => option.boxOptionStock > 0
+  );
+
+  const displayPrice = product.boxOptions.reduce((minPrice, option) => {
+    return option.displayPrice < minPrice ? option.displayPrice : minPrice;
+  }, product.boxOptions[0]?.displayPrice);
+
+  const formatPrice = (price) => {
+    return price.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+  };
+  const navigate = useNavigate();
   return (
-    <motion.div 
-      initial={{ opacity: 0 , y: 50}}
-      animate={{ opacity: 1, y: 0}}
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 1, type: "spring", damping: 10 }}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
@@ -22,7 +43,7 @@ const CardProduct = ({ product }) => {
           transition: "transform 0.3s ease-in-out",
           position: "relative",
           overflow: "hidden",
-          minHeight: "400px", 
+          minHeight: "400px",
           minWidth: "300px",
           display: "flex",
           flexDirection: "column",
@@ -36,12 +57,12 @@ const CardProduct = ({ product }) => {
               position: "relative",
               overflow: "hidden",
               borderRadius: "8px",
-              height: "300px", 
+              height: "300px",
             }}
           >
             <img
-              src={hovered && product.hoverImage ? product.hoverImage : product.image}
-              alt={product.name}
+              src={hovered && hoverImageUrl ? hoverImageUrl : firstImageUrl}
+              alt={boxName}
               style={{
                 width: "100%",
                 height: "100%",
@@ -62,15 +83,19 @@ const CardProduct = ({ product }) => {
             minHeight: "50px",
           }}
         >
-          <p style={{ fontSize: "14px", color: "#333" }}>{product.brand}</p>
+          <p style={{ fontSize: "14px", color: "#333" }}>{brandName}</p>
 
-          <Meta 
-            title={product.name} 
-            description={<strong style={{ color: "#e60000", fontSize: "16px" }}>{product.price}</strong>} 
+          <Meta
+            title={boxName}
+            description={
+              <strong style={{ color: "#e60000", fontSize: "16px" }}>
+                {formatPrice(displayPrice)}
+              </strong>
+            }
           />
         </div>
 
-        {!product.inStock && (
+        {!inStock && (
           <div
             style={{
               position: "absolute",
@@ -96,6 +121,9 @@ const CardProduct = ({ product }) => {
           }}
         >
           <Button
+            onClick={() =>
+              navigate(`${route.product}/${route.detail}/${product.boxId}`)
+            }
             type="default"
             style={{
               width: "180px",
@@ -104,12 +132,12 @@ const CardProduct = ({ product }) => {
               fontWeight: "bold",
               borderRadius: "8px",
               border: "1px solid black",
-              backgroundColor: product.inStock ? "#fff" : "#f0f0f0",
-              color: product.inStock ? "#333" : "#999",
+              backgroundColor: inStock ? "#fff" : "#f0f0f0",
+              color: inStock ? "#333" : "#999",
             }}
-            disabled={!product.inStock}
+            disabled={!inStock}
           >
-            {product.inStock ? "Tùy chọn" : "Hết hàng"}
+            {inStock ? "Xem chi tiết" : "Hết hàng"}
           </Button>
         </div>
       </Card>

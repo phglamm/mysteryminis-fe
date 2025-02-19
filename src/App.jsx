@@ -47,7 +47,7 @@ function App() {
           element: <ResetPasswordPage />,
         },
         {
-          path: route.productDetail,
+          path: `${route.product}/${route.detail}/:id`,
           element: <ProductDetailPage />,
         },
         {
