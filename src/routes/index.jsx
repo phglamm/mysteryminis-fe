@@ -24,4 +24,5 @@ export const route = {
   chatWithCustomer: "chat-box",
 
   productDetail: "product/:id",
+  product: "/product",
 };
