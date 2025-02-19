@@ -8,6 +8,11 @@ const { Meta } = Card;
 
 const CardProduct = ({ product }) => {
   const [hovered, setHovered] = useState(false);
+  const navigate = useNavigate();
+
+  if (!product) {
+    return <div>Loading...</div>;
+  }
 
   const firstImageUrl = product.boxImage[0]?.boxImageUrl;
   const hoverImageUrl = product.boxImage[1]?.boxImageUrl;
@@ -22,12 +27,11 @@ const CardProduct = ({ product }) => {
   }, product.boxOptions[0]?.displayPrice);
 
   const formatPrice = (price) => {
-    return price.toLocaleString("vi-VN", {
+    return price?.toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",
     });
   };
-  const navigate = useNavigate();
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}

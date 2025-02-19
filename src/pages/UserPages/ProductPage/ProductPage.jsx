@@ -20,6 +20,10 @@ const ProductPage = () => {
     fetchBox();
   }, []);
 
+  if (!boxes) {
+    return <div>Loading...</div>;
+  }
+
   const checkboxStyle = {
     borderColor: checked ? "pink" : "#d9d9d9",
     backgroundColor: checked ? "pink" : "transparent",
