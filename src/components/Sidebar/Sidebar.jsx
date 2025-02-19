@@ -60,11 +60,16 @@ export default function Sidebar() {
             route.boxItemManagement,
             <MdOutlineSmartToy />
           ),
-          getItem("Manage Box Options", route.boxOption, <DropboxOutlined />),
+          getItem(
+            "Manage Box Options",
+            route.boxOptionManagement,
+            <DropboxOutlined />
+          ),
         ]),
         getItem("Manage Brand", route.brandManagement, <DropboxOutlined />),
         getItem("Manage Discount", route.discountManagement, <CiDiscount1 />),
         getItem("Back to Home", "/", <HomeOutlined />),
+        getItem("Signout", "/", <HomeOutlined />),
       ]);
     }
 
@@ -84,7 +89,11 @@ export default function Sidebar() {
             route.boxItemManagement,
             <MdOutlineSmartToy />
           ),
-          getItem("Manage Box Options", route.boxOption, <DropboxOutlined />),
+          getItem(
+            "Manage Box Options",
+            route.boxOptionManagement,
+            <DropboxOutlined />
+          ),
         ]),
         getItem(
           "Manage Feedback",

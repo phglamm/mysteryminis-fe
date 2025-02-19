@@ -4,55 +4,71 @@ import { useEffect, useState } from "react";
 import uploadFile from "./../../../utils/UploadImage";
 import { PlusOutlined } from "@ant-design/icons";
 import api from "./../../../config/api";
+import toast from "react-hot-toast";
 
 export default function ManageBoxImage() {
   const [formAdd] = Form.useForm();
   const [formUpdate] = Form.useForm();
+  const [boxImage, setBoxImage] = useState([]);
+  const [box, setBox] = useState([]);
 
-  useEffect(() => {}, []);
+  const fetchBoxImage = async () => {
+    const response = await api.get("BoxImage");
+    console.log(response.data);
+    const sortReponse = response.data.sort(
+      (a, b) => b.boxImageId - a.boxImageId
+    );
+    setBoxImage(sortReponse);
+  };
+  useEffect(() => {
+    const fetchBox = async () => {
+      const response = await api.get("Box");
+      console.log(response.data);
+      setBox(response.data);
+    };
+
+    fetchBoxImage();
+    fetchBox();
+  }, []);
 
   const columnBoxImage = [
     {
       title: "ID",
-      dataIndex: "BoxImageId",
-      key: "BoxImageId",
+      dataIndex: "boxImageId",
+      key: "boxImageId",
     },
     {
       title: "Image",
-      dataIndex: "BoxImageUrl",
-      key: "BoxImageUrl",
+      dataIndex: "boxImageUrl",
+      key: "boxImageUrl",
       render: (value) => (
         <Image src={value} style={{ width: "200px", height: "130px" }} />
       ),
     },
     {
       title: "For Box Id",
-      dataIndex: "BoxId",
-      key: "BoxId",
+      dataIndex: ["belongBox", "boxId"],
+      key: "boxId",
     },
     {
       title: "For Box Name",
-      dataIndex: "BoxName",
-      key: "BoxName",
-      filters: [
-        ...new Set(
-          mockBoxImages.map((item) => ({
-            text: item.BoxName,
-            value: item.BoxName,
-          }))
-        ),
-      ], // 👈 Auto-generate filters
-      onFilter: (value, record) => record.BoxName === value,
+      dataIndex: ["belongBox", "boxName"],
+      key: "boxName",
+      filters: boxImage
+        ? Array.from(
+            new Set(boxImage.map((item) => item.belongBox?.boxName))
+          ).map((name) => ({ text: name, value: name }))
+        : [],
+      onFilter: (value, record) => record.belongBox?.boxName === value,
       filterSearch: true,
     },
-
     {
       title: "Action",
       render: (_index, record) => (
         <>
           <div className="flex justify-around items-center">
             <Button onClick={() => handleModalUpdate(record)}>Update</Button>
-            <Button>Delete</Button>
+            <Button onClick={() => handleDelete(record)}>Delete</Button>
           </div>
         </>
       ),
@@ -94,6 +110,7 @@ export default function ManageBoxImage() {
         if (file.status !== "done") {
           try {
             const url = await uploadFile(file.originFileObj); // Upload the file and get the URL
+            toast.success("Upload Success");
             return { ...file, url, status: "done" }; // Update the file status and add the URL
           } catch (error) {
             console.error("Upload failed", error);
@@ -112,18 +129,20 @@ export default function ManageBoxImage() {
     // Validate form inputs
     console.log(values);
     const imgURLs = fileList.map((file) => file.url);
-    values.BoxImageUrl = imgURLs[0];
-    console.log(values.BoxImageUrl);
+    values.boxImageUrl = imgURLs[0];
+    console.log(values.boxImageUrl);
     try {
-      const response = await api.post(`Box`, values);
-      console.log("Add response:", response);
+      const response = await api.post(`BoxImage`, values);
+      console.log("Add response:", response.data);
+      fetchBoxImage();
       setIsModalAddOpen(false);
-      formAdd.resetFields();
       setFileList([]);
+      formAdd.resetFields();
+      toast.success("Add Box successfully");
     } catch (error) {
-      formAdd.resetFields();
       setFileList([]);
-      console.error("Failed to add Box:", error.response?.data || error);
+      toast.error("Failed to add BoxImage");
+      console.error("Failed to add BoxImage:", error.response?.data || error);
     }
   };
 
@@ -132,7 +151,10 @@ export default function ManageBoxImage() {
 
   const handleModalUpdate = (record) => {
     console.log(record);
-    formUpdate.setFieldsValue(record);
+    formUpdate.setFieldsValue({
+      ...record,
+      BoxId: record.belongBox?.boxId, // Extract boxId from belongBox
+    });
     setIsModalUpdateOpen(true);
     setSelectedBoxImage(record);
   };
@@ -140,35 +162,47 @@ export default function ManageBoxImage() {
   const handleUpdate = async (values) => {
     console.log(selectedBoxImage);
     console.log(fileList);
-    console.log(selectedBoxImage.BoxImageUrl);
-    if (fileListUpdate && fileListUpdate.length > 0) {
-      const imagURLUpdate = fileListUpdate.map((file) => file.url);
-      values.BoxImageUrl = imagURLUpdate;
+    console.log(selectedBoxImage.boxImageUrl);
+    if (fileList && fileList.length > 0) {
+      const imagURLUpdate = fileList.map((file) => file.url);
+      values.boxImageUrl = imagURLUpdate[0];
     } else {
-      values.BoxImageUrl = selectedPerfume.BoxImageUrl;
+      values.boxImageUrl = selectedBoxImage.boxImageUrl;
     }
     console.log(values);
     try {
       const response = await api.put(
-        `Perfume/${selectedPerfume.perfume_Id}`,
+        `BoxImage/${selectedBoxImage.boxImageId}`,
         values
       ); // Call API to update
       console.log(response.data);
       toast.success("Updated successfully");
-      setPerfumes(
-        perfumes.map((perfume) =>
-          perfume.perfume_Id === selectedPerfume.perfume_Id
-            ? { ...perfume, ...values }
-            : perfume
-        )
-      );
-      setisModalUpdateOpen(false); // Close modal
-      setSelectedPerfume(null); // Reset selected brand
-      setFileListUpdate([]);
+      fetchBoxImage();
+      setIsModalUpdateOpen(false); // Close modal
+      setSelectedBoxImage(null); // Reset selected brand
+      setFileList([]);
     } catch (error) {
-      console.error("Failed to update Perfume:", error.response?.data || error);
-      toast.error("Failed to update Perfume");
+      console.error(
+        "Failed to update Box's Image:",
+        error.response?.data || error
+      );
+      toast.error("Failed to update Box's Image");
     }
+  };
+
+  const handleDelete = (values) => {
+    Modal.confirm({
+      title: "Are you sure you want to delete this Box's Image?",
+      onOk: async () => {
+        try {
+          await api.delete(`BoxImage/${values.boxImageId}`);
+          toast.success("Box's Image deleted successfully");
+          fetchBoxImage();
+        } catch (error) {
+          toast.error("Failed to delete Box's Image");
+        }
+      },
+    });
   };
 
   return (
@@ -178,7 +212,7 @@ export default function ManageBoxImage() {
       </Button>
 
       <Table
-        dataSource={mockBoxImages}
+        dataSource={boxImage}
         columns={columnBoxImage}
         pagination={{ pageSize: 5 }}
       />
@@ -194,7 +228,7 @@ export default function ManageBoxImage() {
         onOk={() => formAdd.submit()}
       >
         <Form form={formAdd} layout="vertical" onFinish={handleAdd}>
-          <Form.Item name="BoxImageUrl" label="Perfume Images">
+          <Form.Item name="boxImageUrl" label="Box's Images">
             <Upload
               className="label-form-image"
               maxCount={1}
@@ -226,9 +260,9 @@ export default function ManageBoxImage() {
             rules={[{ required: true, message: "Please enter the Box name" }]}
           >
             <Select placeholder="Select Box" allowClear>
-              {mockBoxData.map((box) => (
-                <Select.Option key={box.BoxId} value={box.BoxId}>
-                  {box.BoxName}
+              {box.map((box) => (
+                <Select.Option key={box.boxId} value={box.boxId}>
+                  {box.boxName}
                 </Select.Option>
               ))}
             </Select>
@@ -249,7 +283,7 @@ export default function ManageBoxImage() {
         }}
       >
         <Form form={formUpdate} layout="vertical" onFinish={handleUpdate}>
-          <Form.Item name="BoxImageUrl" label="Perfume Images">
+          <Form.Item name="boxImageUrl" label="Box's Images">
             <Upload
               className="label-form-image"
               maxCount={1}
@@ -281,9 +315,9 @@ export default function ManageBoxImage() {
             rules={[{ required: true, message: "Please enter the Box name" }]}
           >
             <Select placeholder="Select Box" allowClear>
-              {mockBoxData.map((box) => (
-                <Select.Option key={box.BoxId} value={box.BoxId}>
-                  {box.BoxName}
+              {box.map((box) => (
+                <Select.Option key={box.boxId} value={box.boxId}>
+                  {box.boxName}
                 </Select.Option>
               ))}
             </Select>

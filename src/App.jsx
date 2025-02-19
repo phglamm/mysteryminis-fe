@@ -17,6 +17,7 @@ import ManageBoxImage from "./pages/AdminPages/ManageBoxImage/ManageBoxImage";
 import ManageBoxItem from "./pages/AdminPages/ManageBoxItem/ManageBoxItem";
 import ManageBoxOption from "./pages/AdminPages/ManageBoxOption/ManageBoxOption";
 import UserProfile from "./pages/UserPages/UserProfile/UserProfile";
+import ManageBrand from "./pages/AdminPages/ManageBrand/ManageBrand";
 
 function App() {
   const router = createBrowserRouter([
@@ -76,8 +77,12 @@ function App() {
           element: <ManageBoxItem />,
         },
         {
-          path: route.boxOption,
+          path: route.boxOptionManagement,
           element: <ManageBoxOption />,
+        },
+        {
+          path: route.brandManagement,
+          element: <ManageBrand />,
         },
       ],
     },
@@ -103,7 +108,7 @@ function App() {
           element: <ManageBoxItem />,
         },
         {
-          path: route.boxOption,
+          path: route.boxOptionManagement,
           element: <ManageBoxOption />,
         },
       ],
