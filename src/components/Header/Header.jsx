@@ -10,6 +10,9 @@ import {
   UserOutlined,
 } from "@ant-design/icons";
 import Search from "../Search/Search";
+import { useSelector } from "react-redux";
+import { route } from "../../routes";
+import { selectUser } from "../../Redux/features/counterSlice";
 
 export default function Header() {
   const navigate = useNavigate();
@@ -48,10 +51,10 @@ export default function Header() {
     { label: "Rating", path: "/rating" },
     { label: "Blogs", path: "/blogs" },
   ];
-
+  const user = useSelector(selectUser);
   return (
     <div className="fixed top-0 w-full z-50 bg-white">
-      <div className="grid grid-cols-2 pr-6 pl-8 shadow-2xl h-24 border-b-1 items-center justify-center border-b-gray-300">
+      <div className="grid grid-cols-2 p-4 pr-6 pl-10 shadow-2xl h-fit border-b-1 items-center justify-center border-b-gray-300">
         {/* Logo and other navigations */}
         <motion.div
           className="flex justify-between font-sans font-bold text-[1vw] items-center"
@@ -135,8 +138,11 @@ export default function Header() {
             whileTap={{ scale: 0.9, color: "black" }}
             initial={{ opacity: 0 }}
             animate={animate}
+            onClick={() =>
+              user ? navigate("/userProfile") : navigate(route.login)
+            }
           >
-            <UserOutlined /> Phong Lam
+            <UserOutlined /> {user ? user.username : "Sign In"}
           </motion.span>
 
           <motion.span

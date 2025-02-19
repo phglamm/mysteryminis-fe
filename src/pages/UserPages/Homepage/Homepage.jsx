@@ -5,7 +5,18 @@ import BB3 from "../../../assets/images/BABY3.png";
 import TiltedCard from "../../../components/React_Bits/TiltedCard/TiltedCard";
 import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 import FadeContent from "../../../components/React_Bits/FadeContent/FadeContent";
+import { motion } from "framer-motion";
+import { Card } from "antd";
+import CountUp from "../../../components/React_Bits/CountUp/CountUp";
 export default function Homepage() {
+  const cardData = [
+    { id: 1, name: "Yooki", imageSrc: Yooki },
+    { id: 2, name: "Labubu", imageSrc: Labubu },
+    { id: 3, name: "Skull Panda", imageSrc: Skull },
+    { id: 4, name: "Baby Three", imageSrc: BB3 },
+    { id: 5, name: "Yooki", imageSrc: Yooki },
+  ];
+
   return (
     <div className=" mt-24">
       {/* Image Content */}
@@ -122,8 +133,55 @@ export default function Homepage() {
           delay={60}
           animateBy="letters"
           direction="bottom"
-          className="text-3xl mb-8 text-gray-500 font-sans"
+          className="text-3xl mb-2 text-gray-500 font-sans"
         />
+        <motion.div 
+                initial={{ scale: 1, opacity: 0 }}
+                whileInView={{ opacity: 1}}
+                transition={{delay: 2, duration: 4 }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="flex gap-1 h-fit mb-8"
+          >
+            +<CountUp
+              from={0}
+              to={89}
+              separator=","
+              direction="up"
+              delay={2.5}
+              duration={2}
+              className="count-up-text"
+            />
+              <p>Stores Worldwide</p>
+        </motion.div>
+        <div 
+          className="grid grid-cols-5 p-4  w-[70%] gap-5  h-[25vw] border-t-1 border-gray-400">
+          {cardData.map((card) => (
+            <FadeContent 
+              blur={true}
+              duration={1200}
+              easing="ease-in-out"
+              initialOpacity={0}
+              key={card.id}
+            >
+              <motion.div
+                initial={{ scale: 1, opacity: 0, height: 0 }}
+                whileInView={{ opacity: 1, height: "auto" }}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              >
+                <Card
+                  hoverable
+                  cover={<img alt={card.name} src={card.imageSrc} className="h-[12vw] bg-amber-200" />}
+                >
+                  {card.name}
+                </Card>
+              </motion.div>
+            </FadeContent>
+            
+          ))}
+        </div>
       </div>
     </div>
   );

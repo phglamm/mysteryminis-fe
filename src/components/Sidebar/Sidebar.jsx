@@ -19,6 +19,8 @@ import { route } from "../../routes";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../assets/images/Logo-removebg.png";
 import "./Sidebar.scss";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../Redux/features/counterSlice";
 export default function Sidebar() {
   function getItem(label, key, icon, children) {
     return {
@@ -38,9 +40,9 @@ export default function Sidebar() {
 
   const [openKeys, setOpenKeys] = useState(dataOpen);
 
-  const role = "STAFF";
+  const user = useSelector(selectUser);
   useEffect(() => {
-    if (role === "ADMIN") {
+    if (user.roleId === 1) {
       setItems([
         getItem("Dashboard", route.dashboard, <BarChartOutlined />),
         getItem("Manage Account", route.accountManagement, <UserOutlined />),
@@ -66,7 +68,7 @@ export default function Sidebar() {
       ]);
     }
 
-    if (role === "STAFF") {
+    if (user.roleId === 2) {
       setItems([
         getItem("Manager Account", route.accountManagement, <UserOutlined />),
         getItem("Manager Order", route.orderManagement, <AuditOutlined />),
@@ -162,7 +164,7 @@ export default function Sidebar() {
                   to={
                     item.key === "/"
                       ? "/"
-                      : role === "ADMIN"
+                      : user.roleId === 1
                       ? `/admin/${item.key}`
                       : `/staff/${item.key}`
                   }
