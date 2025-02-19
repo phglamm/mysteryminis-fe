@@ -1,43 +1,12 @@
 import { Button, Table, Tabs } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function ManageBox() {
   const [activeTab, setActiveTab] = useState("1");
 
-  const mockBoxData = [
-    {
-      BoxId: 1,
-      BoxName: "Mystery Box A",
-      BoxDescription: "A surprise box containing exclusive items",
-      IsDeleted: false,
-      SoldQuantity: 120,
-      BrandName: "Brand X",
-    },
-    {
-      BoxId: 2,
-      BoxName: "Exclusive Box B",
-      BoxDescription: "A limited-edition collectible box",
-      IsDeleted: false,
-      SoldQuantity: 85,
-      BrandName: "Brand Y",
-    },
-    {
-      BoxId: 3,
-      BoxName: "Secret Box C",
-      BoxDescription: "Contains special edition figures",
-      IsDeleted: true,
-      SoldQuantity: 200,
-      BrandName: "Brand Z",
-    },
-    {
-      BoxId: 1,
-      BoxName: "sasasASsS Box A",
-      BoxDescription: "A surprise box containing exclusive items",
-      IsDeleted: false,
-      SoldQuantity: 120,
-      BrandName: "Brand X",
-    },
-  ];
+  useEffect(() => {
+    const fetchBox = async () => {};
+  }, []);
 
   const columnsBox = [
     {

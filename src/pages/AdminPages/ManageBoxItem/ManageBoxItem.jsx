@@ -1,49 +1,6 @@
 import { Button, Image, Table } from "antd";
 
 export default function ManageBoxItem() {
-  const mockBoxItems = [
-    {
-      BoxItemId: 1,
-      ImageUrl: "https://via.placeholder.com/200x130", // Placeholder image
-      BoxItemName: "Mystery Figure A",
-      BoxId: 101,
-      BoxName: "Exclusive Box A",
-      IsSecret: true,
-    },
-    {
-      BoxItemId: 2,
-      ImageUrl: "https://via.placeholder.com/200x130",
-      BoxItemName: "Collectible Card B",
-      BoxId: 102,
-      BoxName: "Limited Edition Box B",
-      IsSecret: false,
-    },
-    {
-      BoxItemId: 3,
-      ImageUrl: "https://via.placeholder.com/200x130",
-      BoxItemName: "Special Sticker C",
-      BoxId: 103,
-      BoxName: "Surprise Box C",
-      IsSecret: false,
-    },
-    {
-      BoxItemId: 4,
-      ImageUrl: "https://via.placeholder.com/200x130",
-      BoxItemName: "Rare Keychain D",
-      BoxId: 104,
-      BoxName: "Lucky Box D",
-      IsSecret: true,
-    },
-    {
-      BoxItemId: 5,
-      ImageUrl: "https://via.placeholder.com/200x130",
-      BoxItemName: "Golden Token E",
-      BoxId: 105,
-      BoxName: "Ultimate Box E",
-      IsSecret: true,
-    },
-  ];
-
   const columnBoxItems = [
     {
       title: "ID",
