@@ -10,7 +10,7 @@ const orders = [
 ];
 
 return (
-    <div className='pt-5  overflow-y-scroll h-[28vw]'>
+    <div className='pt-5  overflow-y-scroll h-[27vw]'>
         {orders.map((order, index) => (
             <motion.div
                 key={index}
