@@ -16,7 +16,7 @@ export const route = {
   boxItemManagement: "box-items-management",
   brandManagement: "brand-management",
   boxImageManagement: "box-image-management",
-  boxVariant: "box-variant-management",
+  boxOptionManagement: "box-option-management",
 
   staff: "/staff",
   feedbackManagement: "feedback-management",
@@ -24,4 +24,5 @@ export const route = {
   chatWithCustomer: "chat-box",
 
   productDetail: "product/:id",
+  product: "/product",
 };

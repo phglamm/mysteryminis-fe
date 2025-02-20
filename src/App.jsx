@@ -13,7 +13,12 @@ import ResetPasswordPage from "./pages/UserPages/ResetPasswordPage/ResetPassword
 import ManageAccount from "./pages/AdminPages/ManageAccount/ManageAccount";
 import ManageBox from "./pages/AdminPages/ManageBox/ManageBox";
 import ProductDetailPage from "./pages/UserPages/ProductDetailPage/ProductDetailPage";
+import ManageBoxImage from "./pages/AdminPages/ManageBoxImage/ManageBoxImage";
+import ManageBoxItem from "./pages/AdminPages/ManageBoxItem/ManageBoxItem";
+import ManageBoxOption from "./pages/AdminPages/ManageBoxOption/ManageBoxOption";
 import UserProfile from "./pages/UserPages/UserProfile/UserProfile";
+import ManageBrand from "./pages/AdminPages/ManageBrand/ManageBrand";
+import ProductPage from "./pages/UserPages/ProductPage/ProductPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -49,6 +54,10 @@ function App() {
           path: route.userProfile,
           element: <UserProfile />,
         },
+        {
+          path: route.product,
+          element: <ProductPage />,
+        },
       ],
     },
 
@@ -64,6 +73,22 @@ function App() {
           path: route.boxManagement,
           element: <ManageBox />,
         },
+        {
+          path: route.boxImageManagement,
+          element: <ManageBoxImage />,
+        },
+        {
+          path: route.boxItemManagement,
+          element: <ManageBoxItem />,
+        },
+        {
+          path: route.boxOptionManagement,
+          element: <ManageBoxOption />,
+        },
+        {
+          path: route.brandManagement,
+          element: <ManageBrand />,
+        },
       ],
     },
 
@@ -78,6 +103,18 @@ function App() {
         {
           path: route.boxManagement,
           element: <ManageBox />,
+        },
+        {
+          path: route.boxImageManagement,
+          element: <ManageBoxImage />,
+        },
+        {
+          path: route.boxItemManagement,
+          element: <ManageBoxItem />,
+        },
+        {
+          path: route.boxOptionManagement,
+          element: <ManageBoxOption />,
         },
       ],
     },
