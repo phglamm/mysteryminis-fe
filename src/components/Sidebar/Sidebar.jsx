@@ -163,7 +163,15 @@ export default function Sidebar() {
                     key={subItem.key}
                     onClick={(e) => handleSelectKey(e.keyPath[1])}
                   >
-                    <Link to={`/admin/${subItem.key}`}>{subItem.label}</Link>
+                    <Link
+                      to={
+                        user.roleId === 1
+                          ? `/admin/${subItem.key}`
+                          : `/staff/${subItem.key}`
+                      }
+                    >
+                      {subItem.label}
+                    </Link>
                   </Menu.Item>
                 ))}
               </Menu.SubMenu>

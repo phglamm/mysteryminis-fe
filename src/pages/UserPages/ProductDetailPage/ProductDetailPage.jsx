@@ -65,9 +65,9 @@ const ProductDetailPage = () => {
       name: option.boxOptionName,
       displayPrice: option.displayPrice,
     })),
-    images: box.boxImage.map((image) => ({
-      original: image.boxImageUrl,
-      thumbnail: image.boxImageUrl,
+    images: box?.boxImage?.map((image) => ({
+      original: image?.boxImageUrl,
+      thumbnail: image?.boxImageUrl,
     })),
   };
 
@@ -104,7 +104,7 @@ const ProductDetailPage = () => {
             alignItems: "center",
           }}
         >
-          <ReactImageGallery items={product.images} showNav={false} />
+          <ReactImageGallery items={product?.images} showNav={false} />
         </div>
 
         {/* Thông tin sản phẩm */}
@@ -153,8 +153,8 @@ const ProductDetailPage = () => {
                 >
                   <img
                     src={
-                      product.images[index]?.thumbnail ||
-                      product.images[0].thumbnail
+                      product?.images[index]?.thumbnail ||
+                      product?.images[0]?.thumbnail
                     } // ✅ Lấy ảnh tương ứng hoặc ảnh mặc định
                     alt={size.name}
                     style={{
