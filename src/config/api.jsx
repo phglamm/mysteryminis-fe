@@ -7,6 +7,9 @@ const INACTIVITY_TIMEOUT = 3 * 60 * 60 * 1000; // 3 hours in milliseconds
 
 let lastRequestTime = Date.now(); // Track the last request time
 const baseUrl = "https://localhost:7256/api/";
+// const baseUrl =
+//   "https://mysteryminis-b3are0btehhncpcx.australiacentral-01.azurewebsites.net/api/";
+
 const config = {
   baseUrl,
   timeout: 3000000,
