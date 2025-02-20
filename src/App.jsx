@@ -19,6 +19,8 @@ import ManageBoxOption from "./pages/AdminPages/ManageBoxOption/ManageBoxOption"
 import UserProfile from "./pages/UserPages/UserProfile/UserProfile";
 import ManageBrand from "./pages/AdminPages/ManageBrand/ManageBrand";
 import ProductPage from "./pages/UserPages/ProductPage/ProductPage";
+import BoxItemPage from "./pages/UserPages/BoxItemPage/BoxItemPage";
+import BoxItemDetailPage from "./pages/UserPages/BoxItemDetailPage/BoxItemDetailPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -47,16 +49,25 @@ function App() {
           element: <ResetPasswordPage />,
         },
         {
-          path: route.productDetail,
-          element: <ProductDetailPage />,
-        },
-        {
           path: route.userProfile,
           element: <UserProfile />,
         },
         {
           path: route.product,
           element: <ProductPage />,
+        },
+        {
+          path: `${route.productDetail}/:id`,
+          element: <ProductDetailPage />,
+        },
+        {
+          path: route.boxItemPage,
+          element: <BoxItemPage />,
+        },
+
+        {
+          path: `${route.boxItemDetail}/:boxItemId`,
+          element: <BoxItemDetailPage />,
         },
       ],
     },
