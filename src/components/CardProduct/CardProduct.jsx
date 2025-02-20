@@ -14,7 +14,9 @@ const CardProduct = ({ product }) => {
     return <div>Loading...</div>;
   }
 
-  const firstImageUrl = product.boxImage[0]?.boxImageUrl || "https://cdn-icons-png.flaticon.com/512/138/138574.png";
+  const firstImageUrl =
+    product.boxImage[0]?.boxImageUrl ||
+    "https://cdn-icons-png.flaticon.com/512/138/138574.png";
   const hoverImageUrl = product.boxImage[1]?.boxImageUrl;
   const brandName = product.brandName;
   const boxName = product.boxName;
@@ -129,9 +131,7 @@ const CardProduct = ({ product }) => {
           }}
         >
           <Button
-            onClick={() =>
-              navigate(`${route.product}/${route.detail}/${product.boxId}`)
-            }
+            onClick={() => navigate(`${route.productDetail}/${product.boxId}`)}
             type="default"
             style={{
               width: "140px",
@@ -145,7 +145,7 @@ const CardProduct = ({ product }) => {
             }}
             disabled={!inStock}
           >
-            {inStock ? "Xem chi tiết" : "Hết hàng"}
+            {inStock ? "Watch More" : "Out Of Stock"}
           </Button>
         </div>
       </Card>
