@@ -22,6 +22,7 @@ import ProductPage from "./pages/UserPages/ProductPage/ProductPage";
 import ManageOrder from "./pages/AdminPages/ManageOrder/ManageOrder";
 import BoxItemPage from "./pages/UserPages/BoxItemPage/BoxItemPage";
 import BoxItemDetailPage from "./pages/UserPages/BoxItemDetailPage/BoxItemDetailPage";
+import Cart from "./pages/UserPages/CartPage/Cart";
 
 function App() {
   const router = createBrowserRouter([
@@ -69,6 +70,10 @@ function App() {
         {
           path: `${route.boxItemDetail}/:boxItemId`,
           element: <BoxItemDetailPage />,
+        },
+        {
+          path: route.cart,
+          element: <Cart />,
         },
       ],
     },

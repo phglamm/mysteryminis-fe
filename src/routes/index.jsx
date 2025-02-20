@@ -27,4 +27,5 @@ export const route = {
   productDetail: "/product/detail",
   boxItemPage: "/box-item",
   boxItemDetail: "/box-item/detail",
+  cart: "cart",
 };
