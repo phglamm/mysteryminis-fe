@@ -1,22 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Checkbox, Pagination } from "antd";
+import { Checkbox, Pagination } from "antd";
 import CardProduct from "../../../components/CardProduct/CardProduct";
-import { motion } from "framer-motion";
 import api from "../../../config/api";
 
 const ProductPage = () => {
   const [brands, setBrands] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [checked, setChecked] = useState(false);
-
   const [boxes, setBoxes] = useState([]);
+
   useEffect(() => {
     const fetchBox = async () => {
-      const response = await api.get("Box");
-      console.log(response.data);
-      const sortResponse = response.data.sort((a, b) => b.boxId - a.boxId);
-      setBoxes(sortResponse);
+      try {
+        const response = await api.get("Box");
+        console.log("API Response: ", response.data);
+
+        if (Array.isArray(response.data)) {
+          const sortResponse = response.data.sort((a, b) => b.boxId - a.boxId);
+          setBoxes(sortResponse);
+        } else {
+          console.error("API response is not an array: ", response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
     };
+
     fetchBox();
   }, []);
 
@@ -24,100 +33,43 @@ const ProductPage = () => {
     return <div>Loading...</div>;
   }
 
-  const checkboxStyle = {
-    borderColor: checked ? "pink" : "#d9d9d9",
-    backgroundColor: checked ? "pink" : "transparent",
-  };
-
-  const brandsList = Array.from(
-    new Set(boxes.map((product) => product.brandName))
-  );
+  const brandsList = Array.from(new Set(boxes.map((product) => product.brandName)));
 
   const handleBrandChange = (checkedValues) => {
     setBrands(checkedValues);
   };
 
-  // Handle page change
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  // Slice the products to show only the products for the current page
   const startIndex = (currentPage - 1) * 9;
   const currentProducts = boxes.slice(startIndex, startIndex + 9);
 
   return (
-    <div className="mt-24">
-      <div
-        style={{
-          display: "flex",
-          maxWidth: "1200px",
-          margin: "96px auto",
-          padding: "32px",
-        }}
-      >
-        <div style={{ marginRight: "24px" }}>
+<div className="mt-24" style={{ maxWidth: "1200px", padding: "32px", marginLeft: " auto", marginRight:"auto"}}>
+      <div style={{ display: "flex", alignItems: "flex-start" }}>
+        <div style={{ minWidth: "250px", position: "sticky", top: "100px", marginRight: "20px" }}>
           <h3>Brand</h3>
           <Checkbox.Group
-            style={{
-              width: "100%",
-              display: "flex",
-              flexDirection: "column",
-              borderColor: checked ? "pink" : "#d9d9d9",
-              backgroundColor: checked ? "pink" : "transparent",
-            }}
-            options={brandsList.map((brand) => ({
-              label: brand,
-              value: brand,
-            }))}
+            style={{ display: "flex", flexDirection: "column" }}
+            options={brandsList.map((brand) => ({ label: brand, value: brand }))}
             onChange={handleBrandChange}
-          >
-            {brandsList.map((brand) => (
-              <Checkbox
-                checked={checked}
-                key={brand}
-                style={{
-                  borderColor: checked ? "pink" : "#d9d9d9",
-                  backgroundColor: checked ? "pink" : "transparent",
-                }}
-              >
-                {brand}
-              </Checkbox>
-            ))}
-          </Checkbox.Group>
+          />
         </div>
-        <div>
+        <div style={{ flex: 1, paddingLeft: "0px" }}>
           <h2 style={{ marginBottom: "10px" }}>BLIND BOX</h2>
-          <Row
-            gutter={[16, 16]}
-            justify={currentProducts.length === 1 ? "center" : "start"}
-          >
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "flex-start", gap: "10px" }}>
             {currentProducts
-              .filter(
-                (product) =>
-                  brands.length === 0 || brands.includes(product.brandName)
-              )
+              .filter((product) => brands.length === 0 || brands.includes(product.brandName))
               .map((product) => (
-                <Col
-                  xs={24}
-                  sm={8}
-                  md={8}
-                  lg={8}
-                  span={currentProducts.length === 1 ? 24 : 8}
-                  key={product.boxId}
-                >
-                  <CardProduct product={product} />
-                </Col>
+                <div key={product.boxId} style={{ display: "flex", justifyContent: "center", width: "260px", height: "350px"}}>
+                  <CardProduct product={product} cardStyle={{ width: "100%", height: "100%" }} />
+                </div>
               ))}
-          </Row>
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            <Pagination
-              current={currentPage}
-              pageSize={9}
-              total={boxes.length}
-              onChange={handlePageChange}
-              style={{ marginTop: "20px", textAlign: "center" }}
-            />
+          </div>
+          <div style={{ display: "flex", justifyContent: "center", marginTop: "20px" }}>
+            <Pagination current={currentPage} pageSize={9} total={boxes.length} onChange={handlePageChange} />
           </div>
         </div>
       </div>

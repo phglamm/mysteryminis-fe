@@ -14,7 +14,7 @@ const CardProduct = ({ product }) => {
     return <div>Loading...</div>;
   }
 
-  const firstImageUrl = product.boxImage[0]?.boxImageUrl;
+  const firstImageUrl = product.boxImage[0]?.boxImageUrl || "https://cdn-icons-png.flaticon.com/512/138/138574.png";
   const hoverImageUrl = product.boxImage[1]?.boxImageUrl;
   const brandName = product.brandName;
   const boxName = product.boxName;
@@ -43,12 +43,12 @@ const CardProduct = ({ product }) => {
       <Card
         hoverable
         style={{
-          borderRadius: "12px",
+          borderRadius: "10px",
           transition: "transform 0.3s ease-in-out",
           position: "relative",
           overflow: "hidden",
-          minHeight: "400px",
-          minWidth: "300px",
+          minHeight: "320px",
+          minWidth: "220px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -60,8 +60,12 @@ const CardProduct = ({ product }) => {
             style={{
               position: "relative",
               overflow: "hidden",
-              borderRadius: "8px",
-              height: "300px",
+              borderRadius: "6px",
+              height: "200px",
+              backgroundColor: "#f0f0f0",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
             }}
           >
             <img
@@ -84,15 +88,15 @@ const CardProduct = ({ product }) => {
             opacity: hovered ? 0 : 1,
             height: hovered ? "0px" : "auto",
             overflow: "hidden",
-            minHeight: "50px",
+            minHeight: "40px",
           }}
         >
-          <p style={{ fontSize: "14px", color: "#333" }}>{brandName}</p>
+          <p style={{ fontSize: "12px", color: "#333" }}>{brandName}</p>
 
           <Meta
-            title={boxName}
+            title={<span style={{ fontSize: "14px" }}>{boxName}</span>}
             description={
-              <strong style={{ color: "#e60000", fontSize: "16px" }}>
+              <strong style={{ color: "#e60000", fontSize: "14px" }}>
                 {formatPrice(displayPrice)}
               </strong>
             }
@@ -103,8 +107,8 @@ const CardProduct = ({ product }) => {
           <div
             style={{
               position: "absolute",
-              top: "10px",
-              right: "10px",
+              top: "8px",
+              right: "8px",
             }}
           >
             <Tag color="red">Sold Out</Tag>
@@ -114,7 +118,7 @@ const CardProduct = ({ product }) => {
         <div
           style={{
             position: "absolute",
-            bottom: "10px",
+            bottom: "8px",
             left: "50%",
             transform: "translateX(-50%)",
             transition: "opacity 0.3s ease-in-out",
@@ -130,11 +134,11 @@ const CardProduct = ({ product }) => {
             }
             type="default"
             style={{
-              width: "180px",
-              height: "45px",
-              fontSize: "16px",
+              width: "140px",
+              height: "38px",
+              fontSize: "14px",
               fontWeight: "bold",
-              borderRadius: "8px",
+              borderRadius: "6px",
               border: "1px solid black",
               backgroundColor: inStock ? "#fff" : "#f0f0f0",
               color: inStock ? "#333" : "#999",
