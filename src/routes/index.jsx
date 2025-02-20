@@ -23,6 +23,8 @@ export const route = {
   blogManagement: "blog-management",
   chatWithCustomer: "chat-box",
 
-  detail: "detail",
   product: "/product",
+  productDetail: "/product/detail",
+  boxItemPage: "/box-item",
+  boxItemDetail: "/box-item/detail",
 };
