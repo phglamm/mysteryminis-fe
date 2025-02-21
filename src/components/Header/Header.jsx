@@ -48,7 +48,7 @@ export default function Header() {
   // Define navigation links
   const navItems = [
     { label: "Online Blindbox", path: "/online-blindbox" },
-    { label: "Rating", path: "/rating" },
+    { label: "Hot Items", path: route.boxItemPage },
     { label: "Blogs", path: "/blogs" },
   ];
   const user = useSelector(selectUser);

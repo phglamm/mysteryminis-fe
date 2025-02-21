@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import api from "../../../config/api";
 import CardBoxItem from "../../../components/CardBoxItem/CardBoxItem";
 import { Pagination } from "antd";
+import TiltedCard from "../../../components/React_Bits/TiltedCard/TiltedCard";
 
 export default function BoxItemPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,16 +32,25 @@ export default function BoxItemPage() {
 
   return (
     <div className="mt-24">
-      {/* <div style={{ height: "100px", position: "relative" }}>
-        <FlowingMenu items={demoItems} />
-      </div> */}
-
       <div className="container mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, type: "spring", damping: 10 }}
         >
+          <TiltedCard
+            imageSrc="https://global-static.popmart.com/globalAdmin/1738891844056____pc-1____.jpg?x-oss-process=image/format,webp"
+            captionText="Welcome to Mystery Minis"
+            containerHeight="800px"
+            containerWidth="100%"
+            imageHeight="100%"
+            imageWidth="100%"
+            rotateAmplitude={2}
+            scaleOnHover={1}
+            showMobileWarning={true}
+            showTooltip={true}
+            displayOverlayContent={true}
+          />
           <div className="grid grid-cols-4 gap-4">
             {currentBoxItem.map((item) => (
               <div
