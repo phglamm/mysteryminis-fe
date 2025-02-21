@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Button, Collapse, Row, Col } from "antd";
 import ReactImageGallery from "react-image-gallery";
 import CardProduct from "../../../components/CardProduct/CardProduct"; // Import CardProduct
@@ -6,11 +6,15 @@ import "react-image-gallery/styles/css/image-gallery.css";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 import api from "../../../config/api";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addToCart, clearCart } from "../../../Redux/features/cartSlice";
 import "./ProductDetailPage.scss";
+import toast from "react-hot-toast";
 const { Panel } = Collapse;
 
 const ProductDetailPage = () => {
-  const [selectedSize, setSelectedSize] = useState(null);
+  const [chooseOption, setChooseOption] = useState(null);
+  const [selectedOptionName, setSelectedOptionName] = useState(null);
   const [selectedPrice, setSelectedPrice] = useState(null);
   const [isOutOfStock, setIsOutOfStock] = useState(true);
   const [isWishlisted, setIsWishlisted] = useState(false);
@@ -19,6 +23,8 @@ const ProductDetailPage = () => {
   const [relevantBox, setRelevantBox] = useState([]);
 
   const { id } = useParams();
+  const dispatch = useDispatch();
+
   useEffect(() => {
     const fetchBoxDetail = async () => {
       const response = await api.get(`Box/withDTO/${id}`);
@@ -32,8 +38,10 @@ const ProductDetailPage = () => {
         },
         response.data.boxOptions[0]
       );
-      setSelectedSize(defaultOption.boxOptionName);
+      setSelectedOptionName(defaultOption.boxOptionName);
       setSelectedPrice(defaultOption.displayPrice);
+      setChooseOption(defaultOption);
+      setIsOutOfStock(defaultOption.boxOptionStock === 0);
     };
     fetchBoxDetail();
   }, [id]);
@@ -42,7 +50,7 @@ const ProductDetailPage = () => {
     if (box) {
       const fetchRelevantBox = async () => {
         const response = await api.get(`Box`);
-        console.log(response.data);
+        // console.log(response.data);
         const filterResponse = response.data.filter(
           (relevantBox) =>
             relevantBox.brandName === box.brandName &&
@@ -58,19 +66,6 @@ const ProductDetailPage = () => {
     return <div>Loading...</div>;
   }
 
-  const product = {
-    name: box.boxName,
-    brand: box.brandName,
-    sizes: box.boxOptions.map((option) => ({
-      name: option.boxOptionName,
-      displayPrice: option.displayPrice,
-    })),
-    images: box?.boxImage?.map((image) => ({
-      original: image?.boxImageUrl,
-      thumbnail: image?.boxImageUrl,
-    })),
-  };
-
   const formatPrice = (price) => {
     return price.toLocaleString("vi-VN", {
       style: "currency",
@@ -78,92 +73,106 @@ const ProductDetailPage = () => {
     });
   };
 
-  const handleSizeChange = (size) => {
-    setSelectedSize(size.name);
-    setSelectedPrice(size.displayPrice);
+  const handleOptionChange = (option) => {
+    setSelectedOptionName(option.boxOptionName);
+    setSelectedPrice(option.displayPrice);
+    setIsOutOfStock(option.boxOptionStock === 0);
+    setChooseOption(option);
+    console.log("option choosing: ", option);
   };
 
+  const handleAddToCart = () => {
+    const selectedOption = box.boxOptions.find(
+      (option) => option.boxOptionId === chooseOption.boxOptionId
+    );
+
+    console.log("Selected: ", selectedOption);
+
+    if (selectedOption) {
+      const boxToAdd = { ...box, selectedOption };
+      console.log(boxToAdd);
+      toast.success("Added to cart");
+      dispatch(addToCart(boxToAdd));
+    }
+  };
+
+  const boxImages = box?.boxImage.map((image) => ({
+    original: image.boxImageUrl,
+    thumbnail: image.boxImageUrl,
+  }));
   return (
-    <div
-      style={{
-        maxWidth: "1200px",
-        margin: "96px auto",
-        padding: "32px",
-      }}
-      className="product-detail-page"
-    >
+    <div className="product-detail-page container mx-auto mt-34">
       {/* Chi tiết sản phẩm */}
-      <div
-        style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "40px" }}
-      >
+      <div className="grid grid-cols-2 gap-10">
         {/* Hình ảnh */}
         <div
           style={{
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
+            width: "100%",
           }}
         >
-          <ReactImageGallery items={product?.images} showNav={false} />
+          <ReactImageGallery items={boxImages} showNav={false} />
         </div>
 
         {/* Thông tin sản phẩm */}
         <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
           <h1 style={{ fontSize: "25px", fontWeight: "bold", color: "#333" }}>
-            {product.name}
+            {box.boxName}
           </h1>
           <p style={{ fontSize: "20px", color: "#e60000", fontWeight: "bold" }}>
             {formatPrice(selectedPrice)}
           </p>
 
           {/* Kích thước sản phẩm */}
-          <div>
+          <div className="wrap">
             <h3 style={{ fontSize: "16px", fontWeight: "500", color: "#555" }}>
-              SIZE
+              Options
             </h3>
-            <div style={{ display: "flex", gap: "12px", marginTop: "8px" }}>
-              {product.sizes.map((size, index) => (
+            <div
+              style={{
+                display: "flex",
+                gap: "12px",
+                marginTop: "8px",
+                width: "100%",
+              }}
+            >
+              {box.boxOptions.map((option, index) => (
                 <button
-                  key={size.name}
+                  key={option.boxOptionId}
                   style={{
                     padding: "10px 16px",
                     border:
-                      selectedSize === size.name
+                      selectedOptionName === option.boxOptionName
                         ? "2px solid black"
                         : "1px solid #ccc",
                     borderRadius: "8px",
                     fontSize: "14px",
                     cursor: "pointer",
-                    fontWeight: selectedSize === size.name ? "bold" : "normal",
+                    fontWeight:
+                      selectedOptionName === option.boxOptionName
+                        ? "bold"
+                        : "normal",
                     backgroundColor:
-                      selectedSize === size.name ? "#fff" : "#f0f0f0",
+                      selectedOptionName === option.boxOptionName
+                        ? "#fff"
+                        : "#f0f0f0",
                     color: "#333",
                     display: "flex",
                     alignItems: "center",
                     gap: "8px",
                     boxShadow:
-                      selectedSize === size.name
+                      selectedOptionName === option.boxOptionName
                         ? "0 0 5px rgba(0,0,0,0.3)"
                         : "none",
-                    minWidth: "180px",
+                    minWidth: "150px",
                     minHeight: "40px",
                     boxSizing: "border-box",
                   }}
-                  onClick={() => handleSizeChange(size)}
+                  onClick={() => handleOptionChange(option)}
                 >
-                  <img
-                    src={
-                      product?.images[index]?.thumbnail ||
-                      product?.images[0]?.thumbnail
-                    } // ✅ Lấy ảnh tương ứng hoặc ảnh mặc định
-                    alt={size.name}
-                    style={{
-                      width: "20px",
-                      height: "20px",
-                      borderRadius: "4px",
-                    }} // Bo góc nhẹ
-                  />
-                  {size.name}
+                  {option.boxOptionName}
                 </button>
               ))}
             </div>
@@ -181,6 +190,7 @@ const ProductDetailPage = () => {
               height: "50px",
             }}
             disabled={isOutOfStock}
+            onClick={handleAddToCart}
           >
             {isOutOfStock ? "NOTIFY ME WHEN AVAILABLE" : "ADD TO CART"}
           </Button>
@@ -223,10 +233,11 @@ const ProductDetailPage = () => {
           >
             <Panel style={{ fontSize: "20px" }} header="Details" key="1">
               <p style={{ color: "#555" }}>
-                <strong>Brand:</strong> {product.brand}
+                <strong>Brand:</strong> {box.brandName}
               </p>
               <p style={{ color: "#555" }}>
-                <strong>Size:</strong> {selectedSize || product.sizes[0].name}
+                <strong>Size:</strong>{" "}
+                {selectedOptionName || box.boxOptions[0].boxOptionName}
               </p>
             </Panel>
           </Collapse>

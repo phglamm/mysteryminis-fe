@@ -170,6 +170,7 @@ export default function Header() {
             initial={{ opacity: 0 }}
             animate={animate}
             className="border-1 rounded-3xl text-xl w-[6vw] flex justify-center items-center"
+            onClick={() => navigate(route.cart)}
           >
             <ShoppingCartOutlined />
           </motion.span>

@@ -11,6 +11,7 @@ import { useNavigate } from "react-router-dom";
 import { logout } from "../../../../Redux/features/counterSlice";
 import Cookies from "js-cookie";
 import { route } from "../../../../routes";
+import { clearCart } from "../../../../Redux/features/cartSlice";
 
 const Sidebar = ({ setActiveSection }) => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ const Sidebar = ({ setActiveSection }) => {
   const handleLogout = () => {
     dispatch(logout());
     Cookies.remove("accessToken");
+    dispatch(clearCart());
     navigate(route.login);
   };
 

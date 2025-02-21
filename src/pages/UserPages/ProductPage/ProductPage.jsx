@@ -45,19 +45,11 @@ const ProductPage = () => {
     setCurrentPage(page);
   };
 
-  const startIndex = (currentPage - 1) * 9;
+  const startIndex = (currentPage - 1) * 1;
   const currentProducts = boxes.slice(startIndex, startIndex + 9);
-
+  3;
   return (
-    <div
-      className="mt-24"
-      style={{
-        maxWidth: "1200px",
-        padding: "32px",
-        marginLeft: " auto",
-        marginRight: "auto",
-      }}
-    >
+    <div className="mt-34 container mx-auto">
       <div style={{ display: "flex", alignItems: "flex-start" }}>
         <div
           style={{
