@@ -1,0 +1,15 @@
+.product-detail-page {
+  .image-gallery {
+    width: 100%;
+  }
+  .image-gallery-image {
+    width: 100% !important;
+    height: 400px;
+    object-fit: fill !important;
+  }
+  .image-gallery-thumbnail-image {
+    width: 100% !important;
+    height: 80px;
+    object-fit: fill !important;
+  }
+}

@@ -23,6 +23,9 @@ export const route = {
   blogManagement: "blog-management",
   chatWithCustomer: "chat-box",
 
-  productDetail: "product/:id",
   product: "/product",
+  productDetail: "/product/detail",
+  boxItemPage: "/box-item",
+  boxItemDetail: "/box-item/detail",
+  cart: "cart",
 };
