@@ -19,6 +19,7 @@ import ManageBoxOption from "./pages/AdminPages/ManageBoxOption/ManageBoxOption"
 import UserProfile from "./pages/UserPages/UserProfile/UserProfile";
 import ManageBrand from "./pages/AdminPages/ManageBrand/ManageBrand";
 import ProductPage from "./pages/UserPages/ProductPage/ProductPage";
+import CheckOutPage from "./pages/UserPages/CheckOutPage/CheckOutPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -57,6 +58,10 @@ function App() {
         {
           path: route.product,
           element: <ProductPage />,
+        },
+        {
+          path: route.checkout,
+          element: <CheckOutPage/>,
         },
       ],
     },

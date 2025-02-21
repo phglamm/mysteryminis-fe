@@ -25,4 +25,5 @@ export const route = {
 
   productDetail: "product/:id",
   product: "/product",
+  checkout: "/checkout",
 };
