@@ -2,7 +2,6 @@ import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined } from '
 import { Steps } from 'antd';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-const ShippingStatus = 'Pending'; 
 const MyOrders = () => {
     const [selectedCategory, setSelectedCategory] = useState("All Orders");
     const [ViewDetails, setViewDetails] = useState(false);
