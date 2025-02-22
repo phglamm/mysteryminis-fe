@@ -10,6 +10,7 @@ import { useDispatch } from "react-redux";
 import { addToCart, clearCart } from "../../../Redux/features/cartSlice";
 import "./ProductDetailPage.scss";
 import toast from "react-hot-toast";
+import { addToFavorite } from "../../../Redux/features/favoriteSlice";
 const { Panel } = Collapse;
 
 const ProductDetailPage = () => {
@@ -212,7 +213,10 @@ const ProductDetailPage = () => {
               width: "40%",
               height: "50px",
             }}
-            onClick={() => setIsWishlisted(!isWishlisted)}
+            onClick={() => {
+              dispatch(addToFavorite(box));
+              setIsWishlisted(!isWishlisted);
+            }}
           >
             {isWishlisted ? (
               <HeartFilled style={{ color: "#e60000" }} />

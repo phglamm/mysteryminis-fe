@@ -4,6 +4,7 @@ import api from "../../../config/api";
 import CardBoxItem from "../../../components/CardBoxItem/CardBoxItem";
 import { Pagination } from "antd";
 import TiltedCard from "../../../components/React_Bits/TiltedCard/TiltedCard";
+import BlurText from "./../../../components/React_Bits/BlurText/BlurText";
 
 export default function BoxItemPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,7 +32,7 @@ export default function BoxItemPage() {
   );
 
   return (
-    <div className="mt-24">
+    <div className="mt-34">
       <div className="container mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 50 }}
@@ -41,7 +42,7 @@ export default function BoxItemPage() {
           <TiltedCard
             imageSrc="https://global-static.popmart.com/globalAdmin/1738891844056____pc-1____.jpg?x-oss-process=image/format,webp"
             captionText="Welcome to Mystery Minis"
-            containerHeight="800px"
+            containerHeight="500px"
             containerWidth="100%"
             imageHeight="100%"
             imageWidth="100%"
@@ -50,6 +51,13 @@ export default function BoxItemPage() {
             showMobileWarning={true}
             showTooltip={true}
             displayOverlayContent={true}
+          />
+          <BlurText
+            text="Hot Items"
+            delay={100}
+            animateBy="words"
+            direction="top"
+            className="text-5xl font-bold text-center mt-10"
           />
           <div className="grid grid-cols-4 gap-4">
             {currentBoxItem.map((item) => (

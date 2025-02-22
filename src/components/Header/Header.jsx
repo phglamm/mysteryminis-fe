@@ -160,7 +160,10 @@ export default function Header() {
               whileHover={{ scale: 1.1, color: "red" }}
               whileTap={{ scale: 0.9, color: "black" }}
             >
-              <HeartOutlined className="text-2xl" />
+              <HeartOutlined
+                className="text-2xl"
+                onClick={() => navigate(route.favorite)}
+              />
             </motion.span>
           </motion.span>
 

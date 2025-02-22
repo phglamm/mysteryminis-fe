@@ -5,6 +5,7 @@ export const route = {
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
   userProfile: "/userProfile",
+  favorite: "/favorite",
 
   admin: "/admin",
   dashboard: "dashboard",
