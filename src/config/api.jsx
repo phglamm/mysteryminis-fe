@@ -2,9 +2,9 @@ import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 
-// const baseUrl = "https://localhost:7256/api/";
-const baseUrl =
-  "https://mysteryminis-b3are0btehhncpcx.australiacentral-01.azurewebsites.net/api/";
+const baseUrl = "https://localhost:7256/api/";
+// const baseUrl =
+//   "https://mysteryminis-b3are0btehhncpcx.australiacentral-01.azurewebsites.net/api/";
 
 const config = {
   baseUrl,
