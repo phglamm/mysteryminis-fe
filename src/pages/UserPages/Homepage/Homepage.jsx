@@ -60,16 +60,17 @@ export default function Homepage() {
           <p>Stores Worldwide</p>
         </motion.div>
               
-        <div className="border-t-1 border-gray-400 w-[70%] mb-8 flex justify-center gap-4">
+        <div className="border-t-1 pt-4 border-gray-400 w-[70%] mb-8 flex justify-center lg:gap-4 gap-1">
           {categories.map((label, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0 ,scale: 1 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1, delay: 0.3 * index }}
+              className="w-[20%]"
             >
               <motion.button
-                className={`px-10 py-1 mt-2 font-bold rounded-full border-2 transition-all ${selectedCategory === label ? 'bg-red-500 text-white' : 'bg-white text-black'}`}
+                className={`lg:px-[30%] px-[10%] w-full py-1 mt-2 font-bold text-[1vw] rounded-full border-2 transition-all ${selectedCategory === label ? 'bg-red-500 text-white' : 'bg-white text-black'}`}
                 initial={{ opacity: 0 ,scale: 1 }}
                 animate={{ opacity: 1, scale: 1 }}
                 whileHover={{ scale: 1.1 }}
@@ -82,7 +83,7 @@ export default function Homepage() {
           ))}
         </div>
 
-        <div className="grid grid-cols-5 p-4 w-[70%] gap-5 h-[38vw] ">
+        <div className="grid overflow-hidden grid-cols-3 lg:grid-cols-5 p-4 w-[70%] gap-5 h-[85vw] md:h-[60vw] lg:h-[45vw]  ">
           {cardData.map((card, index) => (
             <FadeContent blur={true} duration={1200} easing="ease-in-out" initialOpacity={0}  key={index} >
               <motion.div
@@ -92,8 +93,13 @@ export default function Homepage() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                className="h-[20vw]"
               >
-                <Card hoverable cover={<img alt={card.name} src={card.imageSrc} className="h-[12vw] bg-amber-200" />}>
+                <Card 
+                  hoverable cover={<img alt={card.name} 
+                  src={card.imageSrc} className="lg:h-[12vw] h-[20vw] bg-amber-200" />}
+                  className="w-[100%]"
+                >
                   {card.name}
                 </Card>
               </motion.div>

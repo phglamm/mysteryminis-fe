@@ -2,7 +2,6 @@ import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined } from '
 import { Steps } from 'antd';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
-const ShippingStatus = 'Pending'; 
 const MyOrders = () => {
     const [selectedCategory, setSelectedCategory] = useState("All Orders");
     const [ViewDetails, setViewDetails] = useState(false);
@@ -11,16 +10,25 @@ const MyOrders = () => {
         "All Orders", "Pending", "Processing", "Shipping", "Arrived", "Cancelled", "Return Refund"
     ];
 
+  
    
     const orders = [
         { 
-            orderNumber: '001', 
-            orderDate: '2023-01-01', 
+            orderId: 4,
+            orderCreatedAt: "2024-02-19T10:33:15Z", 
+            paymentMethod: "VnPay",
             numberOfItems: 3, 
-            price: '$30',
+            totalPrice: 5962802,
             status: 'Pending',
+            orderStatusDetail: [
+                { status: 'Pending', updatedAt: '2024-02-19T10:33:15Z' },
+                { status: 'Processing', updatedAt: '2024-02-19T10:33:15Z' },
+
+                
+                
+            ],
             items: [
-                { name: 'Item 1', quantity: 1, price: '$10', image: 'image1.jpg' },
+                { name: 'Item 1', quantity: 1, price: '$10', image: 'image1.jpg', openRequest: true },
                 { name: 'Item 2', quantity: 1, price: '$10', image: 'image2.jpg' },
                 { name: 'Item 2', quantity: 1, price: '$10', image: 'image2.jpg' }
             ]
@@ -31,8 +39,30 @@ const MyOrders = () => {
         { orderNumber: '005', orderDate: '2023-05-01', numberOfItems: 1, price: '$10', items: [] }
     ];
 
+    const formatDate = (dateString) => {
+        const options = { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' };
+        return new Date(dateString).toLocaleDateString('en-GB', options).replace(',', '');
+    };
+
+    const getCurrentStepIndex = (order) => {
+        const statusOrder = ['Pending', 'Processing', 'Shipping', 'Arrived'];
+    
+        if (!order.orderStatusDetail || order.orderStatusDetail.length === 0) {
+            return 0; // Default to the first step if no status history exists
+        }
+    
+        // Get the latest status from orderStatusDetail
+        const latestStatus = order.orderStatusDetail[order.orderStatusDetail.length - 1]?.status;
+        const latestIndex = statusOrder.indexOf(latestStatus);
+    
+        // If the latest status is 'Arrived', return the last step index
+        return latestStatus === 'Arrived' ? latestIndex : latestIndex + 1;
+    };
+    
+
     return (
-        <div className='flex flex-row pt-5 h-[27vw]'>
+        <div className='flex flex-row pt-5 h-screen pb-52'>
+            {/* {Categories} */}
             <motion.div
                 initial={{ width: '25%' }}
                 animate={{ width: ViewDetails ? '0%' : '25%' }}
@@ -60,6 +90,7 @@ const MyOrders = () => {
                 ))}
             </motion.div>
 
+            {/* {Order Items} */}
             <motion.div 
                 className={`overflow-y-scroll flex flex-col  `}
                 initial={{ width: '75%' }}
@@ -74,16 +105,16 @@ const MyOrders = () => {
                         transition={{ duration: 1, type: "spring", damping: 10, delay: index * 0.2 }}
                         className="w-full h-fit flex flex-col border-1 border-gray-300 mb-4"
                     >  
-                        <div className='flex justify-center items-center p-4 bg-gray-100'>
-                            <div className='flex w-full gap-4 justify-start'>
-                                <div>Order Number: {order.orderNumber}</div>
-                                <div>Order Date: {order.orderDate}</div>
+                        <div className='grid grid-cols-5  items-center p-4 bg-gray-100'>
+                            <div className='flex col-span-4 w-full gap-4 justify-start'>
+                                <div>Order Number: {order.orderId}</div>
+                                <div>Order Date: {formatDate(order.orderCreatedAt)}</div>
                             </div>
 
                             <div className='flex w-full justify-end'>
                                 { ViewDetails ? (
                                     <motion.button
-                                        className='border-1 px-3 py-1 w-[30%] rounded-md font-bold'
+                                        className='border-1 px-3 py-1 w-[70%] rounded-md text-center font-bold'
                                         initial={{ backgroundColor: '#f3f4f6', color: 'black', opacity: 0 }}
                                         animate={{ opacity: 1 }}
                                         transition={{ duration: 0.5, delay: 1.3 }}
@@ -101,39 +132,61 @@ const MyOrders = () => {
                                 
                             </div>
                         </div>
-                            
-                        <div className='p-4 h-fit'>
+                        
+
+                        <div className='p-4 h-fit pb-24'>
+                        
                                 <motion.div
                                     initial={{ opacity: 0, y: -50, height: 0 }} 
                                     animate={ViewDetails ? { opacity: 1, y: 0, height: "20%" } : { opacity: 0}}    
                                     transition={{ duration: 1, type: "spring", damping: 10 }}
-                                    className={`p-4 px-12 ${ViewDetails ? "" : "hidden"}`}
+                                    className={`items-center flex flex-col px-10 ${ViewDetails ? "" : "hidden"}`}
                                 >
-                                    <Steps
-                                        items={[
-                                        {
-                                            title: 'Pending',
-                                            status: 'finish',
-                                            icon: <UserOutlined />,                                                  
-                                        },
-                                        {
-                                            title: 'Processing',
-                                            status: 'finish',
-                                            icon: <SolutionOutlined />,
-                                        },
-                                        {
-                                            title: 'Shipping',
-                                            status: 'process',
-                                            icon: <LoadingOutlined />,
-                                        },
-                                        {
-                                            title: 'Arrived',
-                                            status: 'wait',
-                                            icon: <SmileOutlined />,
-                                        },
-                                        ]}
-                                    />
+
+                                <Steps
+                                    current={getCurrentStepIndex(order)} 
+                                    items={['Pending', 'Processing', 'Shipping', 'Arrived'].map((status, index) => {
+                                        const currentStep = getCurrentStepIndex(order);
+                                        const isCurrent = index === currentStep;
+                                        const isCompleted = index < currentStep || status === 'Arrived' && currentStep === index; // Mark 'Arrived' as finished
+
+                                        return {
+                                            title: status,
+                                            status: isCompleted ? 'finish' : isCurrent ? 'process' : 'wait',
+                                            icon: isCurrent && !isCompleted
+                                                ? <LoadingOutlined /> // Show loading icon for current step
+                                                : status === 'Pending' ? <UserOutlined /> 
+                                                : status === 'Processing' ? <SolutionOutlined /> 
+                                                : status === 'Shipping' ? <SolutionOutlined /> 
+                                                : status === 'Arrived' ? <SolutionOutlined /> 
+                                                : <SmileOutlined />, // Default icon for "Arrived"
+                                        };
+                                    })}
+                                />
+
+
+                                    <div className='flex w-full flex-row gap-32'>
+                                        {order.items.length > 0 ? (order.orderStatusDetail.map((status, index) => (
+                                            <div key={index} className=' w-[15%] text-gray-500 text-[80%] h-fit'> Updated At: {formatDate(status.updatedAt)}</div>
+                                        ))
+                                        ) : (
+                                            <div></div>
+                                        ) 
+                                        }
+                                    </div>
                                 </motion.div>
+
+                                <div className=' p-4 flex flex-col lg:flex-row h-48 border-y-1 border-dashed'>
+                                    <span className=' flex flex-col w-[100%] lg:w-[30%]'>
+                                        <span className='text-[2vw]'>Delivery Address</span>
+                                        <span className='text-[1vw]'>Customer Name:</span>
+                                        <span className='tetx-[0.5vw] text-gray-400'>Phone: </span>
+                                        <span className='tetx-[0.5vw] text-gray-400'>Address: </span>
+                                    </span>
+                                    <span className='w-[100%] lg:w-[70%]'>
+                                        .
+                                    </span>
+                                </div>
                             {order.items.length > 0 ? (
                                 (ViewDetails ? order.items : order.items.slice(0, 1)).map((item, itemIndex) => (
                                     <motion.div 
@@ -141,7 +194,7 @@ const MyOrders = () => {
                                         initial={{ opacity: 0, y: 50 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 1, type: "spring", damping: 10, delay: itemIndex * 0.2 }}
-                                        className='flex border-b-1 pb-2 pt-2 border-gray-200 h-28'
+                                        className='flex border-b-1 pb-2 pt-8 border-gray-200 h-28'
                                     >
                                         <div className='flex gap-1 w-3/4'>
                                             <div className='w-1/4 bg-pink-200'>
@@ -150,6 +203,7 @@ const MyOrders = () => {
                                             <div className='w-3/4 flex flex-col'>
                                                 <span className='font-bold text-xl'>{item.name}</span>
                                                 <span className='text-sm text-gray-300'>x{item.quantity}</span>
+                                                <span className='text-sm text-red-500'>{item.openRequest ? 'Open Requested' : '' }</span>
                                             </div>
                                         </div>
                                         <div className='flex justify-center items-center w-1/4'>
