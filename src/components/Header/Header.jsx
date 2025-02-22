@@ -63,7 +63,7 @@ export default function Header() {
           transition={{ duration: 1 }}
           style={{ userSelect: "none" }}
         >
-          <img src={Logo} alt="Logo" className="w-24 h-fit" />
+          <img src={Logo} alt="Logo" className="w-[15%] h-fit" />
 
           <motion.span
             initial={initial}
