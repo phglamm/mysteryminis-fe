@@ -10,8 +10,8 @@ import TiltedCard from "../../../../components/React_Bits/TiltedCard/TiltedCard"
 export default function ImageContent() {
   return (
     <FadeContent blur={false} duration={1000} easing="ease-out" initialOpacity={0}>
-      <div className="grid lg:grid-cols-3 grid-cols-1 p-14 lg:pr-36 lg:pl-36 pr-10 pl-10 gap-4">
-        <div className="lg:col-span-2 lg:block hidden rounded-3xl h-full">
+      <div className="grid grid-cols-3 p-14 pr-36 pl-36 gap-4">
+        <div className="col-span-2 rounded-3xl h-96">
           <TiltedCard imageSrc={Labubu} altText="LABUBU - POPMART" captionText="LABUBU - POPMART" containerHeight="100%" containerWidth="100%" imageHeight="100%" imageWidth="100%" rotateAmplitude={7} scaleOnHover={1.1} showMobileWarning={false} showTooltip={true} displayOverlayContent={false} overlayContent={<p className="tilted-card-demo-text">LABUBU - POPMART</p>} />
         </div>
         <div className="h-96">

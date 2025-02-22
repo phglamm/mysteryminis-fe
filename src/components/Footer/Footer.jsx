@@ -69,7 +69,7 @@ export default function Footer() {
   ];
 
   return(
-    <div className="bg-black w-screen bottom-0 text-white">
+    <div className="bg-black bottom-0 text-white">
       <div className="grid grid-cols-7 text-center p-6">
         {footerSections.map((section, index) => (
           <div 
