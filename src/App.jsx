@@ -25,6 +25,7 @@ import BoxItemDetailPage from "./pages/UserPages/BoxItemDetailPage/BoxItemDetail
 import Cart from "./pages/UserPages/CartPage/Cart";
 import CheckOutPage from "./pages/UserPages/CheckOutPage/CheckOutPage";
 import FavoritePage from "./pages/UserPages/FavoritePage/FavoritePage";
+import OrderSuccessPage from "./pages/UserPages/OrderSuccess/OrderSuccessPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -84,6 +85,10 @@ function App() {
         {
           path: route.favorite,
           element: <FavoritePage />,
+        },
+        {
+          path: route.orderSuccess,
+          element: <OrderSuccessPage/>
         },
       ],
     },
