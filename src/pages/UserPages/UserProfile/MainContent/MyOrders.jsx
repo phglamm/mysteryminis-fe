@@ -1,94 +1,48 @@
-import { LoadingOutlined, SmileOutlined, SolutionOutlined, UserOutlined } from '@ant-design/icons';
-import { Steps } from 'antd';
+
 import { motion } from 'framer-motion';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import api from '../../../../config/api';
+// import { useSelector } from 'react-redux';
+// import { selectUser } from '../../../../Redux/features/counterSlice';
+import OrderCategories from '../../../../components/OrderCategories/OrderCategories';
+import OrderSteps from '../../../../components/OrderStepper/OrderStepper';
 const MyOrders = () => {
     const [selectedCategory, setSelectedCategory] = useState("All Orders");
     const [ViewDetails, setViewDetails] = useState(false);
-    console.log(ViewDetails);
-    const categories = [
-        "All Orders", "Pending", "Processing", "Shipping", "Arrived", "Cancelled", "Return Refund"
-    ];
+    const [selectedOrder, setSelectedOrder] = useState(null);
+    const [orders, setOrders] = useState([]);
+    // const user = useSelector(selectUser);
 
   
-   
-    const orders = [
-        { 
-            orderId: 4,
-            orderCreatedAt: "2024-02-19T10:33:15Z", 
-            paymentMethod: "VnPay",
-            numberOfItems: 3, 
-            totalPrice: 5962802,
-            status: 'Pending',
-            orderStatusDetail: [
-                { status: 'Pending', updatedAt: '2024-02-19T10:33:15Z' },
-                { status: 'Processing', updatedAt: '2024-02-19T10:33:15Z' },
+   const fetchOrders = async () => {
+        try {
+            const response = await api.get('Order?userId=92');
+            setOrders(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-                
-                
-            ],
-            items: [
-                { name: 'Item 1', quantity: 1, price: '$10', image: 'image1.jpg', openRequest: true },
-                { name: 'Item 2', quantity: 1, price: '$10', image: 'image2.jpg' },
-                { name: 'Item 2', quantity: 1, price: '$10', image: 'image2.jpg' }
-            ]
-        },
-        { orderNumber: '002', orderDate: '2023-02-01', numberOfItems: 5, price: '$50', items: [] },
-        { orderNumber: '003', orderDate: '2023-03-01', numberOfItems: 2, price: '$20', items: [] },
-        { orderNumber: '004', orderDate: '2023-04-01', numberOfItems: 4, price: '$40', items: [] },
-        { orderNumber: '005', orderDate: '2023-05-01', numberOfItems: 1, price: '$10', items: [] }
-    ];
+    useEffect(() => {
+        fetchOrders();
+    }, []);
+
 
     const formatDate = (dateString) => {
         const options = { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit', year: 'numeric' };
         return new Date(dateString).toLocaleDateString('en-GB', options).replace(',', '');
     };
 
-    const getCurrentStepIndex = (order) => {
-        const statusOrder = ['Pending', 'Processing', 'Shipping', 'Arrived'];
     
-        if (!order.orderStatusDetail || order.orderStatusDetail.length === 0) {
-            return 0; // Default to the first step if no status history exists
-        }
-    
-        // Get the latest status from orderStatusDetail
-        const latestStatus = order.orderStatusDetail[order.orderStatusDetail.length - 1]?.status;
-        const latestIndex = statusOrder.indexOf(latestStatus);
-    
-        // If the latest status is 'Arrived', return the last step index
-        return latestStatus === 'Arrived' ? latestIndex : latestIndex + 1;
-    };
-    
+
 
     return (
         <div className='flex flex-row pt-5 h-screen pb-52'>
-            {/* {Categories} */}
-            <motion.div
-                initial={{ width: '25%' }}
-                animate={{ width: ViewDetails ? '0%' : '25%' }}
-                transition={ViewDetails ? { duration: 1, delay: 0.8 } : {}}
-            >
-                {categories.map((label, index) => (
-                    <motion.div
-                        key={index}
-                        initial={{ opacity: 0, scale: 1 }}
-                        animate={ ViewDetails ? { opacity: 0, scale: 0 } : { opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5, delay: 0.1 * index }  }
-                        className='text-center'
-                    >
-                        <motion.button
-                            className={`w-[70%] px-5 py-1 mt-2 font-bold rounded-full border-2 transition-all ${selectedCategory === label ? "bg-red-500 text-white" : "bg-white text-black"}`}
-                            initial={{ opacity: 0, scale: 1 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            whileHover={{ scale: 1.1 }}
-                            whileTap={{ scale: 0.9 }}
-                            onClick={() => setSelectedCategory(label)}
-                        >
-                            {label}
-                        </motion.button>
-                    </motion.div>
-                ))}
-            </motion.div>
+            <OrderCategories 
+                selectedCategory={selectedCategory} 
+                setSelectedCategory={setSelectedCategory} 
+                ViewDetails={ViewDetails} 
+            />
 
             {/* {Order Items} */}
             <motion.div 
@@ -97,7 +51,7 @@ const MyOrders = () => {
                 animate={{ width: ViewDetails ? '100%' : '75%' }}
                 transition={ViewDetails ? {duration: 0.3, delay: 0.8 } : { }}
             >
-                {(ViewDetails ? orders.slice(0,1) : orders).map((order, index) => (
+                {(ViewDetails && selectedOrder ? [selectedOrder] : orders).map((order, index) => (
                     <motion.div
                         key={index}
                         initial={{ opacity: 0, y: 50 }}
@@ -120,16 +74,17 @@ const MyOrders = () => {
                                         transition={{ duration: 0.5, delay: 1.3 }}
                                         whileHover={{scale: 1.1 ,backgroundColor: '#ef4444', color: 'white' }}
                                         whileTap={{ scale: 0.9 }}
-                                        onClick={() => setViewDetails(!ViewDetails)}
+                                        onClick={() => {
+                                            setSelectedOrder(null); // Reset selected order
+                                            setViewDetails(false);
+                                        }}
                                     >
                                         Back
                                     </motion.button>
                                 ) : (
-                                    <div>{order.status}</div>
+                                    <div>{order.orderStatusDetailsSimple?.slice(-1)[0]?.statusName || 'Pending'}</div>
                                 )
-
-                                }
-                                
+                            }
                             </div>
                         </div>
                         
@@ -143,30 +98,11 @@ const MyOrders = () => {
                                     className={`items-center flex flex-col px-10 ${ViewDetails ? "" : "hidden"}`}
                                 >
 
-                                <Steps
-                                    current={getCurrentStepIndex(order)} 
-                                    items={['Pending', 'Processing', 'Shipping', 'Arrived'].map((status, index) => {
-                                        const currentStep = getCurrentStepIndex(order);
-                                        const isCurrent = index === currentStep;
-                                        const isCompleted = index < currentStep || status === 'Arrived' && currentStep === index; // Mark 'Arrived' as finished
-
-                                        return {
-                                            title: status,
-                                            status: isCompleted ? 'finish' : isCurrent ? 'process' : 'wait',
-                                            icon: isCurrent && !isCompleted
-                                                ? <LoadingOutlined /> // Show loading icon for current step
-                                                : status === 'Pending' ? <UserOutlined /> 
-                                                : status === 'Processing' ? <SolutionOutlined /> 
-                                                : status === 'Shipping' ? <SolutionOutlined /> 
-                                                : status === 'Arrived' ? <SolutionOutlined /> 
-                                                : <SmileOutlined />, // Default icon for "Arrived"
-                                        };
-                                    })}
-                                />
+                                <OrderSteps order={order} />
 
 
                                     <div className='flex w-full flex-row gap-32'>
-                                        {order.items.length > 0 ? (order.orderStatusDetail.map((status, index) => (
+                                        {order.orderItems.length > 0 ? (order.orderStatusDetailsSimple.map((status, index) => (
                                             <div key={index} className=' w-[15%] text-gray-500 text-[80%] h-fit'> Updated At: {formatDate(status.updatedAt)}</div>
                                         ))
                                         ) : (
@@ -187,8 +123,8 @@ const MyOrders = () => {
                                         .
                                     </span>
                                 </div>
-                            {order.items.length > 0 ? (
-                                (ViewDetails ? order.items : order.items.slice(0, 1)).map((item, itemIndex) => (
+                            {order.orderItems.length > 0 > 0 ? (
+                                (ViewDetails ? order.orderItems : order.orderItems.slice(0, 1)).map((item, itemIndex) => (
                                     <motion.div 
                                         key={itemIndex} 
                                         initial={{ opacity: 0, y: 50 }}
@@ -208,14 +144,17 @@ const MyOrders = () => {
                                         </div>
                                         <div className='flex justify-center items-center w-1/4'>
                                             {ViewDetails ? (
-                                                <div>{item.price}</div>
+                                                <div>{item.orderPrice}</div>
                                             ) : (
                                                 <motion.button
                                                 className='border-1 px-3 py-1 w-[80%] rounded-md font-bold'
                                                 initial={{ backgroundColor: '#f3f4f6', color: 'black' }}
                                                 whileHover={{scale: 1.1 ,backgroundColor: '#ef4444', color: 'white' }}
                                                 whileTap={{ scale: 0.9 }}
-                                                onClick={() => setViewDetails(!ViewDetails)}
+                                                onClick={() => {
+                                                    setSelectedOrder(order); // Set the specific order to display
+                                                    setViewDetails(true);
+                                                }}
                                                 >
                                                     See Details
                                                 </motion.button>
@@ -230,7 +169,7 @@ const MyOrders = () => {
 
                         <div className=' gap-4 px-8 p-2 bg-white h-fit border-dashed border-t-1'>
                             <div className='flex text-2xl w-full gap-4 py-4 justify-end'>
-                                <div>Order Total: {order.price}</div>
+                                <div>Order Total: {order.totalPrice}</div>
                             </div>
 
                             <div className='flex justify-end gap-4'>
