@@ -13,7 +13,8 @@ import ResetPasswordPage from "./pages/UserPages/ResetPasswordPage/ResetPassword
 import ManageAccount from "./pages/AdminPages/ManageAccount/ManageAccount";
 import ManageBox from "./pages/AdminPages/ManageBox/ManageBox";
 import ProductDetailPage from "./pages/UserPages/ProductDetailPage/ProductDetailPage";
-
+import PaymentReturnPage from "./pages/UserPages/OrderReturnPage/PaymentReturnPage";
+import ThankYouPage from "./pages/UserPages/OrderReturnPage/ThankYouPage";
 function App() {
   const router = createBrowserRouter([
     {
@@ -43,6 +44,14 @@ function App() {
         {
           path: route.productDetail,
           element: <ProductDetailPage />,
+        },
+        {
+          path: route.paymentReturn,
+          element: <PaymentReturnPage />,
+        },
+        {
+          path: route.thankYou, // Add this route
+          element: <ThankYouPage />,
         },
       ],
     },

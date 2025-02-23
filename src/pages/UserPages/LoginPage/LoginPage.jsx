@@ -151,8 +151,20 @@ import axios from 'axios';
 export default function LoginPage() {
   const [form] = useForm();
 
-  const handleLogin = (value) => {
-    console.log(value);
+  const handleLogin = async (value) => {
+    try {
+      const response = await axios.post('https://localhost:7256/api/Account/login', value);
+      const { token, user } = response.data;
+      // Store the token in localStorage
+      localStorage.setItem('jwtToken', token);
+      // Optionally, store user information in localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+      console.log('Login successful:', response.data);
+      // Redirect to the homepage or another page
+      window.location.href = route.home;
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
   };
 
   const handleLoginSuccess = async (response) => {

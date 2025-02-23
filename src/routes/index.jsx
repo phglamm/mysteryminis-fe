@@ -23,4 +23,6 @@ export const route = {
   chatWithCustomer: "chat-box",
 
   productDetail: "product/:id",
+  paymentReturn: "/payment-return",
+  thankYou: "/thank-you",
 };
