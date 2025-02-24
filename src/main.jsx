@@ -8,12 +8,12 @@ import { persistor, store } from "./Redux/store.js";
 import { Toaster } from "react-hot-toast";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <App />
-        <Toaster position="top-right" />
-      </PersistGate>
-    </Provider>
-  </StrictMode>
+  // <StrictMode>
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+      <Toaster position="top-right" />
+    </PersistGate>
+  </Provider>
+  //  </StrictMode>
 );

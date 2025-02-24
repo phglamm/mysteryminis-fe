@@ -27,6 +27,7 @@ import CheckOutPage from "./pages/UserPages/CheckOutPage/CheckOutPage";
 import FavoritePage from "./pages/UserPages/FavoritePage/FavoritePage";
 import BlogPage from "./pages/UserPages/BlogPage/BlogPage";
 import OrderSuccessPage from "./pages/UserPages/OrderSuccess/OrderSuccessPage";
+import PaymentReturnPage from "./pages/UserPages/PaymentReturn/PaymentReturn";
 
 function App() {
   const router = createBrowserRouter([
@@ -94,6 +95,10 @@ function App() {
         {
           path: route.orderSuccess,
           element: <OrderSuccessPage />,
+        },
+        {
+          path: route.paymentReturn,
+          element: <PaymentReturnPage />,
         },
       ],
     },

@@ -12,42 +12,15 @@ import {
   removeFromCart,
   selectCartItems,
 } from "../../../Redux/features/cartSlice";
+import { useNavigate } from "react-router-dom";
+import { route } from "../../../routes";
 
 const { Title, Text } = Typography;
 
 const Cart = () => {
+  const navigate = useNavigate();
   const cartItems = useSelector(selectCartItems);
   const dispatch = useDispatch();
-  // const [cartItems, setCartItems] = useState([
-  //   {
-  //     id: 1,
-  //     name: "SKULLPANDA Tell Me What You Want Series Figure - Blindbox",
-  //     price: 300000,
-  //     quantity: 1,
-  //     imageUrl:
-  //       "https://prod-eurasian-res.popmart.com/default/20241105_155024_141394____8_____1200x1200.jpg?x-oss-process=image/format,webp",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "SKULLPANDA Tell Me What You Want Series Figure - Blindbox",
-  //     price: 300000,
-  //     quantity: 1,
-  //     imageUrl:
-  //       "https://prod-eurasian-res.popmart.com/default/20241105_155024_141394____8_____1200x1200.jpg?x-oss-process=image/format,webp",
-  //   },
-  // ]);
-
-  // const handleQuantityChange = (id, value) => {
-  //   const newItems = cartItems.map((item) =>
-  //     item.id === id ? { ...item, quantity: Math.max(1, value) } : item
-  //   );
-  //   setCartItems(newItems);
-  // };
-
-  // const handleRemoveItem = (id) => {
-  //   const newItems = cartItems.filter((item) => item.id !== id);
-  //   setCartItems(newItems);
-  // };
 
   const totalAmount = cartItems.reduce(
     (acc, item) => acc + item.selectedOption.displayPrice * item.quantity,
@@ -200,6 +173,7 @@ const Cart = () => {
                 color: "#313857",
                 transition: "background 0.3s ease",
               }}
+              onClick={() => navigate(route.checkout)}
               onMouseEnter={(e) =>
                 (e.currentTarget.style.backgroundColor = "#FFF1F2")
               }

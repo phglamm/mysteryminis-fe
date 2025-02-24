@@ -32,4 +32,5 @@ export const route = {
   checkout: "/checkout",
   blog: "/blog",
   orderSuccess: "/order-success",
+  paymentReturn: "/payment-return",
 };
