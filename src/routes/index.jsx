@@ -31,4 +31,5 @@ export const route = {
   cart: "cart",
   checkout: "/checkout",
   blog: "/blog",
+  orderSuccess: "/order-success",
 };
