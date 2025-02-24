@@ -30,4 +30,5 @@ export const route = {
   boxItemDetail: "/box-item/detail",
   cart: "cart",
   checkout: "/checkout",
+  blog: "/blog",
 };
