@@ -9,7 +9,13 @@ import toast from 'react-hot-toast';
 import { selectUser } from '../../Redux/features/counterSlice';
 import { useSelector } from 'react-redux';
 import { LoadingOutlined } from '@ant-design/icons';
+import { Image } from 'antd';
 
+const checkCards = [
+    "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg",
+    "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg",
+    "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+];
     
 
 const OrderItems = ({selectedCategory, setViewDetails}) => {
@@ -18,7 +24,9 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
     const [orders, setOrders] = useState([]);
     const user = useSelector(selectUser);
     const [loadingCancel, setLoadingCancel] = useState(false);
-  
+    const [visible, setVisible] = useState(false);
+    const [checkCard, setCheckCard] = useState(null);
+  console.log(checkCard)
    const fetchOrders = async () => {
         try {
             const response = await api.get(`Order?userId=${user.userId}`);
@@ -65,6 +73,7 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
     });
 
   return (
+    
     
     <motion.div 
                 className={`overflow-y-scroll flex flex-col  `}
@@ -180,10 +189,35 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
                                             </div>
                                         </div>
 
-                                        <div className='flex justify-center items-center w-1/4'>
+                                        <div className='flex flex-col justify-center items-center w-1/4'>
                                             <span className='text-sm text-red-500'>{item.openRequest ? 'Open Requested' : '' }</span>
-                                        </div>
+                                            {item.orderStatusCheckCardImage && item.orderStatusCheckCardImage.length > 0 && (
+                                                <div className='flex flex-col justify-center items-center w-1/4'>
+                                                    <span 
+                                                        className='text-sm hover:underline cursor-pointer'
+                                                        onClick={() => {
+                                                            setCheckCard(item.orderStatusCheckCardImage); 
+                                                            setVisible(true);
+                                                        }}
+                                                    >View Card</span>
 
+                                                    {/* Image Preview Group */}
+                                                    {visible && checkCard?.length > 0 && (
+                                                        <Image.PreviewGroup 
+                                                            preview={{
+                                                                visible,
+                                                                onVisibleChange: (vis) => setVisible(vis),
+                                                            }}
+                                                        >
+                                                            {checkCards.map((img, imgIndex) => (
+                                                                <Image key={imgIndex} width={0} src={img} />
+                                                            ))}
+                                                        </Image.PreviewGroup>
+                                                    )}
+                                                </div>
+                                            )}
+
+                                        </div>
                                         <div className='flex justify-center items-center w-1/4'>
                                             {ViewDetails ? (
                                                 <div>{item.orderPrice}</div>
@@ -202,13 +236,13 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
                                                 </motion.button>
                                             )}
                                         </div>
+                                        
                                     </motion.div>
                                 ))
                             ) : (
                                 <div className='text-center text-gray-400'>No items in this order</div>
                             )}
                         </div>
-
                         <div className=' gap-4 px-8 p-2 bg-white h-fit border-dashed border-t-1'>
                             <div className='flex flex-col text-end text-2xl w-full gap-4 py-4'>
                                 <div>Order Total: {order.totalPrice}</div>
@@ -258,6 +292,8 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
                     </motion.div>
                 ))}  
                 </AnimatePresence>
+
+                
             </motion.div>
             
   )
