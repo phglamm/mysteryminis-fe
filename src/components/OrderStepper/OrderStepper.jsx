@@ -17,6 +17,8 @@ const OrderSteps = ({ order }) => {
     
     return (
         <Steps
+            responsive
+            
             current={getCurrentStepIndex(order)}
             items={ (order.orderStatusDetailsSimple?.slice(-1)[0]?.statusName === 'Cancelled' ? ['Pending', 'Processing', 'Shipping', 'Arrived', 'Cancelled'] : ['Pending', 'Processing', 'Shipping', 'Arrived'] ) .map((status, index) => {
                 const currentStep = getCurrentStepIndex(order);

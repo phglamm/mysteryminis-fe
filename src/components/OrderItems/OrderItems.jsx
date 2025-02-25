@@ -76,7 +76,7 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
     
     
     <motion.div 
-                className={`overflow-y-scroll flex flex-col  `}
+                className={`overflow-y-scroll flex flex-col mb-[5%]  `}
                 initial={{ width: '75%' }}
                 animate={{ width: ViewDetails ? '100%' : '75%' }}
                 transition={ViewDetails ? { delay: 0.8, duration: 1 } : { delay: 0.8 ,duration: 1 }}
@@ -121,18 +121,17 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
                         </div>
                         
 
-                        <div className='p-4 h-fit'>
                    
                     <motion.div
                                 initial={{ opacity: 0, y: -50, height: 0 }} 
                                 animate={ViewDetails ? { opacity: 1, y: 0, height: "20%" } : { opacity: 0 }}    
                                 exit={{ opacity: 0, y: -50, height: 0 }} 
                                 transition={{ duration: 1, type: "spring", damping: 10 }}
-                                className={`items-center flex flex-col px-10 `}
+                                className={`items-center flex flex-col px-10 py-5 `}
                             >
                                 <OrderSteps order={order} />
 
-                                <div className='flex w-full pb-[5%] flex-row gap-[7%]'>
+                                <div className='flex w-full flex-row gap-[7%]'>
                                     {order.orderItems.length > 0 ? (
                                         order.orderStatusDetailsSimple.map((status, index) => (
                                             <div key={index} className=' w-[15%] text-gray-500 text-[70%] h-fit'>
@@ -175,7 +174,7 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
                                         initial={{ opacity: 0, y: 50 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ duration: 1, type: "spring", damping: 10, delay: itemIndex * 0.2 }}
-                                        className='flex border-b-1 pb-2 pt-8 border-gray-200 h-28'
+                                        className='flex border-b-1  py-3 border-gray-200 h-28 px-4'
                                     >
                                         <div className='flex gap-1 w-2/4'>
                                             <div className='w-1/4 bg-pink-200'>
@@ -203,14 +202,15 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
 
                                                     {/* Image Preview Group */}
                                                     {visible && checkCard?.length > 0 && (
-                                                        <Image.PreviewGroup 
+                                                        <Image.PreviewGroup
+                                                            style={{ display: 'none' }} 
                                                             preview={{
                                                                 visible,
                                                                 onVisibleChange: (vis) => setVisible(vis),
                                                             }}
                                                         >
                                                             {checkCards.map((img, imgIndex) => (
-                                                                <Image key={imgIndex} width={0} src={img} />
+                                                                <Image key={imgIndex} style={{display: 'none'}} src={img} />
                                                             ))}
                                                         </Image.PreviewGroup>
                                                     )}
@@ -242,7 +242,7 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
                             ) : (
                                 <div className='text-center text-gray-400'>No items in this order</div>
                             )}
-                        </div>
+                    
                         <div className=' gap-4 px-8 p-2 bg-white h-fit border-dashed border-t-1'>
                             <div className='flex flex-col text-end text-2xl w-full gap-4 py-4'>
                                 <div>Order Total: {order.totalPrice}</div>

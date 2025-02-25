@@ -1,5 +1,4 @@
 import axios from "axios";
-import { jwtDecode } from "jwt-decode";
 import Cookies from "js-cookie";
 
 // const baseUrl = "https://localhost:7256/api/";
