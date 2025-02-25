@@ -28,4 +28,5 @@ export const route = {
   boxItemPage: "/box-item",
   boxItemDetail: "/box-item/detail",
   cart: "cart",
+  onlineBlindBox: "/online-blindbox",
 };

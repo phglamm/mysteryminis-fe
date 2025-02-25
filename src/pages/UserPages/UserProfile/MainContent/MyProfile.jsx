@@ -9,7 +9,7 @@ import { selectUser } from "../../../../Redux/features/counterSlice";
 
 const { Option } = Select;
 
-const MyProfile = ({ isEditing, resetPassword, setResetPassword }) => {
+const MyProfile = ({ isEditing, setIsEditing, resetPassword, setResetPassword }) => {
   const user = useSelector(selectUser);
 
   const [formData, setFormData] = useState({
@@ -56,17 +56,23 @@ const MyProfile = ({ isEditing, resetPassword, setResetPassword }) => {
   };
 
   const handleUpdateProfile = async () => {
-    console.log(formData)
     try {
-      setLoading(true);
-      await api.put(`/api/User/update-profile`, formData);
-      message.success("Profile updated successfully!");
-    } catch {
-      message.error("Failed to update profile. Please try again.");
+        setLoading(true);
+        const response = await api.put(`User/update-profile`, formData, {
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+        message.success("Profile updated successfully!");
+        console.log("Updated Profile:", response.data);
+        setIsEditing(false); // Set isEditing to false on success
+    } catch (error) {
+        message.error("Failed to update profile. Please try again.");
+        console.error("Update Error:", error);
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   if (loading) return <Spin size="large" />;
   if (error) return <div className="text-red-500">Error: {error}</div>;

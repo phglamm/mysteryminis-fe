@@ -79,7 +79,7 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
                 className={`overflow-y-scroll flex flex-col mb-[5%]  `}
                 initial={{ width: '75%' }}
                 animate={{ width: ViewDetails ? '100%' : '75%' }}
-                transition={ViewDetails ? { delay: 0.8, duration: 1 } : { delay: 0.8 ,duration: 1 }}
+                transition={ViewDetails ? { delay: 0.8, duration: 1 } : { delay: 0.5 ,duration: 1 }}
 
             >
          <AnimatePresence>
@@ -203,7 +203,7 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
                                                     {/* Image Preview Group */}
                                                     {visible && checkCard?.length > 0 && (
                                                         <Image.PreviewGroup
-                                                            style={{ display: 'none' }} 
+                                                            style={{ display: 'none', height:0 }} 
                                                             preview={{
                                                                 visible,
                                                                 onVisibleChange: (vis) => setVisible(vis),

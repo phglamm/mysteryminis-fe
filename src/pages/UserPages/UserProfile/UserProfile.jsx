@@ -16,7 +16,7 @@ const UserProfile = () => {
     const renderSectionContent = () => {
         switch (activeSection) {
             case "My Profile":
-                return <MyProfile isEditing={isEditing} resetPassword={resetPassword} setResetPassword={setResetPassword} />;
+                return <MyProfile isEditing={isEditing} setIsEditing={setIsEditing} resetPassword={resetPassword} setResetPassword={setResetPassword} />;
             case "Address Book":
                 return <AddressBook />;
             case "Earned Rewards":
@@ -31,7 +31,7 @@ const UserProfile = () => {
     };
 
     return (
-        <div className="pt-28 max-h-screen min-h-screen pl-[5%] pr-[5%]" style={{ userSelect: "none" }}>
+        <div className="pt-[8%] max-h-screen min-h-screen pl-[5%] pr-[5%]" style={{ userSelect: "none" }}>
             <div className="p-5">
                 <div className="grid grid-cols-4">
                     {/* Sidebar Component */}
