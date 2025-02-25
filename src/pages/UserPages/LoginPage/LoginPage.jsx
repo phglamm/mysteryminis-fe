@@ -168,10 +168,10 @@ export default function LoginPage() {
   };
 
   const handleLoginSuccess = async (response) => {
-    const token = response.credential;
-    console.log('Google credential:', token);
+    const credentialToken = response.credential;
+    console.log('Google credential:', credentialToken);
     try {
-      const res = await axios.post('https://localhost:7256/api/Account/google-response', { token });
+      const res = await axios.post('https://localhost:7256/api/Account/google-login', { credentialToken });
       console.log('Login successful:', res.data);
     } catch (error) {
       console.error('Login failed:', error);
