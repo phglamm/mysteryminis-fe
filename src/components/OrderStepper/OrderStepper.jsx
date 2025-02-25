@@ -9,7 +9,6 @@ const OrderSteps = ({ order }) => {
     
         // Get the latest status from orderStatusDetail
         const latestStatus = order.orderStatusDetailsSimple[order.orderStatusDetailsSimple.length - 1]?.statusName;
-        console.log(latestStatus);
         const latestIndex = statusOrder.indexOf(latestStatus);
     
         // If the latest status is 'Arrived', return the last step index
@@ -18,11 +17,13 @@ const OrderSteps = ({ order }) => {
     
     return (
         <Steps
+            responsive
+            
             current={getCurrentStepIndex(order)}
             items={ (order.orderStatusDetailsSimple?.slice(-1)[0]?.statusName === 'Cancelled' ? ['Pending', 'Processing', 'Shipping', 'Arrived', 'Cancelled'] : ['Pending', 'Processing', 'Shipping', 'Arrived'] ) .map((status, index) => {
                 const currentStep = getCurrentStepIndex(order);
                 const isCurrent = index === currentStep;
-                const isCompleted = index < currentStep || status === 'Arrived' && currentStep === index; 
+                const isCompleted = index < currentStep ;
 
                 return {
                     title: status,

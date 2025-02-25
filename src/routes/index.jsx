@@ -33,4 +33,5 @@ export const route = {
   blog: "/blog",
   orderSuccess: "/order-success",
   paymentReturn: "/payment-return",
+  onlineBlindBox: "/online-blindbox",
 };

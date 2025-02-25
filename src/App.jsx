@@ -28,6 +28,7 @@ import FavoritePage from "./pages/UserPages/FavoritePage/FavoritePage";
 import BlogPage from "./pages/UserPages/BlogPage/BlogPage";
 import OrderSuccessPage from "./pages/UserPages/OrderSuccess/OrderSuccessPage";
 import PaymentReturnPage from "./pages/UserPages/PaymentReturn/PaymentReturn";
+import OnlineBlindBox from "./pages/UserPages/OnlineBlindBox/OnlineBlindBox";
 
 function App() {
   const router = createBrowserRouter([
@@ -99,6 +100,10 @@ function App() {
         {
           path: route.paymentReturn,
           element: <PaymentReturnPage />,
+        },
+        {
+          path: route.onlineBlindBox,
+          element: <OnlineBlindBox />,
         },
       ],
     },
