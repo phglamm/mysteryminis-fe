@@ -1,18 +1,18 @@
 /* eslint-disable react/prop-types */
 import {
   EnvironmentOutlined,
-  GiftOutlined,
   GithubOutlined,
   ProfileOutlined,
 } from "@ant-design/icons";
 import { motion } from "framer-motion";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../../../../Redux/features/counterSlice";
+import { logout, selectUser } from "../../../../Redux/features/counterSlice";
 import Cookies from "js-cookie";
 import { route } from "../../../../routes";
 
 const Sidebar = ({ setActiveSection }) => {
+  const user = useSelector(selectUser)
   const navigate = useNavigate();
   const sections = [
     {
@@ -24,12 +24,7 @@ const Sidebar = ({ setActiveSection }) => {
       icon: <EnvironmentOutlined />,
       title: "Address Book",
       description: "Manage your address",
-    },
-    {
-      icon: <GiftOutlined />,
-      title: "Earned Rewards",
-      description: "View your rewards",
-    },
+    }
   ];
   const dispatch = useDispatch();
 
@@ -56,7 +51,7 @@ const Sidebar = ({ setActiveSection }) => {
             {" "}
             <GithubOutlined />{" "}
           </div>
-          <div className="flex justify-center text-2xl">Minh Luong</div>
+          <div className="flex justify-center text-2xl">{user.username}</div>
         </div>
 
         <div className="mt-4 font-extrabold pb-4">
@@ -69,7 +64,7 @@ const Sidebar = ({ setActiveSection }) => {
                 whileHover={{ scale: 1.1, color: "red" }}
                 onClick={() => setActiveSection("My Orders")}
               >
-                <div className="text-xl">50</div>
+                <div className="font-light text-lg">My</div>
                 <div className="font-light text-lg">Orders</div>
               </motion.div>
             </div>

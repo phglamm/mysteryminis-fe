@@ -69,8 +69,8 @@ export default function Footer() {
   ];
 
   return(
-    <div className="bg-black w-screen bottom-0 text-white">
-      <div className="grid grid-cols-7 text-center p-6">
+    <div className="bg-black w-[100%] bottom-0 text-white">
+      <div className="flex flex-row justify-between text-center p-6 px-[5%]">
         {footerSections.map((section, index) => (
           <div 
             key={index} 
