@@ -192,7 +192,7 @@ const OrderItems = ({selectedCategory, setViewDetails}) => {
                                         <div className='flex flex-col justify-center items-center w-1/4'>
                                             <span className='text-sm text-red-500'>{item.openRequest ? 'Open Requested' : '' }</span>
                                             {item.orderStatusCheckCardImage && item.orderStatusCheckCardImage.length > 0 && (
-                                                <div className='flex flex-col justify-center items-center w-1/4'>
+                                                <div className='flex flex-col justify-center items-center'>
                                                     <span 
                                                         className='text-sm hover:underline cursor-pointer'
                                                         onClick={() => {
