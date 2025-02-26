@@ -4,11 +4,13 @@ import { useLocation, useNavigate } from "react-router-dom";
 import api from "../../../config/api";
 import toast from "react-hot-toast";
 import { route } from "../../../routes";
+import { useDispatch } from "react-redux";
+import { clearCart } from "../../../Redux/features/cartSlice";
 
 const PaymentReturnPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   useEffect(() => {
     const fetchPaymentData = async () => {
       const queryParams = new URLSearchParams(location.search);
@@ -16,7 +18,6 @@ const PaymentReturnPage = () => {
       // Inform the user that the payment is being processed
 
       try {
-        toast.loading("Processing payment, please wait...");
         const response = await api.post(
           "Payment/payment-callback",
           queryParams.toString(), // Send URL-encoded data
@@ -31,6 +32,7 @@ const PaymentReturnPage = () => {
         if (response.status === 200) {
           toast.success(response.data.message);
           navigate(route.orderSuccess);
+          dispatch(clearCart());
         } else {
           toast.error("Payment failed. Please check your order and try again.");
           navigate("/order"); // Redirect back to the order page or keep them here

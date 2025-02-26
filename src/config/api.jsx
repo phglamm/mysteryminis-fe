@@ -1,11 +1,11 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-const baseUrl = "https://localhost:7256/api/";
+// const baseUrl = "https://localhost:7256/api/";
 // const baseUrl =
 //   "https://mysteryminis-b3are0btehhncpcx.australiacentral-01.azurewebsites.net/api/";
-// const baseUrl =
-//   "https://mysteryminis2-e9hwhhakhja3ggf0.australiacentral-01.azurewebsites.net/api/";
+const baseUrl =
+  "https://mysteryminis2-e9hwhhakhja3ggf0.australiacentral-01.azurewebsites.net/api/";
 
 const config = {
   baseUrl,

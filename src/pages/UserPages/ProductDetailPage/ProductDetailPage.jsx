@@ -6,11 +6,15 @@ import "react-image-gallery/styles/css/image-gallery.css";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 import api from "../../../config/api";
 import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addToCart, clearCart } from "../../../Redux/features/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../../Redux/features/cartSlice";
 import "./ProductDetailPage.scss";
+import {
+  addToFavorite,
+  removeFromFavorite,
+  selectFavoriteItems,
+} from "../../../Redux/features/favoriteSlice";
 import toast from "react-hot-toast";
-import { addToFavorite } from "../../../Redux/features/favoriteSlice";
 const { Panel } = Collapse;
 
 const ProductDetailPage = () => {
@@ -25,6 +29,7 @@ const ProductDetailPage = () => {
 
   const { id } = useParams();
   const dispatch = useDispatch();
+  const favoriteItems = useSelector(selectFavoriteItems);
 
   useEffect(() => {
     const fetchBoxDetail = async () => {
@@ -63,6 +68,12 @@ const ProductDetailPage = () => {
     }
   }, [box]);
 
+  useEffect(() => {
+    if (box) {
+      setIsWishlisted(favoriteItems.some((item) => item.boxId === box.boxId));
+    }
+  }, [box, favoriteItems]);
+
   if (!box) {
     return <div>Loading...</div>;
   }
@@ -95,6 +106,15 @@ const ProductDetailPage = () => {
       toast.success("Added to cart");
       dispatch(addToCart(boxToAdd));
     }
+  };
+
+  const handleToggleFavorite = () => {
+    if (isWishlisted) {
+      dispatch(removeFromFavorite({ boxId: box.boxId }));
+    } else {
+      dispatch(addToFavorite(box));
+    }
+    setIsWishlisted(!isWishlisted);
   };
 
   const boxImages = box?.boxImage.map((image) => ({
@@ -213,17 +233,14 @@ const ProductDetailPage = () => {
               width: "40%",
               height: "50px",
             }}
-            onClick={() => {
-              dispatch(addToFavorite(box));
-              setIsWishlisted(!isWishlisted);
-            }}
+            onClick={handleToggleFavorite}
           >
             {isWishlisted ? (
               <HeartFilled style={{ color: "#e60000" }} />
             ) : (
               <HeartOutlined style={{ color: "#ccc" }} />
             )}
-            {isWishlisted ? "Đã yêu thích" : "Thêm vào yêu thích"}
+            {isWishlisted ? "Already in Favorites" : "Add to Favorites"}
           </Button>
 
           {/* Thông tin chi tiết */}
