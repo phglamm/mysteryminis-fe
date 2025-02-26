@@ -1,25 +1,31 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/api";
-import { Button, Collapse, Rate } from "antd";
+import { Button, Collapse, Form, Rate } from "antd";
+import { Modal } from "antd";
 import { route } from "../../../routes";
 import CardBoxItem from "../../../components/CardBoxItem/CardBoxItem";
 import { motion } from "framer-motion";
+import { useForm } from "antd/es/form/Form";
+import { useSelector } from "react-redux";
+import { selectUser } from "./../../../Redux/features/counterSlice";
 const { Panel } = Collapse;
 
 export default function BoxItemDetailPage() {
   const { boxItemId } = useParams();
   const [boxItem, setBoxItem] = useState();
   const [relevantBoxItem, setRelevantBoxItem] = useState([]);
+  const [form] = useForm();
 
   const navigate = useNavigate();
+  const user = useSelector(selectUser);
 
+  const fetchBoxItemDetail = async () => {
+    const response = await api.get(`BoxItem/WithDTO/${boxItemId}`);
+    console.log(response.data);
+    setBoxItem(response.data);
+  };
   useEffect(() => {
-    const fetchBoxItemDetail = async () => {
-      const response = await api.get(`BoxItem/WithDTO/${boxItemId}`);
-      console.log(response.data);
-      setBoxItem(response.data);
-    };
     fetchBoxItemDetail();
   }, [boxItemId]);
 
@@ -38,6 +44,22 @@ export default function BoxItemDetailPage() {
       fetchRelevantBoxItems();
     }
   }, [boxItem]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleVote = async (value) => {
+    value.userId = user.userId;
+    value.boxItemId = boxItem.boxItemId;
+    try {
+      const response = await api.post("BoxItem/Vote", value);
+      console.log(response.data);
+      fetchBoxItemDetail();
+      form.resetFields();
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
+
   if (!boxItem) return <div>Loading...</div>;
 
   return (
@@ -62,14 +84,24 @@ export default function BoxItemDetailPage() {
               allowHalf
               className="!mt-10 !text-2xl"
             />
-            <Button
-              className="!bg-blue-300 w-full !text-white !font-bold !text-lg !rounded-lg !mt-10 !py-7"
-              onClick={() => {
-                navigate(`${route.productDetail}/${boxItem.belongBox.boxId}`);
-              }}
-            >
-              Hunt this Item
-            </Button>{" "}
+            <div className="flex justify-between items-center gap-10">
+              <Button
+                className="!bg-blue-300 w-full !text-white !font-bold !text-lg !rounded-lg !mt-10 !py-7"
+                onClick={() => {
+                  navigate(`${route.productDetail}/${boxItem.belongBox.boxId}`);
+                }}
+              >
+                Hunt this Item
+              </Button>{" "}
+              <Button
+                className="!bg-pink-300 w-full !text-white !font-bold !text-lg !rounded-lg !mt-10 !py-7"
+                onClick={() => {
+                  setIsModalOpen(true);
+                }}
+              >
+                Vote Item
+              </Button>{" "}
+            </div>
             <Collapse
               defaultActiveKey={[]}
               style={{
@@ -106,6 +138,23 @@ export default function BoxItemDetailPage() {
           </div>
         </div>
       </motion.div>
+
+      <Modal
+        title="Vote Item"
+        open={isModalOpen}
+        onOk={() => {
+          setIsModalOpen(false);
+          form.submit();
+        }}
+        onCancel={() => setIsModalOpen(false)}
+        okText="Vote"
+      >
+        <Form form={form} onFinish={handleVote}>
+          <Form.Item name="rating" label="Rating">
+            <Rate />
+          </Form.Item>
+        </Form>
+      </Modal>
     </div>
   );
 }
