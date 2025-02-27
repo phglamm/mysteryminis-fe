@@ -26,7 +26,7 @@ const CheckOutPage = () => {
       price: item.selectedOption.displayPrice,
       boxOptionId: item.selectedOption.boxOptionId,
       originPrice: item.selectedOption.originPrice,
-      orderItemOpenRequest: item.orderItemOpenRequest,
+      orderItemOpenRequestNumber: item.orderItemOpenRequestNumber,
     }));
     console.log(values);
     try {
@@ -37,6 +37,7 @@ const CheckOutPage = () => {
       console.log(error.response.data);
     }
   };
+  33;
   const columns = [
     {
       title: "Product",
@@ -63,7 +64,11 @@ const CheckOutPage = () => {
           <p>
             {record.boxName}
             <p>option: {record.selectedOption.boxOptionName}</p>
-            {record.orderItemOpenRequest ? <>Open boxes</> : <></>}
+            {record.orderItemOpenRequestNumber ? (
+              <>Open {record.orderItemOpenRequestNumber} boxes </>
+            ) : (
+              <></>
+            )}
           </p>
         </div>
       ),

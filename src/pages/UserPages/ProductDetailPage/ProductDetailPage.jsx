@@ -97,12 +97,12 @@ const ProductDetailPage = () => {
     const selectedOption = box.boxOptions.find(
       (option) => option.boxOptionId === chooseOption.boxOptionId
     );
-    const orderItemOpenRequest = false;
+    const orderItemOpenRequestNumber = 0;
 
     console.log("Selected: ", selectedOption);
 
     if (selectedOption) {
-      const boxToAdd = { ...box, selectedOption, orderItemOpenRequest };
+      const boxToAdd = { ...box, selectedOption, orderItemOpenRequestNumber };
       console.log(boxToAdd);
       toast.success("Added to cart");
       dispatch(addToCart(boxToAdd));

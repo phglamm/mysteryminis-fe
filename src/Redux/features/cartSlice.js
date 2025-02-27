@@ -65,7 +65,7 @@ const cartSlice = createSlice({
       }
     },
 
-    toggleItemChecked: (state, action) => {
+    increaseOpen: (state, action) => {
       const { boxId, selectedOption } = action.payload;
       const item = state.cartItems.find(
         (item) =>
@@ -73,7 +73,18 @@ const cartSlice = createSlice({
           item.selectedOption?.boxOptionId === selectedOption?.boxOptionId
       );
       if (item) {
-        item.orderItemOpenRequest = !item.orderItemOpenRequest;
+        item.orderItemOpenRequestNumber += 1;
+      }
+    },
+    decreaseOpen: (state, action) => {
+      const { boxId, selectedOption } = action.payload;
+      const item = state.cartItems.find(
+        (item) =>
+          item.boxId === boxId &&
+          item.selectedOption?.boxOptionId === selectedOption?.boxOptionId
+      );
+      if (item) {
+        item.orderItemOpenRequestNumber -= 1;
       }
     },
 
@@ -90,6 +101,8 @@ export const {
   decreaseQuantity,
   clearCart,
   toggleItemChecked,
+  increaseOpen,
+  decreaseOpen,
 } = cartSlice.actions;
 
 export const selectCartItems = (state) => state.cart.cartItems;
