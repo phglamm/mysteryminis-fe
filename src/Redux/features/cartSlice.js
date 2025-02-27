@@ -64,6 +64,19 @@ const cartSlice = createSlice({
         item.quantity -= 1;
       }
     },
+
+    toggleItemChecked: (state, action) => {
+      const { boxId, selectedOption } = action.payload;
+      const item = state.cartItems.find(
+        (item) =>
+          item.boxId === boxId &&
+          item.selectedOption?.boxOptionId === selectedOption?.boxOptionId
+      );
+      if (item) {
+        item.orderItemOpenRequest = !item.orderItemOpenRequest;
+      }
+    },
+
     clearCart: (state) => {
       state.cartItems = [];
     },
@@ -76,6 +89,7 @@ export const {
   increaseQuantity,
   decreaseQuantity,
   clearCart,
+  toggleItemChecked,
 } = cartSlice.actions;
 
 export const selectCartItems = (state) => state.cart.cartItems;

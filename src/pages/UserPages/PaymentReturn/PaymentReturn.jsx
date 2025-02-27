@@ -16,7 +16,7 @@ const PaymentReturnPage = () => {
       const queryParams = new URLSearchParams(location.search);
 
       // Inform the user that the payment is being processed
-
+      console.log(queryParams.toString());
       try {
         const response = await api.post(
           "Payment/payment-callback",
@@ -27,7 +27,7 @@ const PaymentReturnPage = () => {
             withCredentials: false,
           }
         );
-
+        console.log(response);
         // Check the response's success flag
         if (response.status === 200) {
           toast.success(response.data.message);
@@ -35,13 +35,13 @@ const PaymentReturnPage = () => {
           dispatch(clearCart());
         } else {
           toast.error("Payment failed. Please check your order and try again.");
-          navigate("/order"); // Redirect back to the order page or keep them here
+          navigate(route.userProfile); // Redirect back to the order page or keep them here
         }
       } catch (error) {
         toast.error("Error processing payment");
         console.error("Payment verification failed:", error);
         // Optionally, navigate back to the order page
-        navigate("/order");
+        navigate(route.userProfile);
       }
     };
 

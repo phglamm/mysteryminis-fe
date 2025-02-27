@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Row, Col, Typography, Divider } from "antd";
+import { Button, Row, Col, Typography, Divider, Checkbox } from "antd";
 import {
   ShoppingCartOutlined,
   PlusOutlined,
@@ -11,6 +11,7 @@ import {
   increaseQuantity,
   removeFromCart,
   selectCartItems,
+  toggleItemChecked,
 } from "../../../Redux/features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { route } from "../../../routes";
@@ -95,6 +96,20 @@ const Cart = () => {
                         Price:{" "}
                         {item.selectedOption.displayPrice.toLocaleString()} đ
                       </p>
+                      <div className="flex items-center justify-between gap-3">
+                        <p>Do you want us to open the box?</p>
+                        <Checkbox
+                          checked={item.orderItemOpenRequest || false}
+                          onChange={() =>
+                            dispatch(
+                              toggleItemChecked({
+                                boxId: item.boxId,
+                                selectedOption: item.selectedOption,
+                              })
+                            )
+                          }
+                        />
+                      </div>
                     </Col>
                     <Col>
                       <div style={{ display: "flex", alignItems: "center" }}>
