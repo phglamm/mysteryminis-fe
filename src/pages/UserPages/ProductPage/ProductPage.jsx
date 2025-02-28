@@ -3,39 +3,25 @@ import { Checkbox, Pagination, Spin } from "antd";
 import CardProduct from "../../../components/CardProduct/CardProduct";
 import api from "../../../config/api";
 import { useLocation } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { loadBoxes } from "../../../Redux/features/boxSlice";
 
 const ProductPage = () => {
   const [brands, setBrands] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [boxes, setBoxes] = useState([]);
   const pageSize = 9;
   const [loading, setLoading] = useState(false);
   const location = useLocation();
-
+  
   let SelectedBrand = location.state?.brand;
   console.log("Selected Brand: ", SelectedBrand);  
   
-  useEffect(() => {
-    const fetchBox = async () => {
-      setLoading(true);
-      try {
-        const response = await api.get("Box");
-        console.log("API Response: ", response.data);
+    // Get boxes from Redux
+    const { data: boxes } = useSelector((state) => state.boxes);
 
-        if (Array.isArray(response.data)) {
-          const sortResponse = response.data.sort((a, b) => b.boxId - a.boxId);
-          setBoxes(sortResponse);
-        } else {
-          console.error("API response is not an array: ", response.data);
-        }
-      } catch (error) {
-        console.error("Error fetching data: ", error);
-      }
-      setLoading(false);
-    };
-
-    fetchBox();
-  }, []);
+    useEffect(() => {
+      dispatch(loadBoxes());
+    }, [dispatch]);
 
   
   useEffect(() => {

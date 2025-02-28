@@ -12,25 +12,19 @@ import Search from "../Search/Search";
 import { useSelector } from "react-redux";
 import { route } from "../../routes";
 import { selectUser } from "../../Redux/features/counterSlice";
-import api from "../../config/api";
+import { fetchBlindBoxCategories } from "../../config/Data";
 
 export default function Header() {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
   const [brand, setBrand] = useState(null);
 
-  const fetchBlindBoxCategories = async () => {
-    try {
-      const response = await api.get("Brand");
-      const data = response.data;
-      setBrand(data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+ 
 
   useEffect(() => {
-    fetchBlindBoxCategories();
+    fetchBlindBoxCategories().then((data) => {
+      setBrand(data);
+    });
   }, []);
 
 
