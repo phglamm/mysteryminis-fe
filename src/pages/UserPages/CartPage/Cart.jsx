@@ -35,7 +35,7 @@ const Cart = () => {
       style={{ display: "flex", justifyContent: "center" }}
       className="container mx-auto"
     >
-      <div className="mt-34 w-full">
+      <div className="mt-[10%] w-full">
         <Title level={2}>Shopping Cart</Title>
         <Row gutter={24}>
           <Col span={18}>

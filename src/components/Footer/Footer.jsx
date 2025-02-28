@@ -65,7 +65,7 @@ export default function Footer() {
   ];
 
   return (
-    <div className="bg-black w-[100%] bottom-0 text-white">
+    <div className="bg-black w-[100%] bottom-0 text-white mt-[5%]">
       <div className="flex flex-row justify-between text-center p-6 px-[5%]">
         {footerSections.map((section, index) => (
           <div

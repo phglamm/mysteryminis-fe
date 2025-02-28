@@ -2,25 +2,42 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import api from "../../../config/api";
 import CardBoxItem from "../../../components/CardBoxItem/CardBoxItem";
-import { Pagination } from "antd";
+import { Pagination, Spin } from "antd";
 import TiltedCard from "../../../components/React_Bits/TiltedCard/TiltedCard";
 import BlurText from "./../../../components/React_Bits/BlurText/BlurText";
+import toast from "react-hot-toast";
 
 export default function BoxItemPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 12;
   const [boxItems, setBoxItems] = useState([]);
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchBoxItem = async () => {
-      const response = await api.get("BoxItem");
-      console.log(response.data);
-      const sortResponse = response.data.sort(
-        (a, b) => b.averageRating - a.averageRating
-      );
-      setBoxItems(sortResponse);
+      setLoading(true);
+      try {
+        const response = await api.get("BoxItem");
+        console.log(response.data);
+        const sortResponse = response.data.sort(
+          (a, b) => b.averageRating - a.averageRating
+        );
+        setBoxItems(sortResponse);
+      } catch (error) {
+        console.error("Failed to fetch BoxItem:", error);
+        toast.error("Failed to fetch BoxItem");
+      }
+      setLoading(false);
     };
     fetchBoxItem();
   }, []);
+
+  if (loading) {
+    return (
+      <div className="w-full h-full min-h-screen  flex justify-center items-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -32,7 +49,7 @@ export default function BoxItemPage() {
   );
 
   return (
-    <div className="mt-34">
+    <div className="mt-[10%]">
       <div className="container mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 50 }}

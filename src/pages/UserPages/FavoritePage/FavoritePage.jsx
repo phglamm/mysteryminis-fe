@@ -14,7 +14,7 @@ export default function FavoritePage() {
   const favoriteItems = useSelector(selectFavoriteItems);
   const navigate = useNavigate();
   return (
-    <div className="mt-34 container mx-auto">
+    <div className="mt-[10%] container mx-auto">
       <h1 className="text-3xl font-bold mb-6 text-center">My Favorite Items</h1>
       {favoriteItems.length === 0 ? (
         <Empty

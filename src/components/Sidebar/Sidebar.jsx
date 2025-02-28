@@ -69,7 +69,6 @@ export default function Sidebar() {
         getItem("Manage Brand", route.brandManagement, <DropboxOutlined />),
         getItem("Manage Discount", route.discountManagement, <CiDiscount1 />),
         getItem("Back to Home", "/", <HomeOutlined />),
-        getItem("Signout", "/", <HomeOutlined />),
       ]);
     }
 

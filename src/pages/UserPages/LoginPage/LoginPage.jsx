@@ -64,6 +64,7 @@ export default function LoginPage() {
       }
       toast.success("Login Success");
     } catch (error) {
+      toast.error(error.response.data);
       console.log(error.response.data);
     }
   };
@@ -74,7 +75,7 @@ export default function LoginPage() {
 
   return (
     <GoogleOAuthProvider clientId="652662423552-nrkdvhr09m3qgau9jkmt887eg1u6k4u2.apps.googleusercontent.com">
-      <div className="flex items-center justify-center min-h-screen mt-24">
+      <div className="flex items-center justify-center min-h-screen mt-[10%]">
         <motion.div
           initial={{ opacity: 0, y: -50 }}
           animate={{ opacity: 1, y: 0 }}

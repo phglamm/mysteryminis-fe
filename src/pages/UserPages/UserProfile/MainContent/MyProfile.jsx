@@ -9,7 +9,12 @@ import { selectUser } from "../../../../Redux/features/counterSlice";
 
 const { Option } = Select;
 
-const MyProfile = ({ isEditing, setIsEditing, resetPassword, setResetPassword }) => {
+const MyProfile = ({
+  isEditing,
+  setIsEditing,
+  resetPassword,
+  setResetPassword,
+}) => {
   const user = useSelector(selectUser);
 
   const [formData, setFormData] = useState({
@@ -28,8 +33,9 @@ const MyProfile = ({ isEditing, setIsEditing, resetPassword, setResetPassword })
     const fetchUserData = async () => {
       try {
         const response = await api.get(`User/user-by-email/${user.email}`);
-        const { userId, username, fullname, phone, email, gender } = response.data; // Chỉ lấy các trường cần thiết
-          setFormData({ userId, username, fullname, phone, email, gender }); // Update form data with API response
+        const { userId, username, fullname, phone, email, gender } =
+          response.data; // Chỉ lấy các trường cần thiết
+        setFormData({ userId, username, fullname, phone, email, gender }); // Update form data with API response
       } catch (err) {
         setError(err.message);
       } finally {
@@ -52,34 +58,35 @@ const MyProfile = ({ isEditing, setIsEditing, resetPassword, setResetPassword })
     setFormData((prev) => ({
       ...prev,
       gender: value,
-    })); 
+    }));
   };
 
   const handleUpdateProfile = async () => {
     try {
-        setLoading(true);
-        const response = await api.put(`User/update-profile`, formData, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
-        message.success("Profile updated successfully!");
-        console.log("Updated Profile:", response.data);
-        setIsEditing(false); // Set isEditing to false on success
+      setLoading(true);
+      const response = await api.put(`User/update-profile`, formData, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      message.success("Profile updated successfully!");
+      console.log("Updated Profile:", response.data);
+      setIsEditing(false); // Set isEditing to false on success
     } catch (error) {
-        message.error("Failed to update profile. Please try again.");
-        console.error("Update Error:", error);
+      message.error("Failed to update profile. Please try again.");
+      console.error("Update Error:", error);
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
+  };
 
-  if (loading) return (
-                        <div className="w-full h-[27vw] flex justify-center items-center">
-                          <Spin size="large" />
-                        </div> 
-                      )
-                
+  if (loading)
+    return (
+      <div className="w-full h-[27vw] flex justify-center items-center">
+        <Spin size="large" />
+      </div>
+    );
+
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
@@ -89,7 +96,10 @@ const MyProfile = ({ isEditing, setIsEditing, resetPassword, setResetPassword })
           <>
             {/* User Information Fields */}
             {["username", "fullname", "phone", "email"].map((field) => (
-              <div key={field} className="flex flex-row items-center border-t-1 pt-4 mb-4 border-gray-300">
+              <div
+                key={field}
+                className="flex flex-row items-center border-t-1 pt-4 mb-4 border-gray-300"
+              >
                 <span className="basis-1/4 capitalize">{field}</span>
                 {isEditing ? (
                   <span className="basis-2/4">
@@ -99,10 +109,14 @@ const MyProfile = ({ isEditing, setIsEditing, resetPassword, setResetPassword })
                       onChange={handleChange}
                       placeholder={`Enter your ${field}`}
                       disabled={field === "email"}
-                      prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
+                      prefix={
+                        <UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />
+                      }
                       suffix={
                         <Tooltip title="Extra information">
-                          <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+                          <InfoCircleOutlined
+                            style={{ color: "rgba(0,0,0,.45)" }}
+                          />
                         </Tooltip>
                       }
                     />
@@ -118,36 +132,51 @@ const MyProfile = ({ isEditing, setIsEditing, resetPassword, setResetPassword })
               <span className="basis-1/4">Gender</span>
               {isEditing ? (
                 <span className="basis-2/4">
-                  <Select value={formData.gender} onChange={handleGenderChange} style={{ width: "100%" }}>
+                  <Select
+                    value={formData.gender}
+                    onChange={handleGenderChange}
+                    style={{ width: "100%" }}
+                  >
                     <Option value={true}>Male</Option>
                     <Option value={false}>Female</Option>
                   </Select>
                 </span>
               ) : (
-                <span className="basis-2/4">{formData.gender ? "Male" : "Female"}</span>
+                <span className="basis-2/4">
+                  {formData.gender ? "Male" : "Female"}
+                </span>
               )}
             </div>
           </>
         ) : (
           <>
             {/* Reset Password Fields */}
-            {["Current Password", "New Password", "Confirm new password"].map((field) => (
-              <div key={field} className="flex flex-row items-center border-t-1 pt-4 mb-4 border-gray-300">
-                <span className="basis-1/4 capitalize">{field}</span>
-                <span className="basis-2/4">
-                  <Input
-                    name={field}
-                    placeholder={`Enter your ${field}`}
-                    prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-                    suffix={
-                      <Tooltip title="Extra information">
-                        <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
-                      </Tooltip>
-                    }
-                  />
-                </span>
-              </div>
-            ))}
+            {["Current Password", "New Password", "Confirm new password"].map(
+              (field) => (
+                <div
+                  key={field}
+                  className="flex flex-row items-center border-t-1 pt-4 mb-4 border-gray-300"
+                >
+                  <span className="basis-1/4 capitalize">{field}</span>
+                  <span className="basis-2/4">
+                    <Input
+                      name={field}
+                      placeholder={`Enter your ${field}`}
+                      prefix={
+                        <UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />
+                      }
+                      suffix={
+                        <Tooltip title="Extra information">
+                          <InfoCircleOutlined
+                            style={{ color: "rgba(0,0,0,.45)" }}
+                          />
+                        </Tooltip>
+                      }
+                    />
+                  </span>
+                </div>
+              )
+            )}
           </>
         )}
 
@@ -155,8 +184,18 @@ const MyProfile = ({ isEditing, setIsEditing, resetPassword, setResetPassword })
         {isEditing || resetPassword ? (
           <motion.div
             className="text-center bg-black text-white rounded-full p-2 w-1/4 mx-auto mt-4 cursor-pointer"
-            whileHover={{ scale: 1.1, backgroundColor: "red", color: "black", fontWeight: "bold" }}
-            whileTap={{ scale: 0.9, backgroundColor: "black", color: "white", fontWeight: "bold" }}
+            whileHover={{
+              scale: 1.1,
+              backgroundColor: "red",
+              color: "black",
+              fontWeight: "bold",
+            }}
+            whileTap={{
+              scale: 0.9,
+              backgroundColor: "black",
+              color: "white",
+              fontWeight: "bold",
+            }}
             onClick={handleUpdateProfile}
           >
             Save Changes
@@ -164,8 +203,18 @@ const MyProfile = ({ isEditing, setIsEditing, resetPassword, setResetPassword })
         ) : (
           <motion.div
             className="text-center bg-black text-white rounded-full p-2 w-1/4 mx-auto mt-4 cursor-pointer"
-            whileHover={{ scale: 1.1, backgroundColor: "red", color: "black", fontWeight: "bold" }}
-            whileTap={{ scale: 0.9, backgroundColor: "black", color: "white", fontWeight: "bold" }}
+            whileHover={{
+              scale: 1.1,
+              backgroundColor: "red",
+              color: "black",
+              fontWeight: "bold",
+            }}
+            whileTap={{
+              scale: 0.9,
+              backgroundColor: "black",
+              color: "white",
+              fontWeight: "bold",
+            }}
             onClick={() => setResetPassword(true)}
           >
             Reset Password

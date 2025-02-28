@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Collapse, Row, Col } from "antd";
+import { Button, Collapse, Row, Col, Spin } from "antd";
 import ReactImageGallery from "react-image-gallery";
 import CardProduct from "../../../components/CardProduct/CardProduct"; // Import CardProduct
 import "react-image-gallery/styles/css/image-gallery.css";
@@ -30,24 +30,32 @@ const ProductDetailPage = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
   const favoriteItems = useSelector(selectFavoriteItems);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchBoxDetail = async () => {
-      const response = await api.get(`Box/withDTO/${id}`);
-      console.log(response.data);
-      setBox(response.data);
-      const defaultOption = response.data.boxOptions.reduce(
-        (minOption, option) => {
-          return option.displayPrice < minOption.displayPrice
-            ? option
-            : minOption;
-        },
-        response.data.boxOptions[0]
-      );
-      setSelectedOptionName(defaultOption.boxOptionName);
-      setSelectedPrice(defaultOption.displayPrice);
-      setChooseOption(defaultOption);
-      setIsOutOfStock(defaultOption.boxOptionStock === 0);
+      setLoading(true);
+      try {
+        const response = await api.get(`Box/withDTO/${id}`);
+        console.log(response.data);
+        setBox(response.data);
+        const defaultOption = response.data.boxOptions.reduce(
+          (minOption, option) => {
+            return option.displayPrice < minOption.displayPrice
+              ? option
+              : minOption;
+          },
+          response.data.boxOptions[0]
+        );
+        setSelectedOptionName(defaultOption.boxOptionName);
+        setSelectedPrice(defaultOption.displayPrice);
+        setChooseOption(defaultOption);
+        setIsOutOfStock(defaultOption.boxOptionStock === 0);
+      } catch (error) {
+        console.log("Failed to fetch box detail: ", error);
+        toast.error("Failed to fetch box detail");
+      }
+      setLoading(false);
     };
     fetchBoxDetail();
   }, [id]);
@@ -74,8 +82,12 @@ const ProductDetailPage = () => {
     }
   }, [box, favoriteItems]);
 
-  if (!box) {
-    return <div>Loading...</div>;
+  if (!box || loading) {
+    return (
+      <div className="w-full h-full min-h-screen  flex justify-center items-center">
+        <Spin size="large" />
+      </div>
+    );
   }
 
   const formatPrice = (price) => {
@@ -123,7 +135,7 @@ const ProductDetailPage = () => {
     thumbnail: image.boxImageUrl,
   }));
   return (
-    <div className="product-detail-page container mx-auto mt-34">
+    <div className="product-detail-page container mx-auto mt-[10%]">
       {/* Chi tiết sản phẩm */}
       <div className="grid grid-cols-2 gap-10">
         {/* Hình ảnh */}

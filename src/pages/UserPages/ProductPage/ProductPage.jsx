@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Checkbox, Pagination } from "antd";
+import { Checkbox, Pagination, Spin } from "antd";
 import CardProduct from "../../../components/CardProduct/CardProduct";
 import api from "../../../config/api";
 
@@ -8,9 +8,11 @@ const ProductPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [boxes, setBoxes] = useState([]);
   const pageSize = 9;
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchBox = async () => {
+      setLoading(true);
       try {
         const response = await api.get("Box");
         console.log("API Response: ", response.data);
@@ -24,15 +26,19 @@ const ProductPage = () => {
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
+      setLoading(false);
     };
 
     fetchBox();
   }, []);
 
-  if (!boxes.length) {
-    return <div>Loading...</div>;
+  if (!boxes.length || loading) {
+    return (
+      <div className="w-full h-full min-h-screen  flex justify-center items-center">
+        <Spin size="large" />
+      </div>
+    );
   }
-
   const brandsList = Array.from(
     new Set(boxes.map((product) => product.brandName))
   );
@@ -58,7 +64,7 @@ const ProductPage = () => {
   );
 
   return (
-    <div className="container mx-auto mt-34">
+    <div className="container mx-auto mt-[10%]">
       <div style={{ display: "flex", alignItems: "flex-start" }}>
         {/* Sidebar */}
         <div

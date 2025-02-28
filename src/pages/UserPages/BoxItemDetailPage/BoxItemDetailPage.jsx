@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/api";
-import { Button, Collapse, Form, Rate } from "antd";
+import { Button, Collapse, Form, Rate, Spin } from "antd";
 import { Modal } from "antd";
 import { route } from "../../../routes";
 import CardBoxItem from "../../../components/CardBoxItem/CardBoxItem";
@@ -17,14 +17,22 @@ export default function BoxItemDetailPage() {
   const [boxItem, setBoxItem] = useState();
   const [relevantBoxItem, setRelevantBoxItem] = useState([]);
   const [form] = useForm();
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const user = useSelector(selectUser);
 
   const fetchBoxItemDetail = async () => {
-    const response = await api.get(`BoxItem/WithDTO/${boxItemId}`);
-    console.log(response.data);
-    setBoxItem(response.data);
+    setLoading(true);
+    try {
+      const response = await api.get(`BoxItem/WithDTO/${boxItemId}`);
+      console.log(response.data);
+      setBoxItem(response.data);
+    } catch (error) {
+      console.error("Failed to fetch BoxItem:", error);
+      toast.error("Failed to fetch BoxItem");
+    }
+    setLoading(false);
   };
   useEffect(() => {
     fetchBoxItemDetail();
@@ -65,10 +73,16 @@ export default function BoxItemDetailPage() {
     }
   };
 
-  if (!boxItem) return <div>Loading...</div>;
+  if (!boxItem || loading) {
+    return (
+      <div className="w-full h-full min-h-screen  flex justify-center items-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
-    <div className="mt-34 container mx-auto">
+    <div className="mt-[10%] container mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}

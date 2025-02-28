@@ -15,7 +15,7 @@ import { route } from "../../../../routes";
 import { clearCart } from "../../../../Redux/features/cartSlice";
 
 const Sidebar = ({ setActiveSection }) => {
-  const user = useSelector(selectUser)
+  const user = useSelector(selectUser);
   const navigate = useNavigate();
   const sections = [
     {
@@ -37,9 +37,17 @@ const Sidebar = ({ setActiveSection }) => {
 
   if (user.roleId === 1) {
     sections.push({
-      icon:<LaptopOutlined />,
+      icon: <LaptopOutlined />,
       title: "Admin Page",
       description: "Manage your store",
+    });
+  }
+
+  if (user.roleId === 2) {
+    sections.push({
+      icon: <LaptopOutlined />,
+      title: "Staff Page",
+      description: "Manage your Blog",
     });
   }
   const dispatch = useDispatch();
@@ -72,8 +80,8 @@ const Sidebar = ({ setActiveSection }) => {
         </div>
 
         <div className="  flex flex-col  font-extrabold ">
-            <div className="py-[1%] flex justify-start">Mystery Minis Member</div>
-          </div>
+          <div className="py-[1%] flex justify-start">Mystery Minis Member</div>
+        </div>
 
         <div>
           {sections.map((section, index) => (
@@ -86,6 +94,8 @@ const Sidebar = ({ setActiveSection }) => {
                 onClick={() => {
                   if (section.title === "Admin Page") {
                     navigate("/admin/order-management");
+                  } else if (section.title === "Staff Page") {
+                    navigate("/staff/account-management");
                   } else {
                     setActiveSection(section.title);
                   }
