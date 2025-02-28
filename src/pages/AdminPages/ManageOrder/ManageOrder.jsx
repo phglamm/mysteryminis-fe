@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { Table, Button, Space, Tabs, Modal, Upload, Image, Form } from "antd";
 import api from "../../../config/api";
 import dayjs from "dayjs"; // Import thư viện format ngày giờ
-import "./ManageOrder.scss";
 import toast from "react-hot-toast";
 import uploadFile from "../../../utils/UploadImage";
 import { PlusOutlined } from "@ant-design/icons";
