@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Checkbox, Pagination } from "antd";
+import { useEffect, useState } from "react";
+import { Checkbox, Pagination, Spin } from "antd";
 import CardProduct from "../../../components/CardProduct/CardProduct";
 import api from "../../../config/api";
 import { useLocation } from "react-router-dom";
@@ -8,7 +8,13 @@ const ProductPage = () => {
   const [brands, setBrands] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [boxes, setBoxes] = useState([]);
+  const pageSize = 9;
+  const [loading, setLoading] = useState(false);
+  const location = useLocation();
 
+  let SelectedBrand = location.state?.brand;
+  console.log("Selected Brand: ", SelectedBrand);  
+  
   useEffect(() => {
     const fetchBox = async () => {
       setLoading(true);
@@ -31,18 +37,15 @@ const ProductPage = () => {
     fetchBox();
   }, []);
 
+  
   useEffect(() => {
     if (SelectedBrand) {
       setBrands([SelectedBrand]);
     }
   }, [SelectedBrand]);
 
-  if (!boxes.length || loading) {
-    return (
-      <div className="w-full h-full min-h-screen  flex justify-center items-center">
-        <Spin size="large" />
-      </div>
-    );
+  if (!boxes) {
+    return <div>Loading...</div>;
   }
   const brandsList = Array.from(
     new Set(boxes.map((product) => product.brandName))
@@ -67,6 +70,14 @@ const ProductPage = () => {
     startIndex,
     startIndex + pageSize
   );
+  
+  if (!boxes.length || loading) {
+    return (
+      <div className="w-full h-full min-h-screen  flex justify-center items-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto mt-[10%]">
@@ -86,8 +97,11 @@ const ProductPage = () => {
         >
           <h3 style={{ marginBottom: "10px" }}>Filter by Brand</h3>
           <Checkbox.Group
-            style={{ display: "flex", flexDirection: "column" }}
-            options={brandsList.map((brand) => ({ label: brand, value: brand }))}
+            style={{ display: "flex", flexDirection: "column", gap: "5px" }}
+            options={brandsList.map((brand) => ({
+              label: brand,
+              value: brand,
+            }))}
             onChange={handleBrandChange}
           />
         </div>
