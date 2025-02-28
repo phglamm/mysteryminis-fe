@@ -3,7 +3,8 @@ import {
   BookOutlined,
   EnvironmentOutlined,
   GithubOutlined,
-  ProfileOutlined,
+  IdcardOutlined,
+  LaptopOutlined,
 } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
@@ -18,7 +19,7 @@ const Sidebar = ({ setActiveSection }) => {
   const navigate = useNavigate();
   const sections = [
     {
-      icon: <ProfileOutlined />,
+      icon: <IdcardOutlined />,
       title: "My Profile",
       description: "Manage your information",
     },
@@ -32,8 +33,15 @@ const Sidebar = ({ setActiveSection }) => {
       title: "Address Book",
       description: "Manage your address",
     },
-    
   ];
+
+  if (user.roleId === 1) {
+    sections.push({
+      icon:<LaptopOutlined />,
+      title: "Admin Page",
+      description: "Manage your store",
+    });
+  }
   const dispatch = useDispatch();
 
   const handleLogout = () => {
@@ -75,7 +83,13 @@ const Sidebar = ({ setActiveSection }) => {
                 whileTap={{ scale: 0.9, color: "red" }}
                 whileHover={{ scale: 1.1, color: "red" }}
                 className="flex gap-3 items-center mb-4 cursor-pointer"
-                onClick={() => setActiveSection(section.title)}
+                onClick={() => {
+                  if (section.title === "Admin Page") {
+                    navigate("/admin/order-management");
+                  } else {
+                    setActiveSection(section.title);
+                  }
+                }}
               >
                 <div className="text-2xl">{section.icon}</div>
                 <div className="flex flex-col">
