@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Card } from "antd";
+import { Card, Spin } from "antd";
 import { motion } from "framer-motion";
 import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 import FadeContent from "../../../components/React_Bits/FadeContent/FadeContent";
@@ -7,6 +7,8 @@ import CountUp from "../../../components/React_Bits/CountUp/CountUp";
 import ImageContent from "./ImageContent/ImageContent";
 import { useNavigate } from "react-router-dom";
 import { fetchBoxesHomePage } from "../../../config/Data";
+import { useDispatch } from "react-redux";
+import { loadBoxes } from "../../../Redux/features/boxSlice";
 
 
 
@@ -14,6 +16,8 @@ export default function Homepage() {
   const [cardData, setCardData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchBoxesHomePage(selectedCategory).then((data) => {
@@ -27,10 +31,27 @@ export default function Homepage() {
     });
   }, [selectedCategory]);
 
+  useEffect(() => {
+    setLoading(true);
+    try {
+      dispatch(loadBoxes());
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+    setLoading(false);
+  }, [dispatch]);
 
   console.log("Card Data: ", cardData);
   const categories = ["All", "BestSeller", "Sale Off", "Yooki", "BabyThree"];
 
+  if(loading || !cardData.length) {
+    return (
+      <div className="w-full h-full min-h-screen  flex justify-center items-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
+  
   return (
     <div className="mt-[10%]">
       <ImageContent />

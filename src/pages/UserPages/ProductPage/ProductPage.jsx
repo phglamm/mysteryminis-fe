@@ -4,7 +4,6 @@ import CardProduct from "../../../components/CardProduct/CardProduct";
 import api from "../../../config/api";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { loadBoxes } from "../../../Redux/features/boxSlice";
 
 const ProductPage = () => {
   const [brands, setBrands] = useState([]);
@@ -18,10 +17,8 @@ const ProductPage = () => {
   
     // Get boxes from Redux
     const { data: boxes } = useSelector((state) => state.boxes);
-
-    useEffect(() => {
-      dispatch(loadBoxes());
-    }, [dispatch]);
+    console.log("Boxes: ", boxes);
+    
 
   
   useEffect(() => {
@@ -30,9 +27,6 @@ const ProductPage = () => {
     }
   }, [SelectedBrand]);
 
-  if (!boxes) {
-    return <div>Loading...</div>;
-  }
   const brandsList = Array.from(
     new Set(boxes.map((product) => product.brandName))
   );
