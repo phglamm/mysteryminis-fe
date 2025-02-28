@@ -1,44 +1,29 @@
-import React, { useState } from "react";
-import { Table, Button, Space, Modal, Input, Form, message, Tabs, Select } from "antd";
+import { useEffect, useState } from "react";
+import { Table, Button, Space, Modal, Input, Form, message, Tabs, Select, Spin, Switch } from "antd";
+import api from "../../../config/api";
 
 const { TabPane } = Tabs;
 
 const ManageAccount = () => {
-  const [accounts, setAccounts] = useState([
-    {
-      key: "1",
-      id: 1,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      role: "User",
-      status: "Active",
-    },
-    {
-      key: "2",
-      id: 2,
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      role: "Staff",
-      status: "Active",
-    },
-    {
-      key: "3",
-      id: 3,
-      name: "Alice Johnson",
-      email: "alice.johnson@example.com",
-      role: "User",
-      status: "Inactive",
-    },
-    {
-      key: "4",
-      id: 4,
-      name: "Bob Brown",
-      email: "bob.brown@example.com",
-      role: "Staff",
-      status: "Active",
-    },
-  ]);
+  const [accounts, setAccounts] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const fetchAccounts = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get("User/all-users");
+      const data = await response.data;
+      setAccounts(data);
+    } catch (error) {
+      console.error("Failed to fetch accounts: ", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
+  console.log(accounts);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [editingAccount, setEditingAccount] = useState(null);
   const [form] = Form.useForm();
@@ -50,7 +35,7 @@ const ManageAccount = () => {
       okText: "Yes",
       cancelText: "No",
       onOk: () => {
-        setAccounts(accounts.filter((account) => account.id !== id));
+        setAccounts(accounts.filter((account) => account.userId !== id));
         message.success("Account deleted successfully");
       },
     });
@@ -75,14 +60,14 @@ const ManageAccount = () => {
         if (editingAccount) {
           setAccounts(
             accounts.map((account) =>
-              account.id === editingAccount.id
+              account.userId === editingAccount.userId
                 ? { ...account, ...values }
                 : account
             )
           );
           message.success("Account updated successfully");
         } else {
-          const newAccount = { key: Date.now(), id: Date.now(), ...values };
+          const newAccount = { userId: Date.now(), ...values };
           setAccounts([...accounts, newAccount]);
           message.success("Account added successfully");
         }
@@ -94,25 +79,14 @@ const ManageAccount = () => {
   };
 
   const columns = [
-    { title: "ID", dataIndex: "id", key: "id", width: 80 },
-    // { title: "Name", dataIndex: "name", key: "name", width: 200, },
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-      filters: [
-        ...new Set(
-          accounts.map((item) => ({
-            text: item.name,
-            value: item.name,
-          }))
-        ),
-      ], 
-      onFilter: (value, record) => record.name === value,
-      filterSearch: true,
-    },
+    { title: "ID", dataIndex: "userId", key: "userId", width: 80 },
+    { title: "Username", dataIndex: "username", key: "username", width: 150 },
+    { title: "Name", dataIndex: "fullname", key: "fullname", width: 150 },
     { title: "Email", dataIndex: "email", key: "email", width: 250 },
-    { title: "Status", dataIndex: "status", key: "status", width: 120 },
+    { title: "Phone", dataIndex: "phone", key: "phone", width: 150 },
+    { title: "Gender", dataIndex: "gender", key: "gender", render: (text) => (text ? "Male" : "Female"), width: 100 },
+    { title: "Role", dataIndex: "roleId", key: "roleId", render: (text) => (text === 2 ? "Staff" : "User"), width: 100 },
+    { title: "Status", dataIndex: "isActive", key: "isActive", render: (text) => (text ? "Active" : "Inactive"), width: 120 },
     {
       title: "Action",
       key: "action",
@@ -138,7 +112,7 @@ const ManageAccount = () => {
               borderColor: "#ff4d4f",
               color: "#fff",
             }}
-            onClick={() => handleDelete(record.id)}
+            onClick={() => handleDelete(record.userId)}
           >
             Delete
           </Button>
@@ -147,6 +121,13 @@ const ManageAccount = () => {
     },
   ];
 
+  if (loading) {
+    return (
+      <div className="w-full h-full min-h-screen flex justify-center items-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
   return (
     <div style={{ padding: 10 }}>
       <h2 style={{ fontSize: "30px" }}>Manage Accounts</h2>
@@ -167,7 +148,7 @@ const ManageAccount = () => {
           <div style={{ minHeight: "500px" }}>
             <Table
               columns={columns}
-              dataSource={accounts.filter((account) => account.role === "User")}
+              dataSource={accounts.filter((account) => account.roleId === 3)}
               scroll={{ y: "calc(100vh - 300px)" }} // Giữ chiều cao cố định
             />
           </div>
@@ -190,7 +171,7 @@ const ManageAccount = () => {
             <Table
               columns={columns}
               dataSource={accounts.filter(
-                (account) => account.role === "Staff"
+                (account) => account.roleId === 2
               )}
               scroll={{ y: "calc(100vh - 300px)" }} // Giữ chiều cao cố định
             />
@@ -220,9 +201,16 @@ const ManageAccount = () => {
       >
         <Form form={form} layout="vertical">
           <Form.Item
-            name="name"
-            label="Name"
-            rules={[{ required: true, message: "Please enter name" }]}
+            name="username"
+            label="Username"
+            rules={[{ required: true, message: "Please enter username" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="fullname"
+            label="Full Name"
+            rules={[{ required: true, message: "Please enter full name" }]}
           >
             <Input />
           </Form.Item>
@@ -234,14 +222,38 @@ const ManageAccount = () => {
             <Input />
           </Form.Item>
           <Form.Item
-            name="role"
-            label="Role"
-            rules={[{ required: true, message: "Please enter role" }]}
+            name="phone"
+            label="Phone"
+            rules={[{ required: true, message: "Please enter phone number" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            name="gender"
+            label="Gender"
+            rules={[{ required: true, message: "Please select gender" }]}
           >
             <Select>
-              <Select.Option value="User">User</Select.Option>
-              <Select.Option value="Staff">Staff</Select.Option>
+              <Select.Option value={true}>Male</Select.Option>
+              <Select.Option value={false}>Female</Select.Option>
             </Select>
+          </Form.Item>
+          <Form.Item
+            name="roleId"
+            label="Role"
+            rules={[{ required: true, message: "Please select role" }]}
+          >
+            <Select>
+              <Select.Option value={3}>User</Select.Option>
+              <Select.Option value={2}>Staff</Select.Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            name="isActive"
+            label="Status"
+            valuePropName="checked"
+          >
+            <Switch />
           </Form.Item>
         </Form>
       </Modal>
