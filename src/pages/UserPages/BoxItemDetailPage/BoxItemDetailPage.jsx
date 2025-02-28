@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import  { useEffect, useState } from "react";
+import {  useNavigate, useParams } from "react-router-dom";
 import api from "../../../config/api";
-import { Button, Col, Collapse, Rate, Row } from "antd";
+import { Button, Collapse, Rate } from "antd";
 import { route } from "../../../routes";
 import CardBoxItem from "../../../components/CardBoxItem/CardBoxItem";
 const { Panel } = Collapse;
@@ -93,7 +93,7 @@ export default function BoxItemDetailPage() {
           Item in 1 box
         </h2>
         <div className="grid grid-cols-4 gap-4">
-          {relevantBoxItem.map((item, index) => (
+          {relevantBoxItem.map((item) => (
             <CardBoxItem Item={item} key={item.boxItemId} />
           ))}
         </div>
