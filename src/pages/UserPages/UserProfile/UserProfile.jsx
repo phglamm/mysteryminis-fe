@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Sidebar from "./SideBar/SideBar";
 import MyProfile from "./MainContent/MyProfile";
-import AddressBook from "./MainContent/AddressBook";
+import AddressBook from "./MainContent/ManageAddress/AddressBook";
 import EarnedRewards from "./MainContent/EarnedRewards";
 import MyOrders from "./MainContent/MyOrders";
 import MyCoupons from "./MainContent/MyCoupons";
@@ -18,7 +18,7 @@ const UserProfile = () => {
             case "My Profile":
                 return <MyProfile isEditing={isEditing} setIsEditing={setIsEditing} resetPassword={resetPassword} setResetPassword={setResetPassword} />;
             case "Address Book":
-                return <AddressBook />;
+                return <AddressBook isEditing={isEditing} setIsEditing={setIsEditing}/>;
             case "Earned Rewards":
                 return <EarnedRewards />;
             case "My Orders":
@@ -50,13 +50,14 @@ const UserProfile = () => {
                             >
                                 {activeSection}
                             </motion.span>
-                            {activeSection === "My Profile" && (
+                            {(activeSection === "My Profile" || activeSection === "Address Book") && (
                                 <motion.span
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1, color: "black" }}
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9, color: "red" }} 
-                                    className="border-1 rounded min-w-[65px] items-center text-center p-1 text-sm cursor-pointer"
+                                    className={activeSection === "My Profile" ? "border-1 rounded min-w-[65px] items-center text-center p-1 text-sm cursor-pointer" 
+                                                : activeSection === "Address Book" && isEditing ? "border-1 rounded min-w-[65px] items-center text-center p-1 text-sm cursor-pointer" : ''}
                                     onClick={() => {
                                         if (resetPassword) {
                                             setResetPassword(false);
@@ -65,7 +66,12 @@ const UserProfile = () => {
                                         }
                                     }}
                                 >
-                                    {isEditing || resetPassword ? "Back" : "Edit Profile"}
+                                {
+                                    activeSection === "My Profile" ?  isEditing || resetPassword ? "Back" : "Edit Profile"
+                                    : activeSection === "Address Book" ? isEditing ? "Back" : null
+                                    : null
+                                }
+                                   
                                 </motion.span>
                             )}
                         </div>
