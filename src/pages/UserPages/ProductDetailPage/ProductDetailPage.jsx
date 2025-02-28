@@ -166,18 +166,21 @@ const ProductDetailPage = () => {
                   style={{
                     padding: "10px 16px",
                     border:
-                      selectedOptionName === option.boxOptionName
+                      chooseOption &&
+                      chooseOption.boxOptionId === option.boxOptionId
                         ? "2px solid black"
                         : "1px solid #ccc",
                     borderRadius: "8px",
                     fontSize: "14px",
                     cursor: "pointer",
                     fontWeight:
-                      selectedOptionName === option.boxOptionName
+                      chooseOption &&
+                      chooseOption.boxOptionId === option.boxOptionId
                         ? "bold"
                         : "normal",
                     backgroundColor:
-                      selectedOptionName === option.boxOptionName
+                      chooseOption &&
+                      chooseOption.boxOptionId === option.boxOptionId
                         ? "#fff"
                         : "#f0f0f0",
                     color: "#333",
@@ -185,7 +188,8 @@ const ProductDetailPage = () => {
                     alignItems: "center",
                     gap: "8px",
                     boxShadow:
-                      selectedOptionName === option.boxOptionName
+                      chooseOption &&
+                      chooseOption.boxOptionId === option.boxOptionId
                         ? "0 0 5px rgba(0,0,0,0.3)"
                         : "none",
                     minWidth: "150px",
