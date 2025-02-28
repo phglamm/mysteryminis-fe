@@ -151,7 +151,7 @@ export default function BoxItemDetailPage() {
             Item in 1 box
           </h2>
           <div className="grid grid-cols-4 gap-4">
-            {relevantBoxItem.map((item, index) => (
+            {relevantBoxItem.map((item) => (
               <CardBoxItem Item={item} key={item.boxItemId} />
             ))}
           </div>

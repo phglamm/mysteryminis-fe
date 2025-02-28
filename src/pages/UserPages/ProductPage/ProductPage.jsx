@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Checkbox, Pagination, Spin } from "antd";
+import { Checkbox, Pagination } from "antd";
 import CardProduct from "../../../components/CardProduct/CardProduct";
 import api from "../../../config/api";
+import { useLocation } from "react-router-dom";
 
 const ProductPage = () => {
   const [brands, setBrands] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [boxes, setBoxes] = useState([]);
-  const pageSize = 9;
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchBox = async () => {
@@ -31,6 +30,12 @@ const ProductPage = () => {
 
     fetchBox();
   }, []);
+
+  useEffect(() => {
+    if (SelectedBrand) {
+      setBrands([SelectedBrand]);
+    }
+  }, [SelectedBrand]);
 
   if (!boxes.length || loading) {
     return (
@@ -81,11 +86,8 @@ const ProductPage = () => {
         >
           <h3 style={{ marginBottom: "10px" }}>Filter by Brand</h3>
           <Checkbox.Group
-            style={{ display: "flex", flexDirection: "column", gap: "5px" }}
-            options={brandsList.map((brand) => ({
-              label: brand,
-              value: brand,
-            }))}
+            style={{ display: "flex", flexDirection: "column" }}
+            options={brandsList.map((brand) => ({ label: brand, value: brand }))}
             onChange={handleBrandChange}
           />
         </div>

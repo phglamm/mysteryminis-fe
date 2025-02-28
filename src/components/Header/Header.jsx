@@ -1,8 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Logo from "../../assets/images/Logo-removebg.png";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { Card } from "antd";
+import {  useNavigate } from "react-router-dom";
 import {
   HeartOutlined,
   MessageOutlined,
@@ -13,23 +12,27 @@ import Search from "../Search/Search";
 import { useSelector } from "react-redux";
 import { route } from "../../routes";
 import { selectUser } from "../../Redux/features/counterSlice";
+import api from "../../config/api";
 
 export default function Header() {
   const navigate = useNavigate();
   const [isHovered, setIsHovered] = useState(false);
+  const [brand, setBrand] = useState(null);
 
-  const BlindBoxCategories = [
-    { name: "Item 1" },
-    { name: "Item 2" },
-    { name: "Item 3" },
-    { name: "Item 4" },
-    { name: "Item 5" },
-    { name: "Item 6" },
-    { name: "Item 7" },
-    { name: "Item 8" },
-    { name: "Item 9" },
-    { name: "Item 10" },
-  ];
+  const fetchBlindBoxCategories = async () => {
+    try {
+      const response = await api.get("Brand");
+      const data = response.data;
+      setBrand(data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlindBoxCategories();
+  }, []);
+
 
   const initial = {
     opacity: 0,
@@ -195,20 +198,40 @@ export default function Header() {
           className="text-center font-bold bg-gray-200 "
           style={{ userSelect: "none" }}
         >
-          <div className="grid pr-64 pl-64 grid-cols-5 justify-center items-center gap-4 p-4 ">
-            {BlindBoxCategories.map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 + index * 0.1 }}
-              >
-                <Card bordered={false} className="shadow-md w-36">
-                  {item.name}
-                </Card>
-              </motion.div>
-            ))}
-          </div>
+          <div className="grid grid-cols-5 px-[15%]  justify-center items-center gap-4 p-4 ">
+            
+              {brand.slice(0,10).map((item, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3 + index * 0.1 }}
+                  className=" rounded-xl text-[1vw]  bg-white w-full flex justify-center items-center"
+                >
+                  <motion.div
+                    whileHover={{ scale: 1.1, color: "red" }}
+                      whileTap={{ scale: 0.9 }}
+                    onClick={() => navigate(route.product, {
+                      state: { brand: item.brandName },
+                    })}
+                    className="border-1 rounded-xl p-[5%] bg-white w-full flex justify-center items-center"
+                  >
+                    <motion.div
+                      className="flex flex-row justify-center items-center gap-2"
+                    >
+                      <span className="w-[30%] h-full rounded-xl flex justify-center items-center">
+                        <img src={item.imageUrl} alt="brand"  />
+                      </span> 
+                      
+                      <span className="w-[70%]">{item.brandName}</span>
+                      
+                    </motion.div>
+                    </motion.div>
+                  
+                </motion.div>
+              ))}
+            </div>
+            
         </motion.div>
       )}
     </div>
