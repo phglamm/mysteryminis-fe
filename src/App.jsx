@@ -29,6 +29,7 @@ import BlogPage from "./pages/UserPages/BlogPage/BlogPage";
 import OrderSuccessPage from "./pages/UserPages/OrderSuccess/OrderSuccessPage";
 import PaymentReturnPage from "./pages/UserPages/PaymentReturn/PaymentReturn";
 import OnlineBlindBox from "./pages/UserPages/OnlineBlindBox/OnlineBlindBox";
+import ManageBlog from "./pages/AdminPages/ManageBlog/ManageBlog";
 
 function App() {
   const router = createBrowserRouter([
@@ -140,6 +141,10 @@ function App() {
           path: route.orderManagement,
           element: <ManageOrder />,
         },
+        {
+          path: route.blogManagement,
+          element: <ManageBlog/>,
+        },
       ],
     },
 
@@ -171,6 +176,10 @@ function App() {
           path: route.orderManagement,
           element: <ManageOrder />,
         },
+        {
+          path: route.blogManagement,
+          element: <ManageBlog/>,
+        }
       ],
     },
   ]);
