@@ -45,6 +45,14 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
     setViewDetails(ViewDetails);
   }, [ViewDetails]);
 
+  useEffect(() => {
+    fetchOrders();
+  }, []);
+
+  useEffect(() => {
+    setViewDetails(ViewDetails);
+  }, [ViewDetails]);
+
   const cancelOrders = async (orderId) => {
     setLoadingCancel(true);
     try {
@@ -73,13 +81,15 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
       .replace(",", "");
   };
 
-  const filteredOrders = orders.filter((order) => {
-    if (selectedCategory === "All Orders") return true;
-    return (
-      order.orderStatusDetailsSimple?.slice(-1)[0]?.statusName ===
-      selectedCategory
-    );
-  });
+  const filteredOrders = orders
+    .filter((order) => {
+      if (selectedCategory === "All Orders") return true;
+      return (
+        order.orderStatusDetailsSimple?.slice(-1)[0]?.statusName ===
+        selectedCategory
+      );
+    })
+    .sort((b, a) => new Date(a.orderCreatedAt) - new Date(b.orderCreatedAt));
 
   return (
     <motion.div

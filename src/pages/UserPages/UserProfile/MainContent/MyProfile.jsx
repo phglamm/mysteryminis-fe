@@ -74,7 +74,12 @@ const MyProfile = ({ isEditing, setIsEditing, resetPassword, setResetPassword })
     }
 };
 
-  if (loading) return <Spin size="large" />;
+  if (loading) return (
+                        <div className="w-full h-[27vw] flex justify-center items-center">
+                          <Spin size="large" />
+                        </div> 
+                      )
+                
   if (error) return <div className="text-red-500">Error: {error}</div>;
 
   return (
