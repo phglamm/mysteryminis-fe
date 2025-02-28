@@ -122,8 +122,10 @@ const ProductDetailPage = () => {
     original: image.boxImageUrl,
     thumbnail: image.boxImageUrl,
   }));
+
+
   return (
-    <div className="product-detail-page container mx-auto mt-34">
+    <div className="product-detail-page container mx-auto mt-34 mb-15">
       {/* Chi tiết sản phẩm */}
       <div className="grid grid-cols-2 gap-10">
         {/* Hình ảnh */}
@@ -202,20 +204,21 @@ const ProductDetailPage = () => {
 
           {/* Nút CTA */}
           <Button
-            style={{
-              width: "100%",
-              padding: "12px",
-              fontSize: "16px",
-              fontWeight: "500",
-              backgroundColor: isOutOfStock ? "#ccc" : "#007BFF",
-              color: "#fff",
-              height: "50px",
-            }}
-            disabled={isOutOfStock}
-            onClick={handleAddToCart}
-          >
-            {isOutOfStock ? "NOTIFY ME WHEN AVAILABLE" : "ADD TO CART"}
-          </Button>
+  style={{
+    width: "100%",
+    padding: "12px",
+    fontSize: "16px",
+    fontWeight: "500",
+    backgroundColor: isOutOfStock ? "#ccc" : "#000", // Black background color
+    color: "#fff",
+    height: "50px",
+  }}
+  disabled={isOutOfStock}
+  onClick={handleAddToCart}
+>
+  {isOutOfStock ? "NOTIFY ME WHEN AVAILABLE" : "ADD TO CART"}
+</Button>
+
 
           {/* Add to Wishlist Button */}
           <Button
