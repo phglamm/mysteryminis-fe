@@ -64,6 +64,30 @@ const cartSlice = createSlice({
         item.quantity -= 1;
       }
     },
+
+    increaseOpen: (state, action) => {
+      const { boxId, selectedOption } = action.payload;
+      const item = state.cartItems.find(
+        (item) =>
+          item.boxId === boxId &&
+          item.selectedOption?.boxOptionId === selectedOption?.boxOptionId
+      );
+      if (item) {
+        item.orderItemOpenRequestNumber += 1;
+      }
+    },
+    decreaseOpen: (state, action) => {
+      const { boxId, selectedOption } = action.payload;
+      const item = state.cartItems.find(
+        (item) =>
+          item.boxId === boxId &&
+          item.selectedOption?.boxOptionId === selectedOption?.boxOptionId
+      );
+      if (item) {
+        item.orderItemOpenRequestNumber -= 1;
+      }
+    },
+
     clearCart: (state) => {
       state.cartItems = [];
     },
@@ -76,6 +100,9 @@ export const {
   increaseQuantity,
   decreaseQuantity,
   clearCart,
+  toggleItemChecked,
+  increaseOpen,
+  decreaseOpen,
 } = cartSlice.actions;
 
 export const selectCartItems = (state) => state.cart.cartItems;

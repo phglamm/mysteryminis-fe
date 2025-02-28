@@ -15,7 +15,7 @@ export default function BoxItemPage() {
       const response = await api.get("BoxItem");
       console.log(response.data);
       const sortResponse = response.data.sort(
-        (a, b) => b.boxItemId - a.boxItemId
+        (a, b) => b.averageRating - a.averageRating
       );
       setBoxItems(sortResponse);
     };

@@ -26,7 +26,7 @@ const CheckOutPage = () => {
       price: item.selectedOption.displayPrice,
       boxOptionId: item.selectedOption.boxOptionId,
       originPrice: item.selectedOption.originPrice,
-      orderItemOpenRequest: true,
+      orderItemOpenRequestNumber: item.orderItemOpenRequestNumber,
     }));
     console.log(values);
     try {
@@ -37,6 +37,7 @@ const CheckOutPage = () => {
       console.log(error.response.data);
     }
   };
+  33;
   const columns = [
     {
       title: "Product",
@@ -63,6 +64,11 @@ const CheckOutPage = () => {
           <p>
             {record.boxName}
             <p>option: {record.selectedOption.boxOptionName}</p>
+            {record.orderItemOpenRequestNumber ? (
+              <>Open {record.orderItemOpenRequestNumber} boxes </>
+            ) : (
+              <></>
+            )}
           </p>
         </div>
       ),
@@ -231,7 +237,7 @@ const CheckOutPage = () => {
 
       {/* Order Summary */}
       <div style={{ width: "550px" }}>
-        <Card title="Order Summary (1 item)">
+        <Card title={`Order Summary (${cartItems.length} items)`}>
           <Table
             dataSource={cartItems}
             columns={columns}

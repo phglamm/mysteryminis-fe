@@ -5,11 +5,12 @@ import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 import FadeContent from "../../../components/React_Bits/FadeContent/FadeContent";
 import CountUp from "../../../components/React_Bits/CountUp/CountUp";
 import ImageContent from "./ImageContent/ImageContent";
+import { useNavigate } from "react-router-dom";
 
 export default function Homepage() {
   const [cardData, setCardData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
-
+  const navigate = useNavigate();
   useEffect(() => {
     let isMounted = true;
     const fetchData = async () => {
@@ -99,6 +100,7 @@ export default function Homepage() {
                   hoverable cover={<img alt={card.name} 
                   src={card.imageSrc} className="lg:h-[12vw] h-[20vw] bg-amber-200" />}
                   className="w-[100%]"
+                  onClick={() => navigate(`/product/detail/${card.id}`)}
                 >
                   {card.name}
                 </Card>

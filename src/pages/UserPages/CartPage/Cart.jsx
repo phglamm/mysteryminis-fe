@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Row, Col, Typography, Divider } from "antd";
+import { Button, Row, Col, Typography, Divider, Checkbox } from "antd";
 import {
   ShoppingCartOutlined,
   PlusOutlined,
@@ -7,10 +7,13 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  decreaseOpen,
   decreaseQuantity,
+  increaseOpen,
   increaseQuantity,
   removeFromCart,
   selectCartItems,
+  toggleItemChecked,
 } from "../../../Redux/features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { route } from "../../../routes";
@@ -95,6 +98,43 @@ const Cart = () => {
                         Price:{" "}
                         {item.selectedOption.displayPrice.toLocaleString()} đ
                       </p>
+                      <div className="flex items-center justify-between gap-3">
+                        <p>How many box you want us to open?</p>
+                        <Button
+                          icon={<MinusOutlined />}
+                          onClick={() =>
+                            dispatch(
+                              decreaseOpen({
+                                boxId: item.boxId,
+                                selectedOption: item.selectedOption || null,
+                              })
+                            )
+                          }
+                          disabled={item.orderItemOpenRequestNumber === 0}
+                        />
+                        <Text
+                          style={{
+                            textAlign: "center",
+                            fontSize: "18px",
+                          }}
+                        >
+                          {item.orderItemOpenRequestNumber}
+                        </Text>
+                        <Button
+                          icon={<PlusOutlined />}
+                          onClick={() =>
+                            dispatch(
+                              increaseOpen({
+                                boxId: item.boxId,
+                                selectedOption: item.selectedOption || null,
+                              })
+                            )
+                          }
+                          disabled={
+                            item.orderItemOpenRequestNumber === item.quantity
+                          }
+                        />
+                      </div>
                     </Col>
                     <Col>
                       <div style={{ display: "flex", alignItems: "center" }}>

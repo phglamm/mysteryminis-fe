@@ -49,7 +49,7 @@ export default function Header() {
   const navItems = [
     { label: "Online Blindbox", path: "/online-blindbox" },
     { label: "Hot Items", path: route.boxItemPage },
-    { label: "Blogs", path: "/blogs" },
+    { label: "Blogs", path: route.blog },
   ];
   const user = useSelector(selectUser);
   return (
@@ -63,7 +63,12 @@ export default function Header() {
           transition={{ duration: 1 }}
           style={{ userSelect: "none" }}
         >
-          <img src={Logo} onClick={() => navigate("/")} alt="Logo" className="w-[15%] h-fit" />
+          <img
+            src={Logo}
+            onClick={() => navigate("/")}
+            alt="Logo"
+            className="w-[15%] h-fit"
+          />
 
           <motion.span
             initial={initial}

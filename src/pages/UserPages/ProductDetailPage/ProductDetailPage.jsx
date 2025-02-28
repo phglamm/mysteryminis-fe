@@ -6,11 +6,15 @@ import "react-image-gallery/styles/css/image-gallery.css";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 import api from "../../../config/api";
 import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addToCart, clearCart } from "../../../Redux/features/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../../../Redux/features/cartSlice";
 import "./ProductDetailPage.scss";
+import {
+  addToFavorite,
+  removeFromFavorite,
+  selectFavoriteItems,
+} from "../../../Redux/features/favoriteSlice";
 import toast from "react-hot-toast";
-import { addToFavorite } from "../../../Redux/features/favoriteSlice";
 const { Panel } = Collapse;
 
 const ProductDetailPage = () => {
@@ -25,6 +29,7 @@ const ProductDetailPage = () => {
 
   const { id } = useParams();
   const dispatch = useDispatch();
+  const favoriteItems = useSelector(selectFavoriteItems);
 
   useEffect(() => {
     const fetchBoxDetail = async () => {
@@ -63,6 +68,12 @@ const ProductDetailPage = () => {
     }
   }, [box]);
 
+  useEffect(() => {
+    if (box) {
+      setIsWishlisted(favoriteItems.some((item) => item.boxId === box.boxId));
+    }
+  }, [box, favoriteItems]);
+
   if (!box) {
     return <div>Loading...</div>;
   }
@@ -86,15 +97,25 @@ const ProductDetailPage = () => {
     const selectedOption = box.boxOptions.find(
       (option) => option.boxOptionId === chooseOption.boxOptionId
     );
+    const orderItemOpenRequestNumber = 0;
 
     console.log("Selected: ", selectedOption);
 
     if (selectedOption) {
-      const boxToAdd = { ...box, selectedOption };
+      const boxToAdd = { ...box, selectedOption, orderItemOpenRequestNumber };
       console.log(boxToAdd);
       toast.success("Added to cart");
       dispatch(addToCart(boxToAdd));
     }
+  };
+
+  const handleToggleFavorite = () => {
+    if (isWishlisted) {
+      dispatch(removeFromFavorite({ boxId: box.boxId }));
+    } else {
+      dispatch(addToFavorite(box));
+    }
+    setIsWishlisted(!isWishlisted);
   };
 
   const boxImages = box?.boxImage.map((image) => ({
@@ -145,18 +166,21 @@ const ProductDetailPage = () => {
                   style={{
                     padding: "10px 16px",
                     border:
-                      selectedOptionName === option.boxOptionName
+                      chooseOption &&
+                      chooseOption.boxOptionId === option.boxOptionId
                         ? "2px solid black"
                         : "1px solid #ccc",
                     borderRadius: "8px",
                     fontSize: "14px",
                     cursor: "pointer",
                     fontWeight:
-                      selectedOptionName === option.boxOptionName
+                      chooseOption &&
+                      chooseOption.boxOptionId === option.boxOptionId
                         ? "bold"
                         : "normal",
                     backgroundColor:
-                      selectedOptionName === option.boxOptionName
+                      chooseOption &&
+                      chooseOption.boxOptionId === option.boxOptionId
                         ? "#fff"
                         : "#f0f0f0",
                     color: "#333",
@@ -164,7 +188,8 @@ const ProductDetailPage = () => {
                     alignItems: "center",
                     gap: "8px",
                     boxShadow:
-                      selectedOptionName === option.boxOptionName
+                      chooseOption &&
+                      chooseOption.boxOptionId === option.boxOptionId
                         ? "0 0 5px rgba(0,0,0,0.3)"
                         : "none",
                     minWidth: "150px",
@@ -213,17 +238,14 @@ const ProductDetailPage = () => {
               width: "40%",
               height: "50px",
             }}
-            onClick={() => {
-              dispatch(addToFavorite(box));
-              setIsWishlisted(!isWishlisted);
-            }}
+            onClick={handleToggleFavorite}
           >
             {isWishlisted ? (
               <HeartFilled style={{ color: "#e60000" }} />
             ) : (
               <HeartOutlined style={{ color: "#ccc" }} />
             )}
-            {isWishlisted ? "Đã yêu thích" : "Thêm vào yêu thích"}
+            {isWishlisted ? "Already in Favorites" : "Add to Favorites"}
           </Button>
 
           {/* Thông tin chi tiết */}
