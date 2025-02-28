@@ -38,28 +38,13 @@ export default function ManageBoxItem() {
       dataIndex: "imageUrl",
       key: "imageUrl",
       render: (value) => (
-        <Image src={value} style={{ width: "200px", height: "130px" }} />
+        <Image src={value} style={{ width: "100px", height: "100px" }} />
       ),
     },
     {
       title: "Name",
       dataIndex: "boxItemName",
       key: "boxItemName",
-    },
-    {
-      title: "Description",
-      dataIndex: "boxItemDescription",
-      key: "boxItemDescription",
-    },
-    {
-      title: "Eyes",
-      dataIndex: "boxItemEyes",
-      key: "boxItemEyes",
-    },
-    {
-      title: "Color",
-      dataIndex: "boxItemColor",
-      key: "boxItemColor",
     },
     {
       title: "Average Rating",
@@ -76,11 +61,6 @@ export default function ManageBoxItem() {
       dataIndex: "isSecret",
       key: "isSecret",
       render: (value) => (value ? "Secret" : "Normal"),
-    },
-    {
-      title: "For Box Id",
-      dataIndex: ["belongBox", "boxId"],
-      key: "boxId",
     },
     {
       title: "For Box Name",
