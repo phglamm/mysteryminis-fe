@@ -199,9 +199,9 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                 <span className="text-[1.8vw] font-bold">Delivery Address</span>
                 <span className="flex flex-row ">
                   <span className="flex flex-col w-[30%] ">
-                    <span className="text-[1vw]">{user.fullname}</span>
+                    <span className="text-[1vw]">{order.address?.name}</span>
                     <span className="text-[0.9vw] text-gray-400">
-                      {user.phone}{" "}
+                      {order.address?.phoneNumber}{" "}
                     </span>
                   </span>
                   <span className="text-[1.2vw] w-[70%] text-gray-400">
@@ -242,10 +242,10 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                           {item.boxName}
                         </span>
                         <span className="text-sm text-gray-500">
-                          {item.boxOptionName}
+                          Option: {item.boxOptionName}
                         </span>
                         <span className="text-sm text-gray-400">
-                          x{item.quantity}
+                          Quanity: {item.quantity}
                         </span>
                       </div>
                     </div>
@@ -254,43 +254,52 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                       <span className="text-sm text-red-500">
                         {item.openRequest ? "Open Requested" : ""}
                       </span>
-                      {item.orderStatusCheckCardImage &&
-                        item.orderStatusCheckCardImage.length > 0 && (
-                          <div className="flex flex-col justify-center items-center">
-                            <span
-                              className="text-sm hover:underline cursor-pointer"
-                              onClick={() => {
-                                setCheckCard(item.orderStatusCheckCardImage);
-                                setVisible(true);
-                              }}
-                            >
-                              View Card
-                            </span>
-
-                            {/* Image Preview Group */}
-                            {visible && checkCard?.length > 0 && (
-                              <Image.PreviewGroup
-                                style={{ display: "none", height: 0 }}
-                                preview={{
-                                  visible,
-                                  onVisibleChange: (vis) => setVisible(vis),
+                      {item.openRequestNumber && item.openRequestNumber > 0 ? (
+                        <>
+                          {" "}
+                          {item.orderStatusCheckCardImage &&
+                          item.orderStatusCheckCardImage.length > 0 ? (
+                            <div className="flex flex-col justify-center items-center">
+                              <span
+                                className="text-sm hover:underline cursor-pointer"
+                                onClick={() => {
+                                  setCheckCard(item.orderStatusCheckCardImage);
+                                  setVisible(true);
                                 }}
                               >
-                                {checkCards.map((img, imgIndex) => (
-                                  <Image
-                                    key={imgIndex}
-                                    style={{ display: "none" }}
-                                    src={img}
-                                  />
-                                ))}
-                              </Image.PreviewGroup>
-                            )}
-                          </div>
-                        )}
+                                View Card
+                              </span>
+
+                              {/* Image Preview Group */}
+                              {visible && checkCard?.length > 0 && (
+                                <Image.PreviewGroup
+                                  style={{ display: "none", height: 0 }}
+                                  preview={{
+                                    visible,
+                                    onVisibleChange: (vis) => setVisible(vis),
+                                  }}
+                                >
+                                  {checkCards.map((img, imgIndex) => (
+                                    <Image
+                                      key={imgIndex}
+                                      style={{ display: "none" }}
+                                      src={img}
+                                    />
+                                  ))}
+                                </Image.PreviewGroup>
+                              )}
+                            </div>
+                          ) : (
+                            <p>Waiting to Open {item.openRequestNumber} box</p>
+                          )}
+                        </>
+                      ) : (
+                        <> </>
+                      )}
                     </div>
                     <div className="flex justify-center items-center w-1/4">
                       {ViewDetails ? (
-                        <div>{item.orderPrice}</div>
+                        <div>{item.orderPrice.toLocaleString() + " đ"}</div>
                       ) : (
                         <motion.button
                           className="border-1 px-3 py-1 w-[80%] rounded-md font-bold"

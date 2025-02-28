@@ -152,12 +152,12 @@ export default function LoginPage() {
 
               <p className="text-center text-2xl font-bold mt-3 mb-3">or</p>
 
-              <div className="google-btn-container ">
+              <div className="google-btn-container w-full !rounded-lg">
                 <GoogleLogin
                   onSuccess={handleLoginSuccess}
                   onFailure={handleLoginFailure}
                   buttonText="Login with Google"
-                  className="google-button flex items-center w-full border-2 border-black-500 justify-center gap-5 text-xl font-bold p-2 rounded-md cursor-pointer"
+                  className="google-button flex items-center w-full border-2 border-black-500 justify-center gap-5 text-xl font-bold p-2  cursor-pointer"
                 />
               </div>
             </Form.Item>

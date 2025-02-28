@@ -1,25 +1,58 @@
-import React, { useState } from "react";
-import { Form, Input, Button, Card, Table, Checkbox, Badge } from "antd";
+import { useEffect, useState } from "react";
+import { Form, Input, Button, Card, Table, Badge, Select, Radio } from "antd";
 import { useSelector } from "react-redux";
 import { selectCartItems } from "../../../Redux/features/cartSlice";
 import { selectUser } from "../../../Redux/features/counterSlice";
 import api from "../../../config/api";
+import { useNavigate } from "react-router-dom";
+import { route } from "../../../routes";
+import { useForm } from "antd/es/form/Form";
 
 const CheckOutPage = () => {
   const [discountCode, setDiscountCode] = useState("");
-
+  const navigate = useNavigate();
   const cartItems = useSelector(selectCartItems);
   const user = useSelector(selectUser);
   const totalAmount = cartItems.reduce(
     (acc, item) => acc + item.selectedOption.displayPrice * item.quantity,
     0
   );
+  const [form] = useForm();
+
+  const [userAddress, setUserAddress] = useState([]);
+
+  useEffect(() => {
+    const fetchUserAddress = async () => {
+      try {
+        const response = await api.get(`/Address/?userId=${user.userId}`);
+        console.log(response.data);
+        setUserAddress(response.data);
+      } catch (error) {
+        console.log(error.response.data);
+      }
+    };
+    fetchUserAddress();
+  }, []);
+
+  const handleAddressChange = (value) => {
+    const selectedAddress = userAddress.find(
+      (address) => address.addressId === value
+    );
+    if (selectedAddress) {
+      form.setFieldsValue({
+        province: selectedAddress.province,
+        district: selectedAddress.district,
+        addressDetail: selectedAddress.addressDetail,
+        ward: selectedAddress.ward,
+        phoneNumber: selectedAddress.phoneNumber,
+        name: selectedAddress.name,
+      });
+    }
+  };
 
   const handleCheckout = async (values) => {
     values.userId = user.userId;
-    values.paymentMethod = "VNPAY";
     values.voucherId = 1;
-    values.addressId = 79;
     values.totalPrice = totalAmount;
     values.orderItemRequestDto = cartItems.map((item) => ({
       quantity: item.quantity,
@@ -29,15 +62,25 @@ const CheckOutPage = () => {
       orderItemOpenRequestNumber: item.orderItemOpenRequestNumber,
     }));
     console.log(values);
-    try {
-      const response = await api.post("/Payment/make-Payment", values);
-      console.log(response.data);
-      window.location.assign(response.data);
-    } catch (error) {
-      console.log(error.response.data);
+    if (values.paymentMethod === "VNPAY") {
+      try {
+        const response = await api.post("/Payment/make-Payment", values);
+        console.log(response.data);
+        window.location.assign(response.data);
+      } catch (error) {
+        console.log(error.response.data);
+      }
+    } else if (values.paymentMethod === "COD") {
+      try {
+        const response = await api.post("/Payment/make-Payment", values);
+        console.log(response.data);
+        navigate(route.orderSuccess);
+      } catch (error) {
+        console.log(error.response.data);
+      }
     }
   };
-  33;
+
   const columns = [
     {
       title: "Product",
@@ -126,91 +169,110 @@ const CheckOutPage = () => {
         <h1 style={{ fontWeight: "semibold", marginBottom: "2%" }}>
           Billing Information
         </h1>
-        <Form layout="vertical" onFinish={handleCheckout}>
-          {/* <Form.Item
-            name="email"
-            rules={[{ required: true, message: "Please enter your email!" }]}
+        <Form
+          layout="vertical"
+          onFinish={handleCheckout}
+          form={form}
+          requiredMark={false}
+        >
+          <Form.Item
+            name="addressId"
+            rules={[{ required: true, message: "Please Select Address" }]}
           >
-            <Input
-              placeholder="Enter your email"
-              style={inputStyle}
-              onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
-              onBlur={(e) => Object.assign(e.target.style, inputStyle)}
-            />
+            <Select
+              size="large"
+              placeholder="Select Address"
+              onChange={handleAddressChange}
+            >
+              {userAddress.map((address, index) => (
+                <Select.Option value={address.addressId} key={index}>
+                  {address.name}, {address.phoneNumber}, {address.addressDetail}
+                  , {address.ward}, {address.district}, {address.province}
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
 
-          <Form.Item
-            name="name"
-            rules={[
-              { required: true, message: "Please enter your full name!" },
-            ]}
-          >
+          <Form.Item name="name">
             <Input
               placeholder="Enter your full name"
               style={inputStyle}
               onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
               onBlur={(e) => Object.assign(e.target.style, inputStyle)}
+              disabled
             />
           </Form.Item>
 
-          <Form.Item
-            name="phone"
-            rules={[
-              { required: true, message: "Please enter your phone number!" },
-            ]}
-          >
+          <Form.Item name="phoneNumber">
             <Input
               placeholder="Enter your phone number"
               style={inputStyle}
               onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
               onBlur={(e) => Object.assign(e.target.style, inputStyle)}
+              disabled
             />
           </Form.Item>
 
-          <Form.Item
-            name="address"
-            rules={[{ required: true, message: "Please enter your address!" }]}
-          >
+          <Form.Item name="addressDetail">
             <Input
               placeholder="Enter your shipping address"
               style={inputStyle}
               onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
               onBlur={(e) => Object.assign(e.target.style, inputStyle)}
+              disabled
             />
           </Form.Item>
 
           <div style={{ display: "flex", gap: "10px" }}>
-            <Form.Item style={{ flex: 1 }}>
+            <Form.Item style={{ flex: 1 }} name="province">
               <Input
                 placeholder="Enter city/province"
                 style={inputStyle}
                 onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
                 onBlur={(e) => Object.assign(e.target.style, inputStyle)}
+                disabled
               />
             </Form.Item>
 
-            <Form.Item style={{ flex: 1 }}>
+            <Form.Item style={{ flex: 1 }} name="district">
               <Input
                 placeholder="Enter district"
                 style={inputStyle}
                 onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
                 onBlur={(e) => Object.assign(e.target.style, inputStyle)}
+                disabled
               />
             </Form.Item>
 
-            <Form.Item style={{ flex: 1 }}>
+            <Form.Item style={{ flex: 1 }} name="ward">
               <Input
                 placeholder="Enter ward"
                 style={inputStyle}
                 onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
                 onBlur={(e) => Object.assign(e.target.style, inputStyle)}
+                disabled
               />
             </Form.Item>
           </div>
 
           <Form.Item>
-            <Checkbox>Save address</Checkbox>
-          </Form.Item> */}
+            <Button onClick={() => navigate(route.userProfile)}>
+              Edit address
+            </Button>
+          </Form.Item>
+
+          <Form.Item
+            name="paymentMethod"
+            label="Payment method"
+            rules={[
+              { required: true, message: "Please select a payment method!" },
+            ]}
+          >
+            <Radio.Group>
+              <Radio value="COD">Cash on Delivery</Radio>
+              <Radio value="VNPAY">VNPAY</Radio>
+            </Radio.Group>
+          </Form.Item>
 
           <Form.Item label="Notes (optional)">
             <Input.TextArea
@@ -230,7 +292,7 @@ const CheckOutPage = () => {
             onMouseLeave={(e) => Object.assign(e.target.style, buttonStyle)}
             htmlType="submit"
           >
-            Continue to Shipping Method
+            Process to Payment
           </Button>
         </Form>
       </div>

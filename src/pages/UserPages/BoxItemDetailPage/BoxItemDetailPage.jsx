@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { useForm } from "antd/es/form/Form";
 import { useSelector } from "react-redux";
 import { selectUser } from "./../../../Redux/features/counterSlice";
+import toast from "react-hot-toast";
 const { Panel } = Collapse;
 
 export default function BoxItemDetailPage() {
@@ -48,6 +49,10 @@ export default function BoxItemDetailPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleVote = async (value) => {
+    if (!user) {
+      toast.error("Please login to vote");
+      return;
+    }
     value.userId = user.userId;
     value.boxItemId = boxItem.boxItemId;
     try {
