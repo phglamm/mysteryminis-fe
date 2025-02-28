@@ -102,6 +102,7 @@ const ProductPage = () => {
               label: brand,
               value: brand,
             }))}
+            value={brands}
             onChange={handleBrandChange}
           />
         </div>
