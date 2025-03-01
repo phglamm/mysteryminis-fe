@@ -6,6 +6,8 @@ export const route = {
   resetPassword: "/reset-password",
   userProfile: "/userProfile",
   favorite: "/favorite",
+  blogDetail: "/blog",
+
 
   admin: "/admin",
   dashboard: "dashboard",

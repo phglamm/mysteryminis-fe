@@ -4,8 +4,7 @@ import Cookies from "js-cookie";
 // const baseUrl = "https://localhost:7256/api/";
 const baseUrl = "http://localhost:50980/api/";
 
-// const baseUrl =
-//   "https://mysteryminis2-e9hwhhakhja3ggf0.australiacentral-01.azurewebsites.net/api/";
+// const baseUrl ="https://mysteryminis2-e9hwhhakhja3ggf0.australiacentral-01.azurewebsites.net/api/";
 
 const config = {
   baseUrl,

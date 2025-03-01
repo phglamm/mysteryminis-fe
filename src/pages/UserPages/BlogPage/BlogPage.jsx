@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Pagination } from "antd";
 import api from "../../../config/api"; // Ensure the correct path to api.jsx
 import "./BlogPage.scss";
+import { Link } from "react-router-dom";
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]); // Store blogs fetched from API
@@ -53,22 +54,24 @@ const BlogPage = () => {
       </div>
 
       <div className="grid grid-cols-3 gap-10 p-6 mt-5">
-        {paginatedBlogs.map((blog, index) => (
-          <div key={index} className="text-center transition-transform transform hover:scale-105">
-            <div className="w-80 h-60 mx-auto overflow-hidden flex items-center justify-center">
-              <img
-                src={blog.blogPostImage}
-                alt={blog.blogPostTitle}
-                className="max-w-full h-60 object-contain transition-transform transform hover:scale-110"
-              />
-            </div>
-            <h3 className="text-lg font-semibold text-gray-800 mt-4 hover:text-red-500">{blog.blogPostTitle}</h3>
-            {blog.blogPostContent && (
-              <p className="text-gray-600 mt-2">{blog.blogPostContent.slice(0, 100)}...</p>
-            )}
-          </div>
-        ))}
+  {paginatedBlogs.map((blog, index) => (
+    <Link to={`/blog/${blog.blogPostId}`} key={index} className="text-center transition-transform transform hover:scale-105">
+      <div className="w-80 h-60 mx-auto overflow-hidden flex items-center justify-center">
+        <img
+          src={blog.blogPostImage}
+          alt={blog.blogPostTitle}
+          className="max-w-full h-60 object-contain transition-transform transform hover:scale-110"
+        />
       </div>
+      <h3 className="text-lg font-semibold text-gray-800 mt-4 hover:text-red-500">
+        {blog.blogPostTitle}
+      </h3>
+      {blog.blogPostContent && (
+        <p className="text-gray-600 mt-2">{blog.blogPostContent.slice(0, 100)}...</p>
+      )}
+    </Link>
+  ))}
+</div>
 
       {/* Pagination */}
       <div className="flex justify-center my-6">

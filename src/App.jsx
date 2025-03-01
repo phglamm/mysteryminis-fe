@@ -30,6 +30,7 @@ import OrderSuccessPage from "./pages/UserPages/OrderSuccess/OrderSuccessPage";
 import PaymentReturnPage from "./pages/UserPages/PaymentReturn/PaymentReturn";
 import OnlineBlindBox from "./pages/UserPages/OnlineBlindBox/OnlineBlindBox";
 import ManageBlog from "./pages/AdminPages/ManageBlog/ManageBlog";
+import BlogDetail from "./pages/UserPages/BlogDetail/BlogDetail";
 
 function App() {
   const router = createBrowserRouter([
@@ -106,6 +107,10 @@ function App() {
           path: route.onlineBlindBox,
           element: <OnlineBlindBox />,
         },
+        {
+          path: `${route.blogDetail}/:blogPostId`,
+          element: <BlogDetail />,
+        }
       ],
     },
 
