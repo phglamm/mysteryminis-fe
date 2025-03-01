@@ -3,15 +3,24 @@ import { Button, Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
 import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 import api from "../../../config/api";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { route } from "../../../routes";
 
 export default function ResetPasswordPage() {
   const [form] = useForm();
   const queryParams = new URLSearchParams(location.search);
-
-  const token = queryParams.get("token")?.split(" ").join("");
+  const navigate = useNavigate();
+  const token = decodeURIComponent(
+    queryParams.get("token")?.replaceAll(" ", "+")
+  );
   const email = queryParams.get("email");
-  console.log(email);
-  console.log(token);
+
+  if (token && email) {
+    console.log(email);
+    console.log(token);
+  }
+
   const handleSend = async (value) => {
     console.log(value);
     value.token = token;
@@ -19,6 +28,8 @@ export default function ResetPasswordPage() {
     try {
       const response = await api.post("Account/reset-password", value);
       console.log(response.data);
+      toast.success("Password reset successfully");
+      navigate(route.login);
     } catch (error) {
       console.log(error.response.data);
     }
@@ -97,7 +108,6 @@ export default function ResetPasswordPage() {
           <Form.Item className="!mt-3">
             <Button
               type="primary"
-              htmlType="submit"
               className="w-full !bg-[#598099] !text-[#ffffff] !text-2xl !p-8 !font-bold"
               onClick={() => form.submit()}
             >

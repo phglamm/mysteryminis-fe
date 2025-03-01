@@ -65,7 +65,6 @@ export default function ForgotPasswordPage() {
           <Form.Item className="!mt-3">
             <Button
               type="primary"
-              htmlType="submit"
               className="w-full !bg-[#598099] !text-[#ffffff] !text-2xl !p-8 !font-bold"
               onClick={() => form.submit()}
             >
