@@ -134,6 +134,7 @@ const ProductDetailPage = () => {
     original: image.boxImageUrl,
     thumbnail: image.boxImageUrl,
   }));
+
   return (
     <div className="product-detail-page container mx-auto mt-[10%]">
       {/* Chi tiết sản phẩm */}
@@ -223,7 +224,7 @@ const ProductDetailPage = () => {
               padding: "12px",
               fontSize: "16px",
               fontWeight: "500",
-              backgroundColor: isOutOfStock ? "#ccc" : "#00000",
+              backgroundColor: isOutOfStock ? "#ccc" : "#000", // Black background color
               color: "#fff",
               height: "50px",
             }}
