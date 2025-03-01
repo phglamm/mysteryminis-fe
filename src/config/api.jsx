@@ -6,6 +6,7 @@ import Cookies from "js-cookie";
 
 const baseUrl =
   "https://mysteryminis2-e9hwhhakhja3ggf0.australiacentral-01.azurewebsites.net/api/";
+// const baseUrl ="https://mysteryminis2-e9hwhhakhja3ggf0.australiacentral-01.azurewebsites.net/api/";
 
 const config = {
   baseUrl,

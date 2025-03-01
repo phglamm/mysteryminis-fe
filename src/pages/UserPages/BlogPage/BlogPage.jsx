@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Pagination } from "antd";
 import api from "../../../config/api"; // Ensure the correct path to api.jsx
 import "./BlogPage.scss";
+import { Link } from "react-router-dom";
 
 const BlogPage = () => {
   const [blogs, setBlogs] = useState([]); // Store blogs fetched from API
@@ -46,10 +47,7 @@ const BlogPage = () => {
   );
 
   return (
-    <div
-      className="bg-gray-100 min-h-screen p-4 pt-[8%] h-fit
-"
-    >
+    <div className="bg-gray-100 min-h-screen p-4 pt-[8%] h-fit">
       {/* Header Banner */}
       <div className="relative w-full bg-cover bg-center">
         <img
@@ -61,7 +59,8 @@ const BlogPage = () => {
 
       <div className="grid grid-cols-3 gap-10 p-6 mt-5">
         {paginatedBlogs.map((blog, index) => (
-          <div
+          <Link
+            to={`/blog/${blog.blogPostId}`}
             key={index}
             className="text-center transition-transform transform hover:scale-105"
           >
@@ -80,7 +79,7 @@ const BlogPage = () => {
                 {blog.blogPostContent.slice(0, 100)}...
               </p>
             )}
-          </div>
+          </Link>
         ))}
       </div>
 
