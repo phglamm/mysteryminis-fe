@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Checkbox, Pagination, Spin } from "antd";
 import CardProduct from "../../../components/CardProduct/CardProduct";
-import api from "../../../config/api";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -9,12 +8,14 @@ const ProductPage = () => {
   const [brands, setBrands] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
-  const [loading, setLoading] = useState(false);
+
+
   const location = useLocation();
   
   let SelectedBrand = location.state?.brand;
+  let searchBoxName = location.state?.boxName;
   console.log("Selected Brand: ", SelectedBrand);  
-  
+  console.log("Selected Box Name: ", searchBoxName);
     // Get boxes from Redux
     const { data: boxes } = useSelector((state) => state.boxes);
     console.log("Boxes: ", boxes);
@@ -42,8 +43,11 @@ const ProductPage = () => {
 
   // Filter products by selected brands
   const filteredProducts = boxes.filter(
-    (product) => brands.length === 0 || brands.includes(product.brandName)
+    (product) =>
+      (brands.length === 0 || brands.includes(product.brandName)) &&
+      (!searchBoxName || product.boxName.toLowerCase().startsWith(searchBoxName.toLowerCase()))
   );
+  
 
   const startIndex = (currentPage - 1) * pageSize;
   const currentProducts = filteredProducts.slice(
@@ -51,7 +55,7 @@ const ProductPage = () => {
     startIndex + pageSize
   );
   
-  if (!boxes.length || loading) {
+  if (!boxes.length) {
     return (
       <div className="w-full h-full min-h-screen  flex justify-center items-center">
         <Spin size="large" />

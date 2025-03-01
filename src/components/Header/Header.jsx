@@ -19,7 +19,8 @@ export default function Header() {
   const [isHovered, setIsHovered] = useState(false);
   const [brand, setBrand] = useState(null);
 
- 
+
+
 
   useEffect(() => {
     fetchBlindBoxCategories().then((data) => {
