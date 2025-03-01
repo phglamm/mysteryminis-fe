@@ -2,11 +2,23 @@ import { useForm } from "antd/es/form/Form";
 import { Button, Form, Input } from "antd";
 import { motion } from "framer-motion";
 import BlurText from "../../../components/React_Bits/BlurText/BlurText";
+import toast from "react-hot-toast";
+import api from "../../../config/api";
 
 export default function ForgotPasswordPage() {
   const [form] = useForm();
-  const handleSend = (value) => {
+  const handleSend = async (value) => {
     console.log(value);
+    try {
+      const response = await api.post("Account/forgot-password", value);
+      console.log(response.data);
+      toast.success(
+        "Email sent successfully, check your email to reset password"
+      );
+    } catch (error) {
+      console.log(error.response.data);
+      toast.error(error.response.data);
+    }
   };
 
   return (

@@ -2,11 +2,26 @@ import { motion } from "framer-motion";
 import { Button, Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
 import BlurText from "../../../components/React_Bits/BlurText/BlurText";
+import api from "../../../config/api";
 
 export default function ResetPasswordPage() {
   const [form] = useForm();
-  const handleSend = (value) => {
+  const queryParams = new URLSearchParams(location.search);
+
+  const token = queryParams.get("token")?.split(" ").join("");
+  const email = queryParams.get("email");
+  console.log(email);
+  console.log(token);
+  const handleSend = async (value) => {
     console.log(value);
+    value.token = token;
+    value.email = email;
+    try {
+      const response = await api.post("Account/reset-password", value);
+      console.log(response.data);
+    } catch (error) {
+      console.log(error.response.data);
+    }
   };
   return (
     <div className="flex items-center justify-center min-h-screen mt-[10%]">

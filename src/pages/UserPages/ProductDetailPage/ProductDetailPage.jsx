@@ -223,7 +223,7 @@ const ProductDetailPage = () => {
               padding: "12px",
               fontSize: "16px",
               fontWeight: "500",
-              backgroundColor: isOutOfStock ? "#ccc" : "#007BFF",
+              backgroundColor: isOutOfStock ? "#ccc" : "#00000",
               color: "#fff",
               height: "50px",
             }}
