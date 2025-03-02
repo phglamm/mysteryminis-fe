@@ -208,11 +208,15 @@ const ManageOrder = () => {
   const handleUpdateUpload = async (values) => {
     const imgURLs = fileList.map((file) => file.url);
     console.log(imgURLs);
-    values.orderItemId = selectedItem.orderItemId;
-    values.orderStatusCheckCardImages = imgURLs;
-    console.log(values);
+
     try {
-      // const response = await api;
+      const response = await api.post(
+        `OrderItem?orderItemId=${selectedItem.orderItemId}`,
+        imgURLs
+      );
+      console.log(response.data);
+      setFileList([]);
+      fetchOrders();
     } catch (error) {
       console.log(error.response.data);
     }
@@ -265,6 +269,18 @@ const ManageOrder = () => {
             <p>
               <strong>Customer ID:</strong> {selectedOrder.userId}
             </p>
+            <p>
+              <strong>Addres:</strong> {selectedOrder.address?.addressDetail},{" "}
+              {selectedOrder.address?.district}, {selectedOrder.address?.ward},{" "}
+              {selectedOrder.address?.province}
+            </p>
+            <p>
+              <strong>Receiver:</strong> {selectedOrder.address?.name}
+            </p>
+            <p>
+              <strong>Phone Receiver:</strong>{" "}
+              {selectedOrder.address?.phoneNumber}
+            </p>
             <div className="flex flex-col gap-5">
               {selectedOrder.orderItems?.map((item) => (
                 <>
@@ -287,8 +303,31 @@ const ManageOrder = () => {
                     <div>
                       <p>{item.orderPrice.toLocaleString() + " đ"}</p>
                     </div>
-                    {(item.openRequestNumber > 0) &
-                      (item.orderStatusCheckCardImage?.length === 0) && (
+                    {/* {item.openRequestNumber > 0 ? (
+                      item.orderStatusCheckCardImage?.length === 0 ? (
+                        <div>
+                          <p> Open request: {item.openRequestNumber}</p>
+                          <Button onClick={() => showModalUpload(item)}>
+                            Upload Image
+                          </Button>
+                        </div>
+                      ) : (
+                        <>
+                          {item.orderStatusCheckCardImage?.map((img, index) => (
+                            <img
+                              src={img}
+                              alt=""
+                              key={index}
+                              className="h-40"
+                            />
+                          ))}
+                        </>
+                      )
+                    ) : (
+                      <p>close</p>
+                    )} */}
+
+                    {item.openRequestNumber > 0 && (
                       <div>
                         <p> Open request: {item.openRequestNumber}</p>
                         <Button onClick={() => showModalUpload(item)}>
@@ -296,6 +335,16 @@ const ManageOrder = () => {
                         </Button>
                       </div>
                     )}
+                  </div>
+                  <div className="flex justify-end gap-10">
+                    {item.orderStatusCheckCardImage?.map((img, index) => (
+                      <img
+                        src={img}
+                        alt=""
+                        key={index}
+                        className="h-40 w-40 "
+                      />
+                    ))}
                   </div>
                 </>
               ))}
