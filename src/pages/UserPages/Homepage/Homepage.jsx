@@ -1,52 +1,57 @@
 import { useState, useEffect } from "react";
-import { Card } from "antd";
+import { Card, Spin } from "antd";
 import { motion } from "framer-motion";
 import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 import FadeContent from "../../../components/React_Bits/FadeContent/FadeContent";
 import CountUp from "../../../components/React_Bits/CountUp/CountUp";
 import ImageContent from "./ImageContent/ImageContent";
 import { useNavigate } from "react-router-dom";
+import { fetchBoxesHomePage } from "../../../config/Data";
+import { useDispatch } from "react-redux";
+import { loadBoxes } from "../../../Redux/features/boxSlice";
+
+
 
 export default function Homepage() {
   const [cardData, setCardData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const navigate = useNavigate();
-  useEffect(() => {
-    let isMounted = true;
-    const fetchData = async () => {
-      try {
-        let url =
-          "https://mysteryminis-b3are0btehhncpcx.australiacentral-01.azurewebsites.net/api/Box/allbox";
-        if (selectedCategory === "BestSeller") {
-          url =
-            "https://mysteryminis-b3are0btehhncpcx.australiacentral-01.azurewebsites.net/api/Box/best-seller-box?quantityWantToGet=10";
-        }
-        const response = await fetch(url);
-        const data = await response.json();
-        if (isMounted) {
-          const formattedData = data.slice(0, 10).map((box) => ({
-            id: box.boxId,
-            name: box.boxName,
-            imageSrc:
-              box.imageUrl.length > 0
-                ? box.imageUrl[0]
-                : "https://via.placeholder.com/150",
-          }));
-          setCardData(formattedData);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
-    fetchData();
-    return () => {
-      isMounted = false;
-    };
+  useEffect(() => {
+    fetchBoxesHomePage(selectedCategory).then((data) => {
+      console.log("Data: ", data);
+      const boxes = data.slice(0, 10).map((box) => ({
+        id: box.boxId,
+        name: box.boxName,
+        imageSrc: box.imageUrl.length > 0 ? box.imageUrl[0] : "https://via.placeholder.com/150",
+      }));
+      setCardData(boxes);
+    });
   }, [selectedCategory]);
 
+  useEffect(() => {
+    setLoading(true);
+    try {
+      dispatch(loadBoxes());
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+    setLoading(false);
+  }, [dispatch]);
+
+  console.log("Card Data: ", cardData);
   const categories = ["All", "BestSeller", "Sale Off", "Yooki", "BabyThree"];
 
+  if(loading || !cardData.length) {
+    return (
+      <div className="w-full h-full min-h-screen  flex justify-center items-center">
+        <Spin size="large" />
+      </div>
+    );
+  }
+  
   return (
     <div className="mt-[10%]">
       <ImageContent />

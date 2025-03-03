@@ -8,9 +8,11 @@ import api from "../../../../../config/api";
 import AddressPUT from "./AddressPUT";
 import { Spin } from "antd";
 import { EditOutlined } from "@ant-design/icons";
+import AddressPOST from "./AddressPOST";
 
-const AddressBook = ({ isEditing, setIsEditing }) => {
-  const [addresses, setAddresses] = useState([]); // Khởi tạo với mảng rỗng
+const AddressBook = ({ isEditing, setIsEditing, addAddress, setAddAddress }) => {
+  console.log(addAddress)
+  const [addresses, setAddresses] = useState([]);
 
   const user = useSelector(selectUser);
   console.log(isEditing);
@@ -36,7 +38,11 @@ const AddressBook = ({ isEditing, setIsEditing }) => {
 
   return (
     <div>
-      {!isEditing ? (
+      {addAddress ? (
+        <AddressPOST setAddAddress={setAddAddress} />
+      ) : isEditing ? (
+        <AddressPUT setIsEditing={setIsEditing} selectedAddress={selectedAddress} />
+      ) : (
         <div className="h-[30vw] pb-28 overflow-y-auto">
           {addresses.length === 0 ? (
             <p className="w-full h-full flex justify-center items-center">
@@ -70,11 +76,6 @@ const AddressBook = ({ isEditing, setIsEditing }) => {
             ))
           )}
         </div>
-      ) : (
-        <AddressPUT
-          setIsEditing={setIsEditing}
-          selectedAddress={selectedAddress}
-        />
       )}
     </div>
   );
