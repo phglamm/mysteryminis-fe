@@ -11,6 +11,7 @@ const UserProfile = () => {
     const [activeSection, setActiveSection] = useState("My Profile");
     const [isEditing, setIsEditing] = useState(false);
     const [resetPassword, setResetPassword] = useState(false);
+    const [addAddress, setAddAddress] = useState(false);
 
     
     const renderSectionContent = () => {
@@ -18,7 +19,7 @@ const UserProfile = () => {
             case "My Profile":
                 return <MyProfile isEditing={isEditing} setIsEditing={setIsEditing} resetPassword={resetPassword} setResetPassword={setResetPassword} />;
             case "Address Book":
-                return <AddressBook isEditing={isEditing} setIsEditing={setIsEditing}/>;
+                return <AddressBook isEditing={isEditing} setIsEditing={setIsEditing} addAddress={addAddress} setAddAdress={setAddAddress} />;
             case "Earned Rewards":
                 return <EarnedRewards />;
             case "My Orders":
@@ -56,19 +57,30 @@ const UserProfile = () => {
                                     animate={{ opacity: 1, color: "black" }}
                                     whileHover={{ scale: 1.1 }}
                                     whileTap={{ scale: 0.9, color: "red" }} 
-                                    className={activeSection === "My Profile" ? "border-1 rounded min-w-[65px] items-center text-center p-1 text-sm cursor-pointer" 
-                                                : activeSection === "Address Book" && isEditing ? "border-1 rounded min-w-[65px] items-center text-center p-1 text-sm cursor-pointer" : ''}
+                                    className={"border-1 rounded min-w-[65px] items-center text-center p-1 text-sm cursor-pointer" }
                                     onClick={() => {
-                                        if (resetPassword) {
-                                            setResetPassword(false);
-                                        } else {
-                                            setIsEditing(!isEditing);
+                                        if (activeSection === "My Profile") {
+                                            if (resetPassword) {
+                                                setResetPassword(false);
+                                            } else if (isEditing) {
+                                                setIsEditing(false);
+                                            } else {
+                                                setIsEditing(true);
+                                            }
+                                        } else if (activeSection === "Address Book") {
+                                            if (addAddress) {
+                                                setAddAddress(false);
+                                            } else if (isEditing) {
+                                                setIsEditing(false);
+                                            } else {
+                                                setAddAddress(true);
+                                            }
                                         }
                                     }}
                                 >
                                 {
                                     activeSection === "My Profile" ?  isEditing || resetPassword ? "Back" : "Edit Profile"
-                                    : activeSection === "Address Book" ? isEditing ? "Back" : null
+                                    : activeSection === "Address Book" ? isEditing ? "Back" : addAddress ? "Back" : "Add Address"
                                     : null
                                 }
                                    

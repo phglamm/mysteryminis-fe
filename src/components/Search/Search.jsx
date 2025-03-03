@@ -1,14 +1,36 @@
+/* eslint-disable react/prop-types */
 import { SearchOutlined } from '@ant-design/icons';
 import { Input, Dropdown, Menu } from 'antd';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { route } from '../../routes';
 
 const Search = () => {
   const [isHovered, setIsHovered] = useState(false);
   const [inputValue, setInputValue] = useState('');
+  const { data: boxes = [] } = useSelector((state) => state.boxes); // Ensure boxes is an array
+  const navigate = useNavigate();
+  // Filtering based on boxName and brandName
+  const filteredBoxes = boxes.filter(
+    (box) =>
+      box.boxName.toLowerCase().includes(inputValue.toLowerCase()) ||
+      box.brandName.toLowerCase().includes(inputValue.toLowerCase())
+  );
 
-  // Sample search results
-  const searchResults = ['Yooki', 'Labubu', 'Babythree', 'Skullpanda'];
+  const handleEnterKey = (e) => {
+    if (e.key === 'Enter' && filteredBoxes.length > 0) {
+      // Navigate to the first matched item
+      navigate(route.product, {
+        state: { boxName: inputValue },
+      });
+    } else if (e.key === 'Enter' && inputValue === null) {
+      // Navigate to the search page
+      navigate(route.product, {
+        state: { boxName: null }});
+    }
+  };
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
@@ -23,16 +45,30 @@ const Search = () => {
     }
   };
 
-  // Filtered results based on input
-  const filteredResults = searchResults.filter((item) =>
-    item.toLowerCase().includes(inputValue.toLowerCase())
-  );
-
   // Dropdown menu items, show "Not Found Blindbox" if no matches
   const menu = (
     <Menu>
-      {filteredResults.length > 0 ? (
-        filteredResults.map((item, index) => <Menu.Item key={index}>{item}</Menu.Item>)
+      {!inputValue ? (
+        boxes.slice(0, 3).map((item, index) => (
+      <Menu.Item 
+        onClick={() => {
+          navigate(route.product, { state: { boxName: item.boxName } });
+          setInputValue(item.boxName);
+        }} 
+        key={index}
+        >
+        {item.boxName}
+      </Menu.Item>
+        ))
+      ) : filteredBoxes.length > 0 ? (
+        filteredBoxes.slice(0,5).map((item, index) => (
+          <Menu.Item key={index}
+            onClick={() => {
+              navigate(route.product, { state: { boxName: item.boxName } });
+              setInputValue(item.boxName);
+            }} 
+          >{item.boxName}</Menu.Item>
+        ))
       ) : (
         <Menu.Item disabled>Not Found Blindbox</Menu.Item>
       )}
@@ -41,7 +77,7 @@ const Search = () => {
 
   return (
     <div>
-      <Dropdown arrow placement='bottom' overlay={isHovered ? menu : <></>} >
+      <Dropdown arrow placement="bottom" overlay={isHovered ? menu : <></>}>
         <motion.div
           onClick={() => setIsHovered(true)}
           onMouseLeave={() => !inputValue && setIsHovered(false)}
@@ -59,6 +95,7 @@ const Search = () => {
               onChange={handleInputChange}
               onBlur={handleBlur}
               autoFocus
+              onKeyDown={handleEnterKey}
             />
           ) : (
             <SearchOutlined />
