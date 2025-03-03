@@ -16,16 +16,9 @@ const PaymentReturnPage = () => {
       const queryParams = new URLSearchParams(location.search);
 
       // Inform the user that the payment is being processed
-      console.log(queryParams.toString());
       try {
-        const response = await api.post(
-          "Payment/payment-callback",
-          queryParams.toString(), // Send URL-encoded data
-          {
-            headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            // Optionally include credentials if needed:
-            withCredentials: false,
-          }
+        const response = await api.get(
+          "payment/payment-return" + location.search
         );
         console.log(response);
         // Check the response's success flag
