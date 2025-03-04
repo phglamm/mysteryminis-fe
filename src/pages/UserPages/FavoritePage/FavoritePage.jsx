@@ -38,29 +38,28 @@ export default function FavoritePage() {
                   cover={
                     <img
                       alt={item.boxName}
-                      src={item.boxImage[0]?.boxImageUrl}
+                      src={item.boxImages[0]?.boxImageUrl}
                       className="h-48 object-cover"
                     />
                   }
                   actions={[
                     <Button
-                      key={item.boxId}
+                      key={item._id}
                       type="primary"
-                      danger
                       icon={<DoubleRightOutlined />}
                       onClick={() => {
-                        navigate(`${route.productDetail}/${item.boxId}`);
+                        navigate(`${route.productDetail}/${item._id}`);
                       }}
                     >
                       Go to Box
                     </Button>,
                     <Button
-                      key={item.boxId}
+                      key={item._id}
                       type="primary"
                       danger
                       icon={<DeleteOutlined />}
                       onClick={() => {
-                        dispatch(removeFromFavorite({ boxId: item.boxId }));
+                        dispatch(removeFromFavorite({ _id: item._id }));
                       }}
                     >
                       Remove
@@ -77,7 +76,7 @@ export default function FavoritePage() {
                     description={
                       <>
                         <p className="font-semibold text-black text-md">
-                          Brand: {item.brandName}
+                          Brand: {item.brand?.brandName || "Unknown"}
                         </p>
                         <span className="text-gray-500">
                           {item.boxDescription}

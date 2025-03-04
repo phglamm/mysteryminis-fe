@@ -25,7 +25,7 @@ export default function BoxItemDetailPage() {
   const fetchBoxItemDetail = async () => {
     setLoading(true);
     try {
-      const response = await api.get(`BoxItem/WithDTO/${boxItemId}`);
+      const response = await api.get(`boxItem/${boxItemId}`);
       console.log(response.data);
       setBoxItem(response.data);
     } catch (error) {
@@ -41,11 +41,9 @@ export default function BoxItemDetailPage() {
   useEffect(() => {
     if (boxItem) {
       const fetchRelevantBoxItems = async () => {
-        const response = await api.get(`BoxItem`);
+        const response = await api.get(`boxItem`);
         const filterResponse = response.data.filter(
-          (item) =>
-            item.belongBox.boxId === boxItem.belongBox.boxId &&
-            item.boxItemId !== boxItem.boxItemId
+          (item) => item.box._id === boxItem.box._id && item._id !== boxItem._id
         );
         console.log(response.data);
         setRelevantBoxItem(filterResponse);
@@ -62,7 +60,7 @@ export default function BoxItemDetailPage() {
       return;
     }
     value.userId = user.userId;
-    value.boxItemId = boxItem.boxItemId;
+    value.boxItemId = boxItem._id;
     try {
       const response = await api.post("BoxItem/Vote", value);
       console.log(response.data);
@@ -107,7 +105,7 @@ export default function BoxItemDetailPage() {
               <Button
                 className="!bg-blue-300 w-full !text-white !font-bold !text-lg !rounded-lg !mt-10 !py-7"
                 onClick={() => {
-                  navigate(`${route.productDetail}/${boxItem.belongBox.boxId}`);
+                  navigate(`${route.productDetail}/${boxItem.box._id}`);
                 }}
               >
                 Hunt this Item
@@ -152,7 +150,7 @@ export default function BoxItemDetailPage() {
           </h2>
           <div className="grid grid-cols-4 gap-4">
             {relevantBoxItem.map((item) => (
-              <CardBoxItem Item={item} key={item.boxItemId} />
+              <CardBoxItem Item={item} key={item._id} />
             ))}
           </div>
         </div>

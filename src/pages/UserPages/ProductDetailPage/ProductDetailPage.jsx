@@ -36,7 +36,7 @@ const ProductDetailPage = () => {
     const fetchBoxDetail = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`Box/withDTO/${id}`);
+        const response = await api.get(`box/${id}`);
         console.log(response.data);
         setBox(response.data);
         const defaultOption = response.data.boxOptions.reduce(
@@ -63,12 +63,11 @@ const ProductDetailPage = () => {
   useEffect(() => {
     if (box) {
       const fetchRelevantBox = async () => {
-        const response = await api.get(`Box`);
-        // console.log(response.data);
+        const response = await api.get(`box`);
         const filterResponse = response.data.filter(
           (relevantBox) =>
-            relevantBox.brandName === box.brandName &&
-            relevantBox.boxId !== box.boxId
+            relevantBox.brand?.brandName === box.brand?.brandName &&
+            relevantBox._id !== box._id
         );
         setRelevantBox(filterResponse);
       };
@@ -78,13 +77,13 @@ const ProductDetailPage = () => {
 
   useEffect(() => {
     if (box) {
-      setIsWishlisted(favoriteItems.some((item) => item.boxId === box.boxId));
+      setIsWishlisted(favoriteItems.some((item) => item._id === box._id));
     }
   }, [box, favoriteItems]);
 
   if (!box || loading) {
     return (
-      <div className="w-full h-full min-h-screen  flex justify-center items-center">
+      <div className="w-full h-full min-h-screen flex justify-center items-center">
         <Spin size="large" />
       </div>
     );
@@ -107,7 +106,7 @@ const ProductDetailPage = () => {
 
   const handleAddToCart = () => {
     const selectedOption = box.boxOptions.find(
-      (option) => option.boxOptionId === chooseOption.boxOptionId
+      (option) => option._id === chooseOption._id
     );
     const orderItemOpenRequestNumber = 0;
 
@@ -123,14 +122,14 @@ const ProductDetailPage = () => {
 
   const handleToggleFavorite = () => {
     if (isWishlisted) {
-      dispatch(removeFromFavorite({ boxId: box.boxId }));
+      dispatch(removeFromFavorite({ _id: box._id }));
     } else {
       dispatch(addToFavorite(box));
     }
     setIsWishlisted(!isWishlisted);
   };
 
-  const boxImages = box?.boxImage.map((image) => ({
+  const boxImages = box?.boxImages.map((image) => ({
     original: image.boxImageUrl,
     thumbnail: image.boxImageUrl,
   }));
@@ -175,25 +174,22 @@ const ProductDetailPage = () => {
             >
               {box.boxOptions.map((option, index) => (
                 <button
-                  key={option.boxOptionId}
+                  key={option._id}
                   style={{
                     padding: "10px 16px",
                     border:
-                      chooseOption &&
-                      chooseOption.boxOptionId === option.boxOptionId
+                      chooseOption && chooseOption._id === option._id
                         ? "2px solid black"
                         : "1px solid #ccc",
                     borderRadius: "8px",
                     fontSize: "14px",
                     cursor: "pointer",
                     fontWeight:
-                      chooseOption &&
-                      chooseOption.boxOptionId === option.boxOptionId
+                      chooseOption && chooseOption._id === option._id
                         ? "bold"
                         : "normal",
                     backgroundColor:
-                      chooseOption &&
-                      chooseOption.boxOptionId === option.boxOptionId
+                      chooseOption && chooseOption._id === option._id
                         ? "#fff"
                         : "#f0f0f0",
                     color: "#333",
@@ -201,8 +197,7 @@ const ProductDetailPage = () => {
                     alignItems: "center",
                     gap: "8px",
                     boxShadow:
-                      chooseOption &&
-                      chooseOption.boxOptionId === option.boxOptionId
+                      chooseOption && chooseOption._id === option._id
                         ? "0 0 5px rgba(0,0,0,0.3)"
                         : "none",
                     minWidth: "150px",
@@ -272,7 +267,7 @@ const ProductDetailPage = () => {
           >
             <Panel style={{ fontSize: "20px" }} header="Details" key="1">
               <p style={{ color: "#555" }}>
-                <strong>Brand:</strong> {box.brandName}
+                <strong>Brand:</strong> {box.brand?.brandName || "Unknown"}
               </p>
               <p style={{ color: "#555" }}>
                 <strong>Size:</strong>{" "}

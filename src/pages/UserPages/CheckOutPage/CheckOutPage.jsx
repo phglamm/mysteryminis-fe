@@ -1,12 +1,13 @@
 import { useEffect, useState } from "react";
 import { Form, Input, Button, Card, Table, Badge, Select, Radio } from "antd";
-import { useSelector } from "react-redux";
-import { selectCartItems } from "../../../Redux/features/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart, selectCartItems } from "../../../Redux/features/cartSlice";
 import { selectUser } from "../../../Redux/features/counterSlice";
 import api from "../../../config/api";
 import { useNavigate } from "react-router-dom";
 import { route } from "../../../routes";
 import { useForm } from "antd/es/form/Form";
+import toast from "react-hot-toast";
 
 const CheckOutPage = () => {
   const [discountCode, setDiscountCode] = useState("");
@@ -17,6 +18,7 @@ const CheckOutPage = () => {
     (acc, item) => acc + item.selectedOption.displayPrice * item.quantity,
     0
   );
+  const dispatch = useDispatch();
   const [form] = useForm();
 
   const [userAddress, setUserAddress] = useState([]);
@@ -32,7 +34,7 @@ const CheckOutPage = () => {
       }
     };
     fetchUserAddress();
-  }, []);
+  }, [user.userId]);
 
   const handleAddressChange = (value) => {
     const selectedAddress = userAddress.find(
@@ -52,29 +54,34 @@ const CheckOutPage = () => {
 
   const handleCheckout = async (values) => {
     values.userId = user.userId;
-    values.voucherId = 1;
+    values.voucherId = "67c5952e4436f2dd6b93470d";
     values.totalPrice = totalAmount;
+    values.addressId = "67c5912512196ab0d5c0c86a";
     values.orderItemRequestDto = cartItems.map((item) => ({
       quantity: item.quantity,
       price: item.selectedOption.displayPrice,
-      boxOptionId: item.selectedOption.boxOptionId,
+      boxOptionId: item.selectedOption._id,
       originPrice: item.selectedOption.originPrice,
       orderItemOpenRequestNumber: item.orderItemOpenRequestNumber,
     }));
     console.log(values);
     if (values.paymentMethod === "VNPAY") {
       try {
-        const response = await api.post("/Payment/make-Payment", values);
+        const response = await api.post("/payment/create-Payment", values);
         console.log(response.data);
-        window.location.assign(response.data);
+        window.location.assign(response.data.data);
       } catch (error) {
         console.log(error.response.data);
       }
     } else if (values.paymentMethod === "COD") {
       try {
-        const response = await api.post("/Payment/make-Payment", values);
+        const response = await api.post("/payment/create-Payment", values);
         console.log(response.data);
-        navigate(route.orderSuccess);
+        if (response.data.code === "00") {
+          toast.success("Order Success");
+          navigate(route.orderSuccess);
+          dispatch(clearCart());
+        }
       } catch (error) {
         console.log(error.response.data);
       }
@@ -97,7 +104,7 @@ const CheckOutPage = () => {
         >
           <Badge count={record.quantity} style={{ backgroundColor: "#f5222d" }}>
             <img
-              src={record.boxImage[0].boxImageUrl}
+              src={record.boxImages[0]?.boxImageUrl}
               alt={record.boxName}
               width="50"
               height="50"

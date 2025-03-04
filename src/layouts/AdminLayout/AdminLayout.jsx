@@ -32,7 +32,9 @@ export default function AdminLayout() {
             />
             <div className="flex flex-col justify-start items-start">
               <p className="font-bold text-xl">{user.username}</p>
-              <p className="text-sm">{user.roleId === 1 ? "Admin" : "Staff"}</p>
+              <p className="text-sm">
+                {user.role.roleName === "ADMIN" ? "Admin" : "Staff"}
+              </p>
             </div>
           </Header>
           <Content

@@ -9,13 +9,13 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      const { boxId, selectedOption } = action.payload;
+      const { _id, selectedOption } = action.payload;
 
       // Check if the item with the selected variant already exists in the cart
       const item = state.cartItems.find(
         (cartItem) =>
-          cartItem.boxId === boxId &&
-          cartItem.selectedOption?.boxOptionId === selectedOption?.boxOptionId
+          cartItem._id === _id &&
+          cartItem.selectedOption?._id === selectedOption?._id
       );
 
       if (item) {
@@ -27,22 +27,22 @@ const cartSlice = createSlice({
       }
     },
     removeFromCart: (state, action) => {
-      const { boxId, selectedOption } = action.payload;
+      const { _id, selectedOption } = action.payload;
 
       // Remove the item with the specific selected variant
       state.cartItems = state.cartItems.filter(
         (cartItem) =>
-          cartItem.boxId !== boxId ||
-          cartItem.selectedOption?.boxOptionId !== selectedOption?.boxOptionId
+          cartItem._id !== _id ||
+          cartItem.selectedOption?._id !== selectedOption?._id
       );
     },
     increaseQuantity: (state, action) => {
-      const { boxId, selectedOption } = action.payload;
+      const { _id, selectedOption } = action.payload;
 
       const item = state.cartItems.find(
         (cartItem) =>
-          cartItem.boxId === boxId &&
-          cartItem.selectedOption?.boxOptionId === selectedOption?.boxOptionId
+          cartItem._id === _id &&
+          cartItem.selectedOption?._id === selectedOption?._id
       );
 
       if (item) {
@@ -50,44 +50,38 @@ const cartSlice = createSlice({
       }
     },
     decreaseQuantity: (state, action) => {
-      console.log("Action payload:", action.payload);
+      const { _id, selectedOption } = action.payload;
 
-      const { boxId, selectedOption } = action.payload;
-      console.log(boxId, selectedOption);
       const item = state.cartItems.find(
         (cartItem) =>
-          cartItem.boxId === boxId &&
-          cartItem.selectedOption?.boxOptionId === selectedOption?.boxOptionId
+          cartItem._id === _id &&
+          cartItem.selectedOption?._id === selectedOption?._id
       );
 
       if (item && item.quantity > 1) {
         item.quantity -= 1;
       }
     },
-
     increaseOpen: (state, action) => {
-      const { boxId, selectedOption } = action.payload;
+      const { _id, selectedOption } = action.payload;
       const item = state.cartItems.find(
         (item) =>
-          item.boxId === boxId &&
-          item.selectedOption?.boxOptionId === selectedOption?.boxOptionId
+          item._id === _id && item.selectedOption?._id === selectedOption?._id
       );
       if (item) {
         item.orderItemOpenRequestNumber += 1;
       }
     },
     decreaseOpen: (state, action) => {
-      const { boxId, selectedOption } = action.payload;
+      const { _id, selectedOption } = action.payload;
       const item = state.cartItems.find(
         (item) =>
-          item.boxId === boxId &&
-          item.selectedOption?.boxOptionId === selectedOption?.boxOptionId
+          item._id === _id && item.selectedOption?._id === selectedOption?._id
       );
       if (item) {
         item.orderItemOpenRequestNumber -= 1;
       }
     },
-
     clearCart: (state) => {
       state.cartItems = [];
     },
@@ -100,7 +94,6 @@ export const {
   increaseQuantity,
   decreaseQuantity,
   clearCart,
-  toggleItemChecked,
   increaseOpen,
   decreaseOpen,
 } = cartSlice.actions;

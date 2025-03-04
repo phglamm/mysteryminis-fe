@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Button, Row, Col, Typography, Divider, Checkbox } from "antd";
+import React from "react";
+import { Button, Row, Col, Typography, Divider } from "antd";
 import {
   ShoppingCartOutlined,
   PlusOutlined,
@@ -13,7 +13,6 @@ import {
   increaseQuantity,
   removeFromCart,
   selectCartItems,
-  toggleItemChecked,
 } from "../../../Redux/features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { route } from "../../../routes";
@@ -41,7 +40,7 @@ const Cart = () => {
           <Col span={18}>
             {cartItems.map((item, index) => (
               <div
-                key={item.boxId}
+                key={item._id}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -51,7 +50,7 @@ const Cart = () => {
               >
                 <img
                   alt={item.boxName}
-                  src={item.boxImage[0]?.boxImageUrl}
+                  src={item.boxImages[0]?.boxImageUrl}
                   style={{
                     width: "250px",
                     height: "250px",
@@ -65,7 +64,7 @@ const Cart = () => {
                         {item.boxName}
                       </p>
                       <p style={{ fontSize: "18px" }}>
-                        Brand: {item.brandName}
+                        Brand: {item.brand?.brandName || "Unknown"}
                       </p>
                       <p style={{ fontSize: "18px" }}>
                         Option: {item.selectedOption.boxOptionName}
@@ -78,7 +77,7 @@ const Cart = () => {
                         onClick={() =>
                           dispatch(
                             removeFromCart({
-                              boxId: item.boxId,
+                              _id: item._id,
                               selectedOption: item.selectedOption,
                             })
                           )
@@ -99,13 +98,13 @@ const Cart = () => {
                         {item.selectedOption.displayPrice.toLocaleString()} đ
                       </p>
                       <div className="flex items-center justify-between gap-3">
-                        <p>How many box you want us to open?</p>
+                        <p>How many boxes do you want us to open?</p>
                         <Button
                           icon={<MinusOutlined />}
                           onClick={() =>
                             dispatch(
                               decreaseOpen({
-                                boxId: item.boxId,
+                                _id: item._id,
                                 selectedOption: item.selectedOption || null,
                               })
                             )
@@ -125,7 +124,7 @@ const Cart = () => {
                           onClick={() =>
                             dispatch(
                               increaseOpen({
-                                boxId: item.boxId,
+                                _id: item._id,
                                 selectedOption: item.selectedOption || null,
                               })
                             )
@@ -143,7 +142,7 @@ const Cart = () => {
                           onClick={() =>
                             dispatch(
                               decreaseQuantity({
-                                boxId: item.boxId,
+                                _id: item._id,
                                 selectedOption: item.selectedOption || null,
                               })
                             )
@@ -165,7 +164,7 @@ const Cart = () => {
                           onClick={() =>
                             dispatch(
                               increaseQuantity({
-                                boxId: item.boxId,
+                                _id: item._id,
                                 selectedOption: item.selectedOption || null,
                               })
                             )

@@ -12,6 +12,7 @@ export default function BoxItemPage() {
   const pageSize = 12;
   const [boxItems, setBoxItems] = useState([]);
   const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const fetchBoxItem = async () => {
       setLoading(true);
@@ -33,7 +34,7 @@ export default function BoxItemPage() {
 
   if (loading) {
     return (
-      <div className="w-full h-full min-h-screen  flex justify-center items-center">
+      <div className="w-full h-full min-h-screen flex justify-center items-center">
         <Spin size="large" />
       </div>
     );
@@ -80,13 +81,12 @@ export default function BoxItemPage() {
             {currentBoxItem.map((item) => (
               <div
                 className="flex justify-center items-center mt-10"
-                key={item.boxItemId}
+                key={item._id}
               >
-                {" "}
                 <CardBoxItem
                   Item={item}
                   className="flex justify-center items-center"
-                  key={item.boxItemId}
+                  key={item._id}
                 />
               </div>
             ))}

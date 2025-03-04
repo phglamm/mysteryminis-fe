@@ -31,17 +31,26 @@ export default function ManageBox() {
 
   const handleModalUpdate = (box) => {
     setSelectedBox(box);
-    formUpdate.setFieldsValue(box);
+    formUpdate.setFieldsValue({
+      ...box,
+      brandId: box.brand._id,
+    });
     setIsModalUpdateOpen(true);
   };
 
   const handleUpdate = async (values) => {
     try {
-      const response = await api.put(`Box/${selectedBox.boxId}`, values);
+      const response = await api.put(`Box/${selectedBox._id}`, values);
       console.log(response.data);
       setBox(
         box.map((box) =>
-          box.boxId === selectedBox.boxId ? { ...box, ...values } : box
+          box._id === selectedBox._id
+            ? {
+                ...box,
+                ...values,
+                brand: brand.find((b) => b._id === values.brandId),
+              }
+            : box
         )
       );
       toast.success("Updated Box successfully");
@@ -58,9 +67,9 @@ export default function ManageBox() {
       title: "Are you sure you want to delete this Box?",
       onOk: async () => {
         try {
-          await api.delete(`Box/${values.boxId}`);
+          await api.delete(`Box/${values._id}`);
           toast.success("Box deleted successfully");
-          setBox(box.filter((brand) => brand.boxId !== values.boxId));
+          setBox(box.filter((b) => b._id !== values._id));
         } catch (error) {
           toast.error("Failed to delete Box");
         }
@@ -72,8 +81,8 @@ export default function ManageBox() {
     const fetchBox = async () => {
       const response = await api.get("Box");
       console.log(response.data);
-      const sortReponse = response.data.sort((a, b) => b.boxId - a.boxId);
-      setBox(sortReponse);
+      const sortResponse = response.data.sort((a, b) => b._id - a._id);
+      setBox(sortResponse);
     };
 
     const fetchBrand = async () => {
@@ -89,8 +98,8 @@ export default function ManageBox() {
   const columnsBox = [
     {
       title: "ID",
-      dataIndex: "boxId",
-      key: "boxId",
+      dataIndex: "_id",
+      key: "_id",
     },
     {
       title: "Name",
@@ -103,17 +112,15 @@ export default function ManageBox() {
             value: item.boxName,
           }))
         ),
-      ], // 👈 Auto-generate filters
+      ],
       onFilter: (value, record) => record.boxName === value,
       filterSearch: true,
     },
-
     {
       title: "Description",
       dataIndex: "boxDescription",
       key: "boxDescription",
     },
-
     {
       title: "Deleted",
       dataIndex: "isDeleted",
@@ -127,10 +134,9 @@ export default function ManageBox() {
     },
     {
       title: "Brand",
-      dataIndex: "brandName",
+      dataIndex: ["brand", "brandName"],
       key: "brandName",
     },
-
     {
       title: "Action",
       render: (_index, record) => (
@@ -149,24 +155,24 @@ export default function ManageBox() {
 
   const mockLuckyBoxData = [
     {
-      OnlineSerieBoxId: 101,
-      BoxId: 1,
+      OnlineSerie_id: 101,
+      _id: 1,
       Price: 29.99,
       Name: "Lucky Draw A",
       IsSecretOpen: true,
       Turn: 3,
     },
     {
-      OnlineSerieBoxId: 102,
-      BoxId: 2,
+      OnlineSerie_id: 102,
+      _id: 2,
       Price: 49.99,
       Name: "Lucky Draw B",
       IsSecretOpen: false,
       Turn: 5,
     },
     {
-      OnlineSerieBoxId: 103,
-      BoxId: 3,
+      OnlineSerie_id: 103,
+      _id: 3,
       Price: 39.99,
       Name: "Lucky Draw C",
       IsSecretOpen: true,
@@ -177,13 +183,13 @@ export default function ManageBox() {
   const columnsLuckyBox = [
     {
       title: "ID",
-      dataIndex: "OnlineSerieBoxId",
-      key: "OnlineSerieBoxId",
+      dataIndex: "OnlineSerie_id",
+      key: "OnlineSerie_id",
     },
     {
       title: "From Box ID",
-      dataIndex: "BoxId",
-      key: "BoxId",
+      dataIndex: "_id",
+      key: "_id",
     },
     {
       title: "Price",
@@ -208,12 +214,10 @@ export default function ManageBox() {
     {
       title: "Action",
       render: (_index, record) => (
-        <>
-          <div className="flex justify-around items-center">
-            <Button>Update</Button>
-            <Button>Delete</Button>
-          </div>
-        </>
+        <div className="flex justify-around items-center">
+          <Button>Update</Button>
+          <Button>Delete</Button>
+        </div>
       ),
     },
   ];
@@ -225,7 +229,6 @@ export default function ManageBox() {
         onChange={setActiveTab}
         destroyInactiveTabPane
       >
-        {/* Tab 1 */}
         <Tabs.TabPane tab="Manage Box" key="1">
           <div>
             <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
@@ -235,14 +238,11 @@ export default function ManageBox() {
           </div>
         </Tabs.TabPane>
 
-        {/* Tab 2 */}
         <Tabs.TabPane tab="Manage Online Lucky Box" key="2">
           <div>
             <Table dataSource={mockLuckyBoxData} columns={columnsLuckyBox} />
           </div>
         </Tabs.TabPane>
-
-        {/* Tab 3 */}
       </Tabs>
 
       <Modal
@@ -278,7 +278,7 @@ export default function ManageBox() {
           >
             <Select placeholder="Select Brand">
               {brand.map((brand) => (
-                <Select.Option key={brand.brandId} value={brand.brandId}>
+                <Select.Option key={brand._id} value={brand._id}>
                   {brand.brandName}
                 </Select.Option>
               ))}
@@ -317,7 +317,7 @@ export default function ManageBox() {
           >
             <Select placeholder="Select Brand">
               {brand.map((brand) => (
-                <Select.Option key={brand.brandId} value={brand.brandId}>
+                <Select.Option key={brand._id} value={brand._id}>
                   {brand.brandName}
                 </Select.Option>
               ))}

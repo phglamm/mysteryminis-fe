@@ -9,19 +9,16 @@ const ProductPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 9;
 
-
   const location = useLocation();
-  
-  let SelectedBrand = location.state?.brand;
-  let searchBoxName = location.state?.boxName;
-  console.log("Selected Brand: ", SelectedBrand);  
-  console.log("Selected Box Name: ", searchBoxName);
-    // Get boxes from Redux
-    const { data: boxes } = useSelector((state) => state.boxes);
-    console.log("Boxes: ", boxes);
-    
 
-  
+  let SelectedBrand = location.state?.brandName;
+  let searchBoxName = location.state?.boxName;
+  console.log("Selected Brand: ", SelectedBrand);
+  console.log("Selected Box Name: ", searchBoxName);
+  // Get boxes from Redux
+  const { data: boxes } = useSelector((state) => state.boxes);
+  console.log("Boxes: ", boxes);
+
   useEffect(() => {
     if (SelectedBrand) {
       setBrands([SelectedBrand]);
@@ -29,7 +26,7 @@ const ProductPage = () => {
   }, [SelectedBrand]);
 
   const brandsList = Array.from(
-    new Set(boxes.map((product) => product.brandName))
+    new Set(boxes.map((product) => product.brand?.brandName))
   );
 
   const handleBrandChange = (checkedValues) => {
@@ -41,20 +38,21 @@ const ProductPage = () => {
     setCurrentPage(page);
   };
 
+  console.log(brandsList);
   // Filter products by selected brands
   const filteredProducts = boxes.filter(
     (product) =>
-      (brands.length === 0 || brands.includes(product.brandName)) &&
-      (!searchBoxName || product.boxName.toLowerCase().startsWith(searchBoxName.toLowerCase()))
+      (brands.length === 0 || brands.includes(product.brand?.brandName)) &&
+      (!searchBoxName ||
+        product.boxName.toLowerCase().startsWith(searchBoxName.toLowerCase()))
   );
-  
 
   const startIndex = (currentPage - 1) * pageSize;
   const currentProducts = filteredProducts.slice(
     startIndex,
     startIndex + pageSize
   );
-  
+
   if (!boxes.length) {
     return (
       <div className="w-full h-full min-h-screen  flex justify-center items-center">
@@ -83,8 +81,8 @@ const ProductPage = () => {
           <Checkbox.Group
             style={{ display: "flex", flexDirection: "column", gap: "5px" }}
             options={brandsList.map((brand) => ({
-              label: brand,
-              value: brand,
+              label: brand ? brand : "Unknown",
+              value: brand ? brand : "Unknown",
             }))}
             value={brands}
             onChange={handleBrandChange}
@@ -106,7 +104,7 @@ const ProductPage = () => {
           >
             {currentProducts.map((product) => (
               <div
-                key={product.boxId}
+                key={product._id}
                 style={{ display: "flex", justifyContent: "center" }}
               >
                 <CardProduct

@@ -42,7 +42,7 @@ export default function Sidebar() {
 
   const user = useSelector(selectUser);
   useEffect(() => {
-    if (user.roleId === 1) {
+    if (user.role.roleName === "ADMIN") {
       setItems([
         getItem("Dashboard", route.dashboard, <BarChartOutlined />),
         getItem("Manage Account", route.accountManagement, <UserOutlined />),
@@ -72,7 +72,7 @@ export default function Sidebar() {
       ]);
     }
 
-    if (user.roleId === 2) {
+    if (user.role.roleName === "STAFF") {
       setItems([
         getItem("Manager Account", route.accountManagement, <UserOutlined />),
         getItem("Manager Order", route.orderManagement, <AuditOutlined />),
@@ -164,7 +164,7 @@ export default function Sidebar() {
                   >
                     <Link
                       to={
-                        user.roleId === 1
+                        user.role.roleName === "ADMIN"
                           ? `/admin/${subItem.key}`
                           : `/staff/${subItem.key}`
                       }
@@ -180,7 +180,7 @@ export default function Sidebar() {
                   to={
                     item.key === "/"
                       ? "/"
-                      : user.roleId === 1
+                      : user.role.roleName === "ADMIN"
                       ? `/admin/${item.key}`
                       : `/staff/${item.key}`
                   }

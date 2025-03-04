@@ -10,8 +10,6 @@ import { fetchBoxesHomePage } from "../../../config/Data";
 import { useDispatch } from "react-redux";
 import { loadBoxes } from "../../../Redux/features/boxSlice";
 
-
-
 export default function Homepage() {
   const [cardData, setCardData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -23,11 +21,14 @@ export default function Homepage() {
     fetchBoxesHomePage(selectedCategory).then((data) => {
       console.log("Data: ", data);
       const boxes = data.slice(0, 10).map((box) => ({
-        id: box.boxId,
+        id: box._id,
         name: box.boxName,
-        imageSrc: box.imageUrl.length > 0 ? box.imageUrl[0] : "https://via.placeholder.com/150",
+        imageSrc:
+          box.boxImages.length > 0
+            ? box.boxImages[0].boxImageUrl
+            : "https://via.placeholder.com/150",
       }));
-      setCardData(boxes);
+      setCardData(boxes || []);
     });
   }, [selectedCategory]);
 
@@ -44,14 +45,14 @@ export default function Homepage() {
   console.log("Card Data: ", cardData);
   const categories = ["All", "BestSeller", "Sale Off", "Yooki", "BabyThree"];
 
-  if(loading || !cardData.length) {
+  if (loading || !cardData.length) {
     return (
       <div className="w-full h-full min-h-screen  flex justify-center items-center">
         <Spin size="large" />
       </div>
     );
   }
-  
+
   return (
     <div className="mt-[10%]">
       <ImageContent />

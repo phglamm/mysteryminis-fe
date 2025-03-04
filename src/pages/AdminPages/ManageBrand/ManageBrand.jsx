@@ -34,13 +34,11 @@ export default function ManageBrand() {
 
   const handleUpdate = async (values) => {
     try {
-      const response = await api.put(`Brand/${selectedBrand.brandId}`, values);
+      const response = await api.put(`Brand/${selectedBrand._id}`, values);
       console.log(response.data);
       setBrand(
         brand.map((brand) =>
-          brand.brandId === selectedBrand.brandId
-            ? { ...brand, ...values }
-            : brand
+          brand._id === selectedBrand._id ? { ...brand, ...values } : brand
         )
       );
       toast.success("Updated successfully");
@@ -57,9 +55,9 @@ export default function ManageBrand() {
       title: "Are you sure you want to delete this Brand?",
       onOk: async () => {
         try {
-          await api.delete(`Brand/${values.brandId}`);
+          await api.delete(`Brand/${values._id}`);
           toast.success("Brand deleted successfully");
-          setBrand(brand.filter((brand) => brand.brandId !== values.brandId));
+          setBrand(brand.filter((brand) => brand._id !== values._id));
         } catch (error) {
           toast.error("Failed to delete brand");
         }
@@ -71,8 +69,8 @@ export default function ManageBrand() {
     const fetchBrand = async () => {
       const response = await api.get("Brand");
       console.log(response.data);
-      const sortReponse = response.data.sort((a, b) => b.brandId - a.brandId);
-      setBrand(sortReponse);
+      const sortResponse = response.data.sort((a, b) => b._id - a._id);
+      setBrand(sortResponse);
     };
 
     fetchBrand();
@@ -81,8 +79,8 @@ export default function ManageBrand() {
   const columnBrand = [
     {
       title: "ID",
-      dataIndex: "brandId",
-      key: "brandId",
+      dataIndex: "_id",
+      key: "_id",
     },
     {
       title: "Name",

@@ -15,11 +15,10 @@ export default function ManageBoxImage() {
   const fetchBoxImage = async () => {
     const response = await api.get("BoxImage");
     console.log(response.data);
-    const sortReponse = response.data.sort(
-      (a, b) => b.boxImageId - a.boxImageId
-    );
-    setBoxImage(sortReponse);
+    const sortResponse = response.data.sort((a, b) => b._id - a._id);
+    setBoxImage(sortResponse);
   };
+
   useEffect(() => {
     const fetchBox = async () => {
       const response = await api.get("Box");
@@ -34,8 +33,8 @@ export default function ManageBoxImage() {
   const columnBoxImage = [
     {
       title: "ID",
-      dataIndex: "boxImageId",
-      key: "boxImageId",
+      dataIndex: "_id",
+      key: "_id",
     },
     {
       title: "Image",
@@ -47,19 +46,19 @@ export default function ManageBoxImage() {
     },
     {
       title: "For Box Id",
-      dataIndex: ["belongBox", "boxId"],
-      key: "boxId",
+      dataIndex: ["box", "_id"],
+      key: "_id",
     },
     {
       title: "For Box Name",
-      dataIndex: ["belongBox", "boxName"],
+      dataIndex: ["box", "boxName"],
       key: "boxName",
       filters: boxImage
-        ? Array.from(
-            new Set(boxImage.map((item) => item.belongBox?.boxName))
-          ).map((name) => ({ text: name, value: name }))
+        ? Array.from(new Set(boxImage.map((item) => item.box?.boxName))).map(
+            (name) => ({ text: name, value: name })
+          )
         : [],
-      onFilter: (value, record) => record.belongBox?.boxName === value,
+      onFilter: (value, record) => record.box?.boxName === value,
       filterSearch: true,
     },
     {
@@ -81,6 +80,7 @@ export default function ManageBoxImage() {
       <div style={{ marginTop: 8 }}>Upload</div>
     </div>
   );
+
   const getBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -96,6 +96,7 @@ export default function ManageBoxImage() {
   const [fileList, setFileList] = useState([]);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState("");
+
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -153,7 +154,7 @@ export default function ManageBoxImage() {
     console.log(record);
     formUpdate.setFieldsValue({
       ...record,
-      BoxId: record.belongBox?.boxId, // Extract boxId from belongBox
+      boxId: record.box?._id, // Extract boxId from box
     });
     setIsModalUpdateOpen(true);
     setSelectedBoxImage(record);
@@ -172,7 +173,7 @@ export default function ManageBoxImage() {
     console.log(values);
     try {
       const response = await api.put(
-        `BoxImage/${selectedBoxImage.boxImageId}`,
+        `BoxImage/${selectedBoxImage._id}`,
         values
       ); // Call API to update
       console.log(response.data);
@@ -195,7 +196,7 @@ export default function ManageBoxImage() {
       title: "Are you sure you want to delete this Box's Image?",
       onOk: async () => {
         try {
-          await api.delete(`BoxImage/${values.boxImageId}`);
+          await api.delete(`BoxImage/${values._id}`);
           toast.success("Box's Image deleted successfully");
           fetchBoxImage();
         } catch (error) {
@@ -255,13 +256,13 @@ export default function ManageBoxImage() {
           </Form.Item>
 
           <Form.Item
-            name="BoxId"
+            name="boxId"
             label="For Box's Name"
             rules={[{ required: true, message: "Please enter the Box name" }]}
           >
             <Select placeholder="Select Box" allowClear>
               {box.map((box) => (
-                <Select.Option key={box.boxId} value={box.boxId}>
+                <Select.Option key={box._id} value={box._id}>
                   {box.boxName}
                 </Select.Option>
               ))}
@@ -310,13 +311,13 @@ export default function ManageBoxImage() {
           </Form.Item>
 
           <Form.Item
-            name="BoxId"
+            name="boxId"
             label="For Box's Name"
             rules={[{ required: true, message: "Please enter the Box name" }]}
           >
             <Select placeholder="Select Box" allowClear>
               {box.map((box) => (
-                <Select.Option key={box.boxId} value={box.boxId}>
+                <Select.Option key={box._id} value={box._id}>
                   {box.boxName}
                 </Select.Option>
               ))}

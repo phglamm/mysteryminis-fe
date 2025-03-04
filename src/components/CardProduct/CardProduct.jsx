@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Card, Button, Tag } from "antd";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
@@ -15,18 +15,18 @@ const CardProduct = ({ product }) => {
   }
 
   const firstImageUrl =
-    product.boxImage[0]?.boxImageUrl ||
+    product.boxImages[0]?.boxImageUrl ||
     "https://cdn-icons-png.flaticon.com/512/138/138574.png";
-  const hoverImageUrl = product.boxImage[1]?.boxImageUrl;
-  const brandName = product.brandName;
+  const hoverImageUrl = product.boxImages[1]?.boxImageUrl;
+  const brandName = product.brand?.brandName || "Unknown";
   const boxName = product.boxName;
-  const inStock = product.boxOptions.some(
+  const inStock = product.boxOptions?.some(
     (option) => option.boxOptionStock > 0
   );
 
   const displayPrice = product.boxOptions.reduce((minPrice, option) => {
     return option.displayPrice < minPrice ? option.displayPrice : minPrice;
-  }, product.boxOptions[0]?.displayPrice);
+  }, product.boxOptions[0]?.displayPrice || 0);
 
   const formatPrice = (price) => {
     return price?.toLocaleString("vi-VN", {
@@ -34,6 +34,7 @@ const CardProduct = ({ product }) => {
       currency: "VND",
     });
   };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 50 }}
@@ -131,7 +132,7 @@ const CardProduct = ({ product }) => {
           }}
         >
           <Button
-            onClick={() => navigate(`${route.productDetail}/${product.boxId}`)}
+            onClick={() => navigate(`${route.productDetail}/${product._id}`)}
             type="default"
             style={{
               width: "140px",

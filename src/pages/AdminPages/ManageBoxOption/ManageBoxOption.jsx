@@ -1,7 +1,6 @@
-import { Button, Input, Modal, Select, Table } from "antd";
+import { Button, Input, Modal, Select, Table, Form } from "antd";
 import { useEffect, useState } from "react";
 import api from "../../../config/api";
-import Form from "antd/es/form/Form";
 import toast from "react-hot-toast";
 
 export default function ManageBoxOption() {
@@ -13,19 +12,17 @@ export default function ManageBoxOption() {
   const fetchBoxOption = async () => {
     const response = await api.get("BoxOption");
     console.log(response.data);
-    const sortReponse = response.data.sort(
-      (a, b) => b.boxOptionId - a.boxOptionId
-    );
-    setBoxOption(sortReponse);
+    const sortResponse = response.data.sort((a, b) => b._id - a._id);
+    setBoxOption(sortResponse);
+  };
+
+  const fetchBox = async () => {
+    const response = await api.get("Box");
+    console.log(response.data);
+    setBox(response.data);
   };
 
   useEffect(() => {
-    const fetchBox = async () => {
-      const response = await api.get("Box");
-      console.log(response.data);
-      setBox(response.data);
-    };
-
     fetchBoxOption();
     fetchBox();
   }, []);
@@ -37,8 +34,9 @@ export default function ManageBoxOption() {
   const handleAdd = async (values) => {
     try {
       const response = await api.post("BoxOption", values);
-      setBoxOption([...boxOption, response.data]);
+      console.log(response.data);
       toast.success("Box's Option added successfully");
+      fetchBoxOption();
       setIsModalAddOpen(false);
       formAdd.resetFields();
     } catch (error) {
@@ -51,7 +49,7 @@ export default function ManageBoxOption() {
     setSelectedBoxOption(record);
     formUpdate.setFieldsValue({
       ...record,
-      BoxId: record.belongBox?.boxId, // Extract boxId from belongBox
+      boxId: record.box?._id, // Extract boxId from box
     });
     setIsModalUpdateOpen(true);
   };
@@ -59,17 +57,10 @@ export default function ManageBoxOption() {
   const handleUpdate = async (values) => {
     try {
       const response = await api.put(
-        `BoxOption/${selectedBoxOption.boxOptionId}`,
+        `BoxOption/${selectedBoxOption._id}`,
         values
       );
       console.log(response.data);
-      setBoxOption(
-        boxOption.map((BoxOption) =>
-          BoxOption.boxOptionId === selectedBoxOption.boxOptionId
-            ? { ...BoxOption, ...values }
-            : BoxOption
-        )
-      );
       toast.success("Updated successfully");
       fetchBoxOption();
       setIsModalUpdateOpen(false);
@@ -85,12 +76,10 @@ export default function ManageBoxOption() {
       title: "Are you sure you want to delete this Box's Option?",
       onOk: async () => {
         try {
-          await api.delete(`BoxOption/${values.boxOptionId}`);
+          await api.delete(`BoxOption/${values._id}`);
           toast.success("Box's Option deleted successfully");
           setBoxOption(
-            boxOption.filter(
-              (BoxOption) => BoxOption.boxOptionId !== values.boxOptionId
-            )
+            boxOption.filter((BoxOption) => BoxOption._id !== values._id)
           );
           fetchBoxOption();
         } catch (error) {
@@ -103,8 +92,8 @@ export default function ManageBoxOption() {
   const columnBoxOptions = [
     {
       title: "ID",
-      dataIndex: "boxOptionId",
-      key: "boxOptionId",
+      dataIndex: "_id",
+      key: "_id",
     },
     {
       title: "Name",
@@ -136,19 +125,19 @@ export default function ManageBoxOption() {
     },
     {
       title: "For Box Id",
-      dataIndex: ["belongBox", "boxId"],
-      key: "boxId",
+      dataIndex: ["box", "_id"],
+      key: "_id",
     },
     {
       title: "For Box Name",
-      dataIndex: ["belongBox", "boxName"],
+      dataIndex: ["box", "boxName"],
       key: "boxName",
       filters: boxOption
-        ? Array.from(
-            new Set(boxOption.map((item) => item.belongBox?.boxName))
-          ).map((name) => ({ text: name, value: name }))
+        ? Array.from(new Set(boxOption.map((item) => item.box?.boxName))).map(
+            (name) => ({ text: name, value: name })
+          )
         : [],
-      onFilter: (value, record) => record.belongBox?.boxName === value,
+      onFilter: (value, record) => record.box?.boxName === value,
       filterSearch: true,
     },
     {
@@ -193,7 +182,7 @@ export default function ManageBoxOption() {
             name="boxOptionStock"
             label="Box Option's Stock"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              { required: true, message: "Please enter the BoxOption stock" },
             ]}
           >
             <Input />
@@ -203,7 +192,7 @@ export default function ManageBoxOption() {
             name="originPrice"
             label="Origin Price"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              { required: true, message: "Please enter the origin price" },
             ]}
           >
             <Input />
@@ -213,20 +202,20 @@ export default function ManageBoxOption() {
             name="displayPrice"
             label="Display Price"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              { required: true, message: "Please enter the display price" },
             ]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            name="BoxId"
+            name="boxId"
             label="For Box's Name"
             rules={[{ required: true, message: "Please enter the Box name" }]}
           >
             <Select placeholder="Select Box" allowClear>
               {box.map((box) => (
-                <Select.Option key={box.boxId} value={box.boxId}>
+                <Select.Option key={box._id} value={box._id}>
                   {box.boxName}
                 </Select.Option>
               ))}
@@ -256,7 +245,7 @@ export default function ManageBoxOption() {
             name="boxOptionStock"
             label="Box Option's Stock"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              { required: true, message: "Please enter the BoxOption stock" },
             ]}
           >
             <Input />
@@ -266,7 +255,7 @@ export default function ManageBoxOption() {
             name="originPrice"
             label="Origin Price"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              { required: true, message: "Please enter the origin price" },
             ]}
           >
             <Input />
@@ -276,20 +265,20 @@ export default function ManageBoxOption() {
             name="displayPrice"
             label="Display Price"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              { required: true, message: "Please enter the display price" },
             ]}
           >
             <Input />
           </Form.Item>
 
           <Form.Item
-            name="BoxId"
+            name="boxId"
             label="For Box's Name"
             rules={[{ required: true, message: "Please enter the Box name" }]}
           >
             <Select placeholder="Select Box" allowClear>
               {box.map((box) => (
-                <Select.Option key={box.boxId} value={box.boxId}>
+                <Select.Option key={box._id} value={box._id}>
                   {box.boxName}
                 </Select.Option>
               ))}

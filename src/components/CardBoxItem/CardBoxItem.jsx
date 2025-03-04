@@ -42,7 +42,7 @@ const CardBoxItem = ({ Item }) => {
             }}
           >
             <img
-              src={hovered && Item.imageUrl ? Item.imageUrl : Item.imageUrl}
+              src={Item.imageUrl || "https://via.placeholder.com/300"}
               alt={Item.boxItemName}
               style={{
                 width: "100%",
@@ -99,7 +99,7 @@ const CardBoxItem = ({ Item }) => {
             justifyContent: "center",
           }}
         >
-          <Link to={`${route.boxItemDetail}/${Item.boxItemId}`}>
+          <Link to={`${route.boxItemDetail}/${Item._id}`}>
             <Button
               type="default"
               style={{
@@ -109,8 +109,6 @@ const CardBoxItem = ({ Item }) => {
                 fontWeight: "bold",
                 borderRadius: "8px",
                 border: "1px solid black",
-                // backgroundColor: product.inStock ? "#fff" : "#f0f0f0",
-                // color: product.inStock ? "#333" : "#999",
               }}
             >
               Watch More
