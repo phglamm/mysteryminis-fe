@@ -7,7 +7,7 @@ import { HeartFilled, HeartOutlined } from "@ant-design/icons";
 import api from "../../../config/api";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../../../Redux/features/cartSlice";
+import { addToCart, clearCart } from "../../../Redux/features/cartSlice";
 import "./ProductDetailPage.scss";
 import {
   addToFavorite,
@@ -110,15 +110,14 @@ const ProductDetailPage = () => {
       (option) => option.boxOptionId === chooseOption.boxOptionId
     );
     const orderItemOpenRequestNumber = 0;
-
     console.log("Selected: ", selectedOption);
-
     if (selectedOption) {
       const boxToAdd = { ...box, selectedOption, orderItemOpenRequestNumber };
       console.log(boxToAdd);
       toast.success("Added to cart");
       dispatch(addToCart(boxToAdd));
     }
+    // dispatch(clearCart());
   };
 
   const handleToggleFavorite = () => {

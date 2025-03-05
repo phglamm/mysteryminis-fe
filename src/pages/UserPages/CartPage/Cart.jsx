@@ -26,7 +26,7 @@ const Cart = () => {
   const dispatch = useDispatch();
 
   const totalAmount = cartItems.reduce(
-    (acc, item) => acc + item.selectedOption.displayPrice * item.quantity,
+    (acc, item) => acc + item.selectedOption?.displayPrice * item.quantity,
     0
   );
 
@@ -51,7 +51,7 @@ const Cart = () => {
               >
                 <img
                   alt={item.boxName}
-                  src={item.boxImage[0]?.boxImageUrl}
+                  src={item?.boxImage[0]?.boxImageUrl}
                   style={{
                     width: "250px",
                     height: "250px",
@@ -96,7 +96,7 @@ const Cart = () => {
                     <Col>
                       <p style={{ fontSize: "18px" }}>
                         Price:{" "}
-                        {item.selectedOption.displayPrice.toLocaleString()} đ
+                        {item.selectedOption?.displayPrice.toLocaleString()} đ
                       </p>
                       <div className="flex items-center justify-between gap-3">
                         <p>How many box you want us to open?</p>
