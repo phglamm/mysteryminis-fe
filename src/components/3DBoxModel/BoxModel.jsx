@@ -84,7 +84,7 @@ const BoxModel = ({ plays, setPlays }) => {
             }, 3000);
           }}
         >
-          <source src={commonRun} type="video/mp4" />
+          <source src={secretRun} type="video/mp4" />
         </video>
       )}
 
