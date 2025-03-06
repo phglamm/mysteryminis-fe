@@ -14,12 +14,21 @@ const CheckOutPage = () => {
   const navigate = useNavigate();
   const cartItems = useSelector(selectCartItems);
   const user = useSelector(selectUser);
-  const totalAmount = cartItems.reduce(
+
+  const [form] = useForm();
+  const [shippingFee, setShippingFee] = useState(0);
+
+  const provisional = cartItems.reduce(
     (acc, item) => acc + item.selectedOption.displayPrice * item.quantity,
     0
   );
   const dispatch = useDispatch();
-  const [form] = useForm();
+
+  const totalAmount =
+    cartItems.reduce(
+      (acc, item) => acc + item.selectedOption.displayPrice * item.quantity,
+      0
+    ) + shippingFee;
 
   const [userAddress, setUserAddress] = useState([]);
 
@@ -49,6 +58,25 @@ const CheckOutPage = () => {
         phoneNumber: selectedAddress.phoneNumber,
         name: selectedAddress.name,
       });
+    }
+    handleCalculateShippingFee(selectedAddress);
+  };
+  const totalQuantity = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const handleCalculateShippingFee = async (selectedAddress) => {
+    console.log(selectedAddress);
+    const shippingFeeRequest = {
+      service_id: 53320,
+      to_district_id: selectedAddress.districtId,
+      weight: 500 * totalQuantity,
+    };
+    console.log(shippingFeeRequest);
+    try {
+      const response = await api.post("Shipping/fee", shippingFeeRequest);
+      console.log(response.data);
+      setShippingFee(response.data.data.total);
+    } catch (error) {
+      setShippingFee(40000);
+      console.log(error.response.data);
     }
   };
 
@@ -335,7 +363,7 @@ const CheckOutPage = () => {
           <div style={{ marginTop: "15px", fontSize: "16px" }}>
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span>Subtotal</span>
-              <span>{totalAmount.toLocaleString()}₫</span>
+              <span>{provisional.toLocaleString()}₫</span>
             </div>
             <div
               style={{
@@ -345,7 +373,7 @@ const CheckOutPage = () => {
               }}
             >
               <span>Shipping Fee</span>
-              <span>-</span>
+              <span>{shippingFee.toLocaleString()} đ</span>
             </div>
             <div
               style={{

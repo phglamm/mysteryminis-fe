@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import Logo from "../../assets/images/Logo-removebg.png";
 import { motion } from "framer-motion";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   HeartOutlined,
   MessageOutlined,
@@ -19,15 +19,11 @@ export default function Header() {
   const [isHovered, setIsHovered] = useState(false);
   const [brand, setBrand] = useState(null);
 
-
-
-
   useEffect(() => {
     fetchBlindBoxCategories().then((data) => {
       setBrand(data);
     });
   }, []);
-
 
   const initial = {
     opacity: 0,
@@ -45,9 +41,9 @@ export default function Header() {
 
   // Define navigation links
   const navItems = [
-    { label: "Online Blindbox", path: "/online-blindbox" },
-    { label: "Hot Items", path: route.boxItemPage },
-    { label: "Blogs", path: route.blog },
+    { label: "ONLINE BLINDBOX", path: "/online-blindbox" },
+    { label: "HOT ITEMS", path: route.boxItemPage },
+    { label: "BLOGS", path: route.blog },
   ];
   const user = useSelector(selectUser);
   return (
@@ -78,7 +74,7 @@ export default function Header() {
               onClick={navigateToHome}
               whileTap={{ scale: 0.9 }}
             >
-              Home
+              HOME
             </motion.div>
           </motion.span>
 
@@ -93,7 +89,7 @@ export default function Header() {
               onClick={() => navigate(route.product)}
               whileTap={{ scale: 0.9 }}
             >
-              Our Blindbox
+              OUR BLINDBOX
             </motion.div>
           </motion.span>
 
@@ -144,7 +140,7 @@ export default function Header() {
               user ? navigate("/userProfile") : navigate(route.login)
             }
           >
-            <UserOutlined /> {user ? user.username : "Sign In"}
+            <UserOutlined /> {user ? user.username : "SIGN IN"}
           </motion.span>
 
           <motion.span
@@ -194,8 +190,8 @@ export default function Header() {
           style={{ userSelect: "none" }}
         >
           <div className="grid grid-cols-5 px-[15%]  justify-center items-center gap-4 p-4 ">
-            
-              {brand && brand.slice(0,10).map((item, index) => (
+            {brand &&
+              brand.slice(0, 10).map((item, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0 }}
@@ -205,28 +201,25 @@ export default function Header() {
                 >
                   <motion.div
                     whileHover={{ scale: 1.1, color: "red" }}
-                      whileTap={{ scale: 0.9 }}
-                    onClick={() => navigate(route.product, {
-                      state: { brand: item.brandName },
-                    })}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() =>
+                      navigate(route.product, {
+                        state: { brand: item.brandName },
+                      })
+                    }
                     className="border-1 rounded-xl p-[5%] bg-white w-full flex justify-center items-center"
                   >
-                    <motion.div
-                      className="flex flex-row justify-center items-center gap-2"
-                    >
+                    <motion.div className="flex flex-row justify-center items-center gap-2">
                       <span className="w-[30%] h-full rounded-xl flex justify-center items-center">
-                        <img src={item.imageUrl} alt="brand"  />
-                      </span> 
-                      
+                        <img src={item.imageUrl} alt="brand" />
+                      </span>
+
                       <span className="w-[70%]">{item.brandName}</span>
-                      
                     </motion.div>
-                    </motion.div>
-                  
+                  </motion.div>
                 </motion.div>
               ))}
-            </div>
-            
+          </div>
         </motion.div>
       )}
     </div>

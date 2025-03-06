@@ -3,6 +3,8 @@ import { Checkbox, Pagination, Spin } from "antd";
 import CardProduct from "../../../components/CardProduct/CardProduct";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
+import TiltedCard from "../../../components/React_Bits/TiltedCard/TiltedCard";
+import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 
 const ProductPage = () => {
   const [brands, setBrands] = useState([]);
@@ -96,10 +98,14 @@ const ProductPage = () => {
           </h2>
           <div
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-              gap: "15px",
-              justifyContent: "center",
+              minWidth: "250px",
+              position: "sticky",
+              top: "100px",
+              marginRight: "20px",
+              padding: "10px",
+              border: "1px solid #ddd",
+              borderRadius: "8px",
+              backgroundColor: "#f9f9f9",
             }}
           >
             {currentProducts.map((product) => (
@@ -115,21 +121,45 @@ const ProductPage = () => {
             ))}
           </div>
 
-          {/* Pagination */}
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginTop: "20px",
-            }}
-          >
-            <Pagination
-              current={currentPage}
-              pageSize={pageSize}
-              total={filteredProducts.length}
-              onChange={handlePageChange}
-              showSizeChanger={false}
-            />
+          {/* Product Grid */}
+          <div style={{ flex: 1, paddingLeft: "0px" }}>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+                gap: "15px",
+                justifyContent: "center",
+              }}
+            >
+              {currentProducts.map((product) => (
+                <div
+                  key={product.boxId}
+                  style={{ display: "flex", justifyContent: "center" }}
+                >
+                  <CardProduct
+                    product={product}
+                    cardStyle={{ width: "100%", height: "100%" }}
+                  />
+                </div>
+              ))}
+            </div>
+
+            {/* Pagination */}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                marginTop: "20px",
+              }}
+            >
+              <Pagination
+                current={currentPage}
+                pageSize={pageSize}
+                total={filteredProducts.length}
+                onChange={handlePageChange}
+                showSizeChanger={false}
+              />
+            </div>
           </div>
         </div>
       </div>
