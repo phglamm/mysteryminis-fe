@@ -50,7 +50,7 @@ export default function Header() {
 
   // Define navigation links
   const navItems = [
-    { label: "Online Blindbox", path: "/online-blindbox" },
+    { label: "Online Blindbox", path: "/online-package" },
     { label: "Hot Items", path: route.boxItemPage },
     { label: "Blogs", path: route.blog },
   ];
@@ -200,7 +200,7 @@ export default function Header() {
         >
           <div className="grid grid-cols-5 px-[15%]  justify-center items-center gap-4 p-4 ">
             
-              {brand.slice(0,10).map((item, index) => (
+              {brand && brand.slice(0,10).map((item, index) => (
                 <motion.div
                   key={index}
                   initial={{ opacity: 0 }}
