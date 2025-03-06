@@ -130,7 +130,7 @@ const Cart = () => {
                             )
                           }
                           disabled={
-                            item.orderItemOpenRequestNumber === item.quantity
+                            item.orderItemOpenRequestNumber >= item.quantity
                           }
                         />
                       </div>
@@ -168,6 +168,9 @@ const Cart = () => {
                                 selectedOption: item.selectedOption || null,
                               })
                             )
+                          }
+                          disabled={
+                            item.selectedOption?.boxOptionStock <= item.quantity
                           }
                         />
                       </div>

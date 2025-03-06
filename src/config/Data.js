@@ -3,10 +3,11 @@ import api from "./api";
 export const fetchBoxesHomePage = async (category) => {
   try {
     let url = `box`;
-    // if (category === "BestSeller") {
-    //   url = `Box/best-seller-box?quantityWantToGet=10`;
-    // }
+
     const response = await api.get(url);
+    if (category === "BestSeller") {
+      return response.data.sort((a, b) => b.soldQuantity - a.soldQuantity);
+    }
     return response.data || [];
   } catch (error) {
     console.error("Error fetching data:", error);

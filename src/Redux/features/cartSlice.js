@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import toast from "react-hot-toast";
 
 const initialState = {
   cartItems: [],
@@ -20,9 +21,10 @@ const cartSlice = createSlice({
 
       if (item) {
         // If the item exists, increase its quantity
-        item.quantity += 1;
+        toast.error("This item is already in your cart!");
       } else {
         // Add the new item with the selected variant
+        toast.success("Added to cart");
         state.cartItems.push({ ...action.payload, quantity: 1 });
       }
     },

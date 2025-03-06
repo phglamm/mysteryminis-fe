@@ -113,7 +113,6 @@ const ProductDetailPage = () => {
     if (selectedOption) {
       const boxToAdd = { ...box, selectedOption, orderItemOpenRequestNumber };
       console.log(boxToAdd);
-      toast.success("Added to cart");
       dispatch(addToCart(boxToAdd));
     }
     // dispatch(clearCart());
@@ -171,43 +170,56 @@ const ProductDetailPage = () => {
                 width: "100%",
               }}
             >
-              {box.boxOptions.map((option, index) => (
-                <button
-                  key={option._id}
-                  style={{
-                    padding: "10px 16px",
-                    border:
-                      chooseOption && chooseOption._id === option._id
-                        ? "2px solid black"
-                        : "1px solid #ccc",
-                    borderRadius: "8px",
-                    fontSize: "14px",
-                    cursor: "pointer",
-                    fontWeight:
-                      chooseOption && chooseOption._id === option._id
-                        ? "bold"
-                        : "normal",
-                    backgroundColor:
-                      chooseOption && chooseOption._id === option._id
-                        ? "#fff"
-                        : "#f0f0f0",
-                    color: "#333",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    boxShadow:
-                      chooseOption && chooseOption._id === option._id
-                        ? "0 0 5px rgba(0,0,0,0.3)"
-                        : "none",
-                    minWidth: "150px",
-                    minHeight: "40px",
-                    boxSizing: "border-box",
-                  }}
-                  onClick={() => handleOptionChange(option)}
-                >
-                  {option.boxOptionName}
-                </button>
-              ))}
+              {box.boxOptions.map((option, index) => {
+                const isOutOfStock = option.boxOptionStock === 0;
+
+                return (
+                  <button
+                    key={option._id}
+                    style={{
+                      padding: "10px 16px",
+                      border:
+                        chooseOption?._id === option._id
+                          ? "2px solid black"
+                          : "1px solid #ccc",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      cursor: isOutOfStock ? "not-allowed" : "pointer",
+                      fontWeight:
+                        chooseOption?._id === option._id ? "bold" : "normal",
+                      backgroundColor: isOutOfStock ? "#f8d7da" : "#f0f0f0", // Light red for out-of-stock
+                      color: isOutOfStock ? "#a94442" : "#333", // Darker red text for out-of-stock
+                      opacity: isOutOfStock ? 0.6 : 1,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      gap: "8px",
+                      boxShadow:
+                        chooseOption?._id === option._id
+                          ? "0 0 5px rgba(0,0,0,0.3)"
+                          : "none",
+                      minWidth: "150px",
+                      minHeight: "40px",
+                      boxSizing: "border-box",
+                    }}
+                    onClick={() => !isOutOfStock && handleOptionChange(option)}
+                    disabled={isOutOfStock}
+                  >
+                    {option.boxOptionName}{" "}
+                    <span
+                      style={{
+                        fontSize: "12px",
+                        fontWeight: "bold",
+                        color: "#555",
+                      }}
+                    >
+                      {option.boxOptionStock > 0
+                        ? `(${option.boxOptionStock} left)`
+                        : "(Out of stock)"}
+                    </span>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -218,9 +230,10 @@ const ProductDetailPage = () => {
               padding: "12px",
               fontSize: "16px",
               fontWeight: "500",
-              backgroundColor: isOutOfStock ? "#ccc" : "#000", // Black background color
+              backgroundColor: isOutOfStock ? "#ccc" : "#000", // Black for active, grey for disabled
               color: "#fff",
               height: "50px",
+              cursor: isOutOfStock ? "not-allowed" : "pointer",
             }}
             disabled={isOutOfStock}
             onClick={handleAddToCart}
