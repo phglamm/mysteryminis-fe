@@ -59,7 +59,7 @@ const ManageOrder = () => {
   }, []);
 
   const columns = [
-    { title: "Order Number", dataIndex: "orderId", key: "orderId" },
+    { title: "Order Number", dataIndex: "_id", key: "_id" },
     {
       title: "Date Time",
       dataIndex: "orderCreatedAt",
@@ -68,7 +68,7 @@ const ManageOrder = () => {
       sorter: (a, b) =>
         dayjs(b.orderCreatedAt).unix() - dayjs(a.orderCreatedAt).unix(), // Sắp xếp theo ngày mới nhất
     },
-    { title: "Customer ID", dataIndex: "userId", key: "userId" },
+    { title: "Customer ID", dataIndex: ["user", "_id"], key: "user._id" },
     {
       title: "Items",
       dataIndex: "orderItems",
@@ -83,18 +83,18 @@ const ManageOrder = () => {
     },
     {
       title: "Order Status",
-      dataIndex: "currentStatusId",
+      dataIndex: ["orderStatus", "orderStatusName"],
       key: "orderStatus",
       render: (status) => {
-        if (status === 1) {
+        if (status === "PENDING") {
           return "Pending";
-        } else if (status === 2) {
+        } else if (status === "PROCESSING") {
           return "Processing";
-        } else if (status === 3) {
+        } else if (status === "SHIPPING") {
           return "Shipping";
-        } else if (status === 4) {
+        } else if (status === "CANCELLED") {
           return "Cancelled";
-        } else if (status === 5) {
+        } else if (status === "ARRIVED") {
           return "Arrived";
         } else {
           return "Unknown";
@@ -103,26 +103,26 @@ const ManageOrder = () => {
       filters: [
         {
           text: "Pending",
-          value: 1,
+          value: "PENDING",
         },
         {
           text: "Processing",
-          value: 2,
+          value: "PROCESSING",
         },
         {
           text: "Shipping",
-          value: 3,
+          value: "SHIPPING",
         },
         {
           text: "Cancelled",
-          value: 4,
+          value: "CANCELLED",
         },
         {
           text: "Arrived",
-          value: 5,
+          value: "ARRIVED",
         },
       ],
-      onFilter: (value, record) => record.currentStatusId === value,
+      onFilter: (value, record) => record.orderStatus.orderStatusName === value,
       filterSearch: true,
     },
     {
@@ -147,8 +147,10 @@ const ManageOrder = () => {
     .filter((order) => {
       if (activeTab === "All") return true;
       if (activeTab === "Refund") return order.refundRequest;
-      if (activeTab === "Cancelled") return order.currentStatusId === 4;
-      if (activeTab === "Arrived") return order.currentStatusId === 5;
+      if (activeTab === "Cancelled")
+        return order.orderStatus.orderStatusName === "CANCELLED";
+      if (activeTab === "Arrived")
+        return order.orderStatus.orderStatusName === "ARRIVED";
       if (activeTab === "Processing") return order.openRequest === true;
       return false;
     })
@@ -211,7 +213,7 @@ const ManageOrder = () => {
 
     try {
       const response = await api.post(
-        `OrderItem?orderItemId=${selectedItem.orderItemId}`,
+        `OrderItem?orderItemId=${selectedItem._id}`,
         imgURLs
       );
       console.log(response.data);
@@ -221,6 +223,7 @@ const ManageOrder = () => {
       console.log(error.response.data);
     }
   };
+
   return (
     <div style={{ padding: 20 }}>
       <h2 style={{ fontSize: "30px" }}>Manage Orders</h2>
@@ -236,7 +239,6 @@ const ManageOrder = () => {
         Refresh Orders
       </Button>
       <Tabs defaultActiveKey="PROCESSING" onChange={setActiveTab}>
-        \
         <TabPane tab="All Order" key="All" />
         <TabPane tab="Processing" key="Processing" />
         <TabPane tab="Arrived" key="Arrived" />
@@ -246,13 +248,13 @@ const ManageOrder = () => {
       <Table
         columns={columns}
         dataSource={filteredData}
-        rowKey="orderId"
+        rowKey="_id"
         pagination={{ pageSize: 10 }} // Phân trang 10 đơn hàng mỗi trang
       />
 
       <Modal
         width={1000}
-        title={`Order Details number ${selectedOrder?.orderId}`}
+        title={`Order Details number ${selectedOrder?._id}`}
         visible={isModalVisible}
         footer={
           <>
@@ -267,10 +269,10 @@ const ManageOrder = () => {
               {dayjs(selectedOrder.orderCreatedAt).format("DD/MM/YYYY HH:mm")}
             </p>
             <p>
-              <strong>Customer ID:</strong> {selectedOrder.userId}
+              <strong>Customer ID:</strong> {selectedOrder.user._id}
             </p>
             <p>
-              <strong>Addres:</strong> {selectedOrder.address?.addressDetail},{" "}
+              <strong>Address:</strong> {selectedOrder.address?.addressDetail},{" "}
               {selectedOrder.address?.district}, {selectedOrder.address?.ward},{" "}
               {selectedOrder.address?.province}
             </p>
@@ -285,48 +287,24 @@ const ManageOrder = () => {
               {selectedOrder.orderItems?.map((item) => (
                 <>
                   <div
-                    key={item.orderItemId}
+                    key={item._id}
                     className="flex justify-between items-center gap-5"
                   >
                     <div className="flex justify-start items-center gap-5">
                       <img
-                        src={item.imageUrl}
+                        src={item.boxOption.box.boxImages[0]?.boxImageUrl}
                         alt=""
                         className="h-20  w-20 border "
                       />
                       <div>
-                        <p>Name: {item.boxName}</p>
-                        <p>Option: {item.boxOptionName}</p>
+                        <p>Name: {item.boxOption.box.boxName}</p>
+                        <p>Option: {item.boxOption.boxOptionName}</p>
                         <p>Quantity: {item.quantity}</p>
                       </div>
                     </div>
                     <div>
                       <p>{item.orderPrice.toLocaleString() + " đ"}</p>
                     </div>
-                    {/* {item.openRequestNumber > 0 ? (
-                      item.orderStatusCheckCardImage?.length === 0 ? (
-                        <div>
-                          <p> Open request: {item.openRequestNumber}</p>
-                          <Button onClick={() => showModalUpload(item)}>
-                            Upload Image
-                          </Button>
-                        </div>
-                      ) : (
-                        <>
-                          {item.orderStatusCheckCardImage?.map((img, index) => (
-                            <img
-                              src={img}
-                              alt=""
-                              key={index}
-                              className="h-40"
-                            />
-                          ))}
-                        </>
-                      )
-                    ) : (
-                      <p>close</p>
-                    )} */}
-
                     {item.openRequestNumber > 0 && (
                       <div>
                         <p> Open request: {item.openRequestNumber}</p>
@@ -356,11 +334,16 @@ const ManageOrder = () => {
               </p>
               <p>
                 <strong>Status:</strong>{" "}
-                {selectedOrder.currentStatusId === 1 && "Pending"}
-                {selectedOrder.currentStatusId === 2 && "Processing"}
-                {selectedOrder.currentStatusId === 3 && "Shipping"}
-                {selectedOrder.currentStatusId === 4 && "Cancelled"}
-                {selectedOrder.currentStatusId === 5 && "Arrived"}
+                {selectedOrder.orderStatus.orderStatusName === "PENDING" &&
+                  "Pending"}
+                {selectedOrder.orderStatus.orderStatusName === "PROCESSING" &&
+                  "Processing"}
+                {selectedOrder.orderStatus.orderStatusName === "SHIPPING" &&
+                  "Shipping"}
+                {selectedOrder.orderStatus.orderStatusName === "CANCELLED" &&
+                  "Cancelled"}
+                {selectedOrder.orderStatus.orderStatusName === "ARRIVED" &&
+                  "Arrived"}
               </p>
             </div>
           </div>
@@ -368,7 +351,7 @@ const ManageOrder = () => {
       </Modal>
 
       <Modal
-        title={`Order Item number ${selectedItem?.orderItemId}`}
+        title={`Order Item number ${selectedItem?._id}`}
         visible={isModalUpload}
         onCancel={handleCancelUpload}
         onOk={() => formUpload.submit()}
