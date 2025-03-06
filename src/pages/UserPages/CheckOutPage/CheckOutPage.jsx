@@ -35,7 +35,7 @@ const CheckOutPage = () => {
   useEffect(() => {
     const fetchUserAddress = async () => {
       try {
-        const response = await api.get(`/Address/?userId=${user.userId}`);
+        const response = await api.get(`address/user/${user._id}`);
         console.log(response.data);
         setUserAddress(response.data);
       } catch (error) {
@@ -43,11 +43,11 @@ const CheckOutPage = () => {
       }
     };
     fetchUserAddress();
-  }, [user.userId]);
+  }, [user._id]);
 
   const handleAddressChange = (value) => {
     const selectedAddress = userAddress.find(
-      (address) => address.addressId === value
+      (address) => address._id === value
     );
     if (selectedAddress) {
       form.setFieldsValue({
@@ -81,10 +81,9 @@ const CheckOutPage = () => {
   };
 
   const handleCheckout = async (values) => {
-    values.userId = user.userId;
+    values.userId = user._id;
     values.voucherId = "67c5952e4436f2dd6b93470d";
     values.totalPrice = totalAmount;
-    values.addressId = "67c5912512196ab0d5c0c86a";
     values.orderItemRequestDto = cartItems.map((item) => ({
       quantity: item.quantity,
       price: item.selectedOption.displayPrice,
@@ -220,7 +219,7 @@ const CheckOutPage = () => {
               onChange={handleAddressChange}
             >
               {userAddress.map((address, index) => (
-                <Select.Option value={address.addressId} key={index}>
+                <Select.Option value={address._id} key={index}>
                   {address.name}, {address.phoneNumber}, {address.addressDetail}
                   , {address.ward}, {address.district}, {address.province}
                 </Select.Option>

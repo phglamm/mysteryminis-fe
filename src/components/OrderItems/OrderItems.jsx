@@ -28,7 +28,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
   console.log(checkCard);
   const fetchOrders = async () => {
     try {
-      const response = await api.get(`Order?userId=${user.userId}`);
+      const response = await api.get(`Order/user/${user._id}`);
       // const response = await api.get('Order');
       setOrders(response.data);
       console.log(response.data);
@@ -36,14 +36,6 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
       console.error(error);
     }
   };
-
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  useEffect(() => {
-    setViewDetails(ViewDetails);
-  }, [ViewDetails]);
 
   useEffect(() => {
     fetchOrders();
@@ -85,7 +77,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
     .filter((order) => {
       if (selectedCategory === "All Orders") return true;
       return (
-        order.orderStatusDetailsSimple?.slice(-1)[0]?.statusName ===
+        order.orderStatusDetail?.slice(-1)[0]?.orderStatus.orderStatusName ===
         selectedCategory
       );
     })
@@ -118,7 +110,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
             >
               <div className="grid grid-cols-5  items-center p-4 bg-gray-100">
                 <div className="flex col-span-4 w-full gap-4 justify-start">
-                  <div>Order ID: {order.orderId}</div>
+                  <div>Order ID: {order._id}</div>
                   <div>Order Date: {formatDate(order.orderCreatedAt)}</div>
                 </div>
 
@@ -147,8 +139,8 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                     </motion.button>
                   ) : (
                     <div>
-                      {order.orderStatusDetailsSimple?.slice(-1)[0]
-                        ?.statusName || "Pending"}
+                      {order.orderStatusDetail?.slice(-1)[0]?.orderStatus
+                        .orderStatusName || "Pending"}
                     </div>
                   )}
                 </div>
@@ -169,7 +161,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
 
                 <div className="flex w-full flex-row gap-[7%]">
                   {order.orderItems.length > 0 ? (
-                    order.orderStatusDetailsSimple.map((status, index) => (
+                    order.orderStatusDetail?.map((status, index) => (
                       <div
                         key={index}
                         className=" w-[15%] text-gray-500 text-[70%] h-fit"
@@ -212,7 +204,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                 </span>
               </motion.div>
 
-              {order.orderItems.length > 0 > 0 ? (
+              {order.orderItems.length > 0 ? (
                 (ViewDetails
                   ? order.orderItems
                   : order.orderItems.slice(0, 1)
@@ -232,20 +224,20 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                     <div className="flex gap-1 w-2/4">
                       <div className="w-1/4 bg-pink-200">
                         <img
-                          src={item.imageUrl}
-                          alt={item.boxName}
+                          src={item.boxOption.box.boxImages[0]?.boxImageUrl}
+                          alt={item.boxOption.box.boxName}
                           className="w-full h-full object-cover"
                         />
                       </div>
                       <div className="w-3/4 flex flex-col">
                         <span className="font-bold text-xl">
-                          {item.boxName}
+                          {item.boxOption.box.boxName}
                         </span>
                         <span className="text-sm text-gray-500">
-                          Option: {item.boxOptionName}
+                          Option: {item.boxOption.boxOptionName}
                         </span>
                         <span className="text-sm text-gray-400">
-                          Quanity: {item.quantity}
+                          Quantity: {item.quantity}
                         </span>
                       </div>
                     </div>
@@ -341,8 +333,9 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                 </div>
 
                 <div className="flex justify-end gap-4">
-                  {order.orderStatusDetailsSimple?.slice(-1)[0]?.statusName ===
-                    "Pending" && order.paymentMethod === "COD" ? (
+                  {order.orderStatusDetail?.slice(-1)[0]?.orderStatus
+                    .orderStatusName === "Pending" &&
+                  order.paymentMethod === "COD" ? (
                     <motion.button
                       className="border-1 px-3 py-1 w-[25%] text-[0.9vw] rounded-md font-bold"
                       initial={{
@@ -357,7 +350,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                         scale: 1.1,
                       }}
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => cancelOrders(order.orderId)}
+                      onClick={() => cancelOrders(order._id)}
                       disabled={loadingCancel}
                     >
                       {loadingCancel ? (
@@ -368,8 +361,8 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                         "Cancel Order"
                       )}
                     </motion.button>
-                  ) : order.orderStatusDetailsSimple?.slice(-1)[0]
-                      ?.statusName === "Arrived" ? (
+                  ) : order.orderStatusDetail?.slice(-1)[0]?.orderStatus
+                      .orderStatusName === "Arrived" ? (
                     <>
                       <motion.button
                         className="border-1 px-3 py-1 w-[20%] text-[0.9vw] rounded-md font-bold"

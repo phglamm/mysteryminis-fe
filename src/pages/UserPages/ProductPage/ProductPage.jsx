@@ -65,8 +65,27 @@ const ProductPage = () => {
 
   return (
     <div className="container mx-auto mt-[10%]">
+      <TiltedCard
+        imageSrc="https://global-static.popmart.com/globalAdmin/1738891844056____pc-1____.jpg?x-oss-process=image/format,webp"
+        captionText="Welcome to Mystery Minis"
+        containerHeight="500px"
+        containerWidth="100%"
+        imageHeight="100%"
+        imageWidth="100%"
+        rotateAmplitude={1}
+        scaleOnHover={1}
+        showMobileWarning={true}
+        showTooltip={true}
+        displayOverlayContent={true}
+      />
+      <BlurText
+        text="Our Blindbox"
+        delay={100}
+        animateBy="words"
+        direction="top"
+        className="text-5xl font-bold text-center my-15"
+      />
       <div style={{ display: "flex", alignItems: "flex-start" }}>
-        {/* Sidebar */}
         <div
           style={{
             minWidth: "250px",
@@ -91,26 +110,18 @@ const ProductPage = () => {
           />
         </div>
 
-        {/* Product Grid */}
         <div style={{ flex: 1, paddingLeft: "0px" }}>
-          <h2 style={{ marginBottom: "20px", textAlign: "flex-start" }}>
-            BLIND BOX
-          </h2>
           <div
             style={{
-              minWidth: "250px",
-              position: "sticky",
-              top: "100px",
-              marginRight: "20px",
-              padding: "10px",
-              border: "1px solid #ddd",
-              borderRadius: "8px",
-              backgroundColor: "#f9f9f9",
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
+              gap: "15px",
+              justifyContent: "center",
             }}
           >
             {currentProducts.map((product) => (
               <div
-                key={product._id}
+                key={product.boxId}
                 style={{ display: "flex", justifyContent: "center" }}
               >
                 <CardProduct
@@ -121,45 +132,21 @@ const ProductPage = () => {
             ))}
           </div>
 
-          {/* Product Grid */}
-          <div style={{ flex: 1, paddingLeft: "0px" }}>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))",
-                gap: "15px",
-                justifyContent: "center",
-              }}
-            >
-              {currentProducts.map((product) => (
-                <div
-                  key={product.boxId}
-                  style={{ display: "flex", justifyContent: "center" }}
-                >
-                  <CardProduct
-                    product={product}
-                    cardStyle={{ width: "100%", height: "100%" }}
-                  />
-                </div>
-              ))}
-            </div>
-
-            {/* Pagination */}
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                marginTop: "20px",
-              }}
-            >
-              <Pagination
-                current={currentPage}
-                pageSize={pageSize}
-                total={filteredProducts.length}
-                onChange={handlePageChange}
-                showSizeChanger={false}
-              />
-            </div>
+          {/* Pagination */}
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginTop: "20px",
+            }}
+          >
+            <Pagination
+              current={currentPage}
+              pageSize={pageSize}
+              total={filteredProducts.length}
+              onChange={handlePageChange}
+              showSizeChanger={false}
+            />
           </div>
         </div>
       </div>

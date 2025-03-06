@@ -109,7 +109,10 @@ const AddressPOST = ({ setAddAddress }) => {
   const handleUpdateAddress = async () => {
     console.log("formData", formData);
     try {
-      const response = await api.post("Address", formData);
+      const response = await api.post("address", {
+        ...formData,
+        userId: user._id,
+      });
       console.log(response.data);
       toast.success("Address Added successfully");
       setAddAddress(false);

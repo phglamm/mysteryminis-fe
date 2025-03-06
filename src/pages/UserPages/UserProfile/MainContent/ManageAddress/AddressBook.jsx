@@ -10,8 +10,13 @@ import { Spin } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import AddressPOST from "./AddressPOST";
 
-const AddressBook = ({ isEditing, setIsEditing, addAddress, setAddAddress }) => {
-  console.log(addAddress)
+const AddressBook = ({
+  isEditing,
+  setIsEditing,
+  addAddress,
+  setAddAddress,
+}) => {
+  console.log(addAddress);
   const [addresses, setAddresses] = useState([]);
 
   const user = useSelector(selectUser);
@@ -20,10 +25,11 @@ const AddressBook = ({ isEditing, setIsEditing, addAddress, setAddAddress }) => 
   console.log(selectedAddress);
   const fetchAddress = async () => {
     try {
-      const response = await api.get(`/Address/?userId=${user.userId}`);
+      const response = await api.get(`address/user/${user._id}`);
       const fetchedAddresses = Array.isArray(response.data)
         ? response.data
         : [response.data];
+      console.log(response.data);
       setAddresses(fetchedAddresses);
     } catch (err) {
       console.log(err.message);
@@ -31,17 +37,20 @@ const AddressBook = ({ isEditing, setIsEditing, addAddress, setAddAddress }) => 
   };
 
   useEffect(() => {
-    if (user.userId) {
+    if (user._id) {
       fetchAddress();
     }
-  }, [user.userId, isEditing]);
+  }, [user._id, isEditing]);
 
   return (
     <div>
       {addAddress ? (
         <AddressPOST setAddAddress={setAddAddress} />
       ) : isEditing ? (
-        <AddressPUT setIsEditing={setIsEditing} selectedAddress={selectedAddress} />
+        <AddressPUT
+          setIsEditing={setIsEditing}
+          selectedAddress={selectedAddress}
+        />
       ) : (
         <div className="h-[30vw] pb-28 overflow-y-auto">
           {addresses.length === 0 ? (

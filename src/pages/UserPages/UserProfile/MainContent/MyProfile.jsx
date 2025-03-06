@@ -4,8 +4,8 @@ import { Input, Tooltip, Spin, Select, message } from "antd";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import api from "../../../../config/api";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../../../Redux/features/counterSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { login, selectUser } from "../../../../Redux/features/counterSlice";
 
 const { Option } = Select;
 
@@ -16,7 +16,7 @@ const MyProfile = ({
   setResetPassword,
 }) => {
   const user = useSelector(selectUser);
-
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     userId: user.userId,
     username: "",
@@ -31,11 +31,13 @@ const MyProfile = ({
 
   useEffect(() => {
     const fetchUserData = async () => {
+      console.log(user._id);
       try {
-        const response = await api.get(`User/user-by-email/${user.email}`);
-        const { userId, username, fullname, phone, email, gender } =
+        const response = await api.get(`users/${user._id}`);
+        console.log(response);
+        const { userId, username, fullName, phone, email, gender } =
           response.data; // Chỉ lấy các trường cần thiết
-        setFormData({ userId, username, fullname, phone, email, gender }); // Update form data with API response
+        setFormData({ userId, username, fullName, phone, email, gender }); // Update form data with API response
       } catch (err) {
         setError(err.message);
       } finally {
@@ -62,13 +64,14 @@ const MyProfile = ({
   };
 
   const handleUpdateProfile = async () => {
+    const userId = user._id;
     try {
       setLoading(true);
-      const response = await api.put(`User/update-profile`, formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const response = await api.put(`users/update-profile/${user._id}`, {
+        ...formData,
+        userId,
       });
+      dispatch(login(response.data));
       message.success("Profile updated successfully!");
       console.log("Updated Profile:", response.data);
       setIsEditing(false); // Set isEditing to false on success
@@ -95,7 +98,7 @@ const MyProfile = ({
         {!resetPassword ? (
           <>
             {/* User Information Fields */}
-            {["username", "fullname", "phone", "email"].map((field) => (
+            {["username", "fullName", "phone", "email"].map((field) => (
               <div
                 key={field}
                 className="flex flex-row items-center border-t-1 pt-4 mb-4 border-gray-300"
