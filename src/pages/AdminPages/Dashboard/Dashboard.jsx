@@ -46,6 +46,16 @@ export default function Dashboard() {
     }
   }, [selectedMonth, selectedWeek, data]);
 
+  const filteredOrderData = useMemo(() => {
+    if (selectedMonth === "All") {
+      return Object.values(data).flatMap((month) => month.weeklyOrders);
+    } else if (selectedWeek === "All") {
+      return data[selectedMonth].weeklyOrders;
+    } else {
+      return [data[selectedMonth].weeklyOrders[selectedWeek - 1]];
+    }
+  }, [selectedMonth, selectedWeek, data]);
+
   const totalRevenue = useMemo(
     () => filteredData.reduce((acc, val) => acc + val, 0),
     [filteredData]
@@ -54,6 +64,11 @@ export default function Dashboard() {
   const totalProfit = useMemo(
     () => filteredProfitData.reduce((acc, val) => acc + val, 0),
     [filteredProfitData]
+  );
+
+  const totalOrders = useMemo(
+    () => filteredOrderData.reduce((acc, val) => acc + val, 0),
+    [filteredOrderData]
   );
 
   const chartData = {
@@ -80,6 +95,14 @@ export default function Dashboard() {
         fill: true,
         tension: 0.3,
       },
+      {
+        label: "Orders",
+        data: filteredOrderData,
+        borderColor: "rgba(255, 159, 64, 1)",
+        backgroundColor: "rgba(255, 159, 64, 0.2)",
+        fill: true,
+        tension: 0.3,
+      },
     ],
   };
 
@@ -95,9 +118,9 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 min-h-screen">
-      <div className="  p-6 rounded-2xl shadow-lg">
+      <div className=" p-6 rounded-2xl shadow-lg">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
-          Revenue and Profit Overview
+          Revenue, Profit, and Orders Overview
         </h2>
 
         {/* Filters Section */}
@@ -133,7 +156,7 @@ export default function Dashboard() {
         </div>
 
         {/* Widgets */}
-        <div className="grid grid-cols-2 gap-4 mb-6">
+        <div className="grid grid-cols-3 gap-4 mb-6">
           <Card className="p-4 shadow-md">
             <h3 className="text-lg font-medium">Total Revenue</h3>
             <p className="text-xl font-bold text-green-600">
@@ -152,9 +175,13 @@ export default function Dashboard() {
               })}
             </p>
           </Card>
+          <Card className="p-4 shadow-md">
+            <h3 className="text-lg font-medium">Total Orders</h3>
+            <p className="text-xl font-bold text-orange-600">{totalOrders}</p>
+          </Card>
         </div>
 
-        {/* Revenue and Profit Chart */}
+        {/* Revenue, Profit, and Orders Chart */}
         <Line data={chartData} options={options} />
       </div>
     </div>
