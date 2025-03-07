@@ -114,7 +114,6 @@ const ProductDetailPage = () => {
     if (selectedOption) {
       const boxToAdd = { ...box, selectedOption, orderItemOpenRequestNumber };
       console.log(boxToAdd);
-      toast.success("Added to cart");
       dispatch(addToCart(boxToAdd));
     }
     // dispatch(clearCart());
