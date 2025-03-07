@@ -205,6 +205,7 @@ const Cart = () => {
               </Title>
             </div>
             <Button
+              disabled={cartItems.length === 0}
               type="primary"
               icon={<ShoppingCartOutlined />}
               size="large"

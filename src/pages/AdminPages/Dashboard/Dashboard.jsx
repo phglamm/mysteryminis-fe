@@ -8,6 +8,7 @@ Chart.register(...registerables);
 
 export default function Dashboard() {
   const [data, setData] = useState({});
+  const [selectedYear, setSelectedYear] = useState("All");
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedWeek, setSelectedWeek] = useState("All");
 
@@ -24,37 +25,63 @@ export default function Dashboard() {
     fetchRevenue();
   }, []);
 
-  const months = Object.keys(data);
+  const years = Object.keys(data);
+  const months = selectedYear !== "All" ? Object.keys(data[selectedYear]) : [];
 
   const filteredData = useMemo(() => {
-    if (selectedMonth === "All") {
-      return Object.values(data).flatMap((month) => month.revenue);
-    } else if (selectedWeek === "All") {
-      return data[selectedMonth].revenue;
-    } else {
-      return [data[selectedMonth].revenue[selectedWeek - 1]];
+    if (selectedYear === "All") {
+      return years.map((year) =>
+        Object.values(data[year])
+          .flatMap((month) => month.revenue)
+          .reduce((acc, val) => acc + val, 0)
+      );
     }
-  }, [selectedMonth, selectedWeek, data]);
+    if (selectedMonth === "All") {
+      return Object.values(data[selectedYear]).flatMap(
+        (month) => month.revenue
+      );
+    } else if (selectedWeek === "All") {
+      return data[selectedYear][selectedMonth].revenue;
+    } else {
+      return [data[selectedYear][selectedMonth].revenue[selectedWeek - 1]];
+    }
+  }, [selectedYear, selectedMonth, selectedWeek, data]);
 
   const filteredProfitData = useMemo(() => {
-    if (selectedMonth === "All") {
-      return Object.values(data).flatMap((month) => month.profit);
-    } else if (selectedWeek === "All") {
-      return data[selectedMonth].profit;
-    } else {
-      return [data[selectedMonth].profit[selectedWeek - 1]];
+    if (selectedYear === "All") {
+      return years.map((year) =>
+        Object.values(data[year])
+          .flatMap((month) => month.profit)
+          .reduce((acc, val) => acc + val, 0)
+      );
     }
-  }, [selectedMonth, selectedWeek, data]);
+    if (selectedMonth === "All") {
+      return Object.values(data[selectedYear]).flatMap((month) => month.profit);
+    } else if (selectedWeek === "All") {
+      return data[selectedYear][selectedMonth].profit;
+    } else {
+      return [data[selectedYear][selectedMonth].profit[selectedWeek - 1]];
+    }
+  }, [selectedYear, selectedMonth, selectedWeek, data]);
 
   const filteredOrderData = useMemo(() => {
-    if (selectedMonth === "All") {
-      return Object.values(data).flatMap((month) => month.weeklyOrders);
-    } else if (selectedWeek === "All") {
-      return data[selectedMonth].weeklyOrders;
-    } else {
-      return [data[selectedMonth].weeklyOrders[selectedWeek - 1]];
+    if (selectedYear === "All") {
+      return years.map((year) =>
+        Object.values(data[year])
+          .flatMap((month) => month.weeklyOrders)
+          .reduce((acc, val) => acc + val, 0)
+      );
     }
-  }, [selectedMonth, selectedWeek, data]);
+    if (selectedMonth === "All") {
+      return Object.values(data[selectedYear]).flatMap(
+        (month) => month.weeklyOrders
+      );
+    } else if (selectedWeek === "All") {
+      return data[selectedYear][selectedMonth].weeklyOrders;
+    } else {
+      return [data[selectedYear][selectedMonth].weeklyOrders[selectedWeek - 1]];
+    }
+  }, [selectedYear, selectedMonth, selectedWeek, data]);
 
   const totalRevenue = useMemo(
     () => filteredData.reduce((acc, val) => acc + val, 0),
@@ -73,7 +100,9 @@ export default function Dashboard() {
 
   const chartData = {
     labels:
-      selectedMonth === "All"
+      selectedYear === "All"
+        ? years
+        : selectedMonth === "All"
         ? months
         : selectedWeek === "All"
         ? ["Week 1", "Week 2", "Week 3", "Week 4"]
@@ -118,26 +147,42 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 min-h-screen">
-      <div className=" p-6 rounded-2xl shadow-lg">
+      <div className=" bg-white p-6 rounded-2xl shadow-lg">
         <h2 className="text-2xl font-semibold text-gray-700 mb-4">
           Revenue, Profit, and Orders Overview
         </h2>
 
         {/* Filters Section */}
         <div className="flex flex-wrap items-center gap-4 mb-6">
-          {/* Month Selector */}
+          {/* Year Selector */}
           <Select
             className="w-40"
-            value={selectedMonth}
+            value={selectedYear}
             onChange={(value) => {
-              setSelectedMonth(value);
+              setSelectedYear(value);
+              setSelectedMonth("All");
               setSelectedWeek("All");
             }}
             options={[
               { value: "All", label: "All" },
-              ...months.map((month) => ({ value: month, label: month })),
+              ...years.map((year) => ({ value: year, label: year })),
             ]}
           />
+          {/* Month Selector */}
+          {selectedYear !== "All" && (
+            <Select
+              className="w-40"
+              value={selectedMonth}
+              onChange={(value) => {
+                setSelectedMonth(value);
+                setSelectedWeek("All");
+              }}
+              options={[
+                { value: "All", label: "All" },
+                ...months.map((month) => ({ value: month, label: month })),
+              ]}
+            />
+          )}
           {/* Week Selector */}
           {selectedMonth !== "All" && (
             <Select
