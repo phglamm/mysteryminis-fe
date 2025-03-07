@@ -35,7 +35,7 @@ const Sidebar = ({ setActiveSection }) => {
     },
   ];
 
-  if (user.role.roleName === "ADMIN") {
+  if (user.role?.roleName === "ADMIN") {
     sections.push({
       icon: <LaptopOutlined />,
       title: "Admin Page",
@@ -43,7 +43,7 @@ const Sidebar = ({ setActiveSection }) => {
     });
   }
 
-  if (user.role.roleName === "STAFF") {
+  if (user.role?.roleName === "STAFF") {
     sections.push({
       icon: <LaptopOutlined />,
       title: "Staff Page",

@@ -1,5 +1,17 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Space, Modal, Input, Form, message, Tabs, Select, Spin, Switch } from "antd";
+import {
+  Table,
+  Button,
+  Space,
+  Modal,
+  Input,
+  Form,
+  message,
+  Tabs,
+  Select,
+  Spin,
+  Switch,
+} from "antd";
 import api from "../../../config/api";
 
 const { TabPane } = Tabs;
@@ -10,9 +22,13 @@ const ManageAccount = () => {
   const fetchAccounts = async () => {
     setLoading(true);
     try {
-      const response = await api.get("User/all-users");
+      const response = await api.get("users");
       const data = await response.data;
-      setAccounts(data);
+      const mappedData = data.map((account) => ({
+        ...account,
+        roleId: account.role.roleName === "STAFF" ? 2 : 3,
+      }));
+      setAccounts(mappedData);
     } catch (error) {
       console.error("Failed to fetch accounts: ", error);
     } finally {
@@ -35,7 +51,7 @@ const ManageAccount = () => {
       okText: "Yes",
       cancelText: "No",
       onOk: () => {
-        setAccounts(accounts.filter((account) => account.userId !== id));
+        setAccounts(accounts.filter((account) => account._id !== id));
         message.success("Account deleted successfully");
       },
     });
@@ -60,14 +76,14 @@ const ManageAccount = () => {
         if (editingAccount) {
           setAccounts(
             accounts.map((account) =>
-              account.userId === editingAccount.userId
+              account._id === editingAccount._id
                 ? { ...account, ...values }
                 : account
             )
           );
           message.success("Account updated successfully");
         } else {
-          const newAccount = { userId: Date.now(), ...values };
+          const newAccount = { _id: Date.now().toString(), ...values };
           setAccounts([...accounts, newAccount]);
           message.success("Account added successfully");
         }
@@ -79,45 +95,37 @@ const ManageAccount = () => {
   };
 
   const columns = [
-    { title: "ID", dataIndex: "userId", key: "userId", width: 80 },
+    { title: "ID", dataIndex: "_id", key: "_id", width: 200 },
     { title: "Username", dataIndex: "username", key: "username", width: 150 },
-    { title: "Name", dataIndex: "fullname", key: "fullname", width: 150 },
+    { title: "Name", dataIndex: "fullName", key: "fullName", width: 150 },
     { title: "Email", dataIndex: "email", key: "email", width: 250 },
     { title: "Phone", dataIndex: "phone", key: "phone", width: 150 },
-    { title: "Gender", dataIndex: "gender", key: "gender", render: (text) => (text ? "Male" : "Female"), width: 100 },
-    { title: "Role", dataIndex: "roleId", key: "roleId", render: (text) => (text === 2 ? "Staff" : "User"), width: 100 },
-    { title: "Status", dataIndex: "isActive", key: "isActive", render: (text) => (text ? "Active" : "Inactive"), width: 120 },
+    {
+      title: "Gender",
+      dataIndex: "gender",
+      key: "gender",
+      render: (text) => (text ? "Male" : "Female"),
+      width: 100,
+    },
+    {
+      title: "Role",
+      dataIndex: "roleId",
+      key: "roleId",
+      render: (text) => (text === 2 ? "Staff" : "User"),
+      width: 100,
+    },
+    {
+      title: "Status",
+      dataIndex: "isActive",
+      key: "isActive",
+      render: (text) => (text ? "Active" : "Inactive"),
+      width: 120,
+    },
     {
       title: "Action",
       key: "action",
       width: 180,
-      render: (record) => (
-        <Space>
-          <Button
-            type="primary"
-            style={{
-              backgroundColor: "#313857",
-              borderColor: "#FFF1F2",
-              color: "#FFF1F2",
-            }}
-            onClick={() => handleEdit(record)}
-          >
-            Update
-          </Button>
-
-          <Button
-            type="default"
-            style={{
-              backgroundColor: "#ff4d4f",
-              borderColor: "#ff4d4f",
-              color: "#fff",
-            }}
-            onClick={() => handleDelete(record.userId)}
-          >
-            Delete
-          </Button>
-        </Space>
-      ),
+      render: (record) => <Space></Space>,
     },
   ];
 
@@ -170,9 +178,7 @@ const ManageAccount = () => {
           <div style={{ minHeight: "500px" }}>
             <Table
               columns={columns}
-              dataSource={accounts.filter(
-                (account) => account.roleId === 2
-              )}
+              dataSource={accounts.filter((account) => account.roleId === 2)}
               scroll={{ y: "calc(100vh - 300px)" }} // Giữ chiều cao cố định
             />
           </div>
@@ -208,7 +214,7 @@ const ManageAccount = () => {
             <Input />
           </Form.Item>
           <Form.Item
-            name="fullname"
+            name="fullName"
             label="Full Name"
             rules={[{ required: true, message: "Please enter full name" }]}
           >
@@ -248,11 +254,7 @@ const ManageAccount = () => {
               <Select.Option value={2}>Staff</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item
-            name="isActive"
-            label="Status"
-            valuePropName="checked"
-          >
+          <Form.Item name="isActive" label="Status" valuePropName="checked">
             <Switch />
           </Form.Item>
         </Form>

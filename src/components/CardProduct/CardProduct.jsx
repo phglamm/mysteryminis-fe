@@ -75,7 +75,7 @@ const CardProduct = ({ product }) => {
               src={hovered && hoverImageUrl ? hoverImageUrl : firstImageUrl}
               alt={boxName}
               style={{
-                width: "100%",
+                width: "250px",
                 height: "100%",
                 objectFit: "cover",
                 transition: "opacity 0.3s ease-in-out",

@@ -1,26 +1,40 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { Select, Card } from "antd";
+import api from "../../../config/api";
 
 Chart.register(...registerables);
 
 export default function Dashboard() {
+  const [revenueData, setRevenueData] = useState({});
+  useEffect(() => {
+    const fetchRevenue = async () => {
+      try {
+        const response = await api.get("dashboard/revenue");
+        setRevenueData(response.data);
+        console.log(response.data);
+      } catch (error) {
+        console.error("Failed to fetch revenue data: ", error);
+      }
+    };
+    fetchRevenue();
+  }, []);
   // Sample revenue data (for each month)
-  const revenueData = {
-    January: [1200, 1500, 1800, 2000],
-    February: [1100, 1400, 1600, 1900],
-    March: [1300, 1600, 2000, 2400],
-    April: [1700, 1900, 2200, 2500],
-    May: [1800, 2100, 2300, 2700],
-    June: [2000, 2300, 2500, 3000],
-    July: [2200, 2500, 2700, 3200],
-    August: [2400, 2700, 2900, 3400],
-    September: [2600, 2900, 3100, 3600],
-    October: [2800, 3100, 3300, 3800],
-    November: [3000, 3300, 3500, 4000],
-    December: [3200, 3500, 3700, 4200],
-  };
+  // const revenueData = {
+  //   January: [1200, 1500, 1800, 2000],
+  //   February: [1100, 1400, 1600, 1900],
+  //   March: [1300, 1600, 2000, 2400],
+  //   April: [1700, 1900, 2200, 2500],
+  //   May: [1800, 2100, 2300, 2700],
+  //   June: [2000, 2300, 2500, 3000],
+  //   July: [2200, 2500, 2700, 3200],
+  //   August: [2400, 2700, 2900, 3400],
+  //   September: [2600, 2900, 3100, 3600],
+  //   October: [2800, 3100, 3300, 3800],
+  //   November: [3000, 3300, 3500, 4000],
+  //   December: [3200, 3500, 3700, 4200],
+  // };
 
   const months = Object.keys(revenueData);
 
