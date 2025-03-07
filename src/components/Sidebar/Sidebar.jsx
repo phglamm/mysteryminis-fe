@@ -44,7 +44,7 @@ export default function Sidebar() {
   useEffect(() => {
     if (user.role.roleName === "ADMIN") {
       setItems([
-        getItem("Dashboard", route.dashboard, <BarChartOutlined />),
+        getItem("Dashboard", "", <BarChartOutlined />),
         getItem("Manage Account", route.accountManagement, <UserOutlined />),
         getItem("Manage Order", route.orderManagement, <AuditOutlined />),
 
