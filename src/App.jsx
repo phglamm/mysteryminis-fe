@@ -31,6 +31,7 @@ import PaymentReturnPage from "./pages/UserPages/PaymentReturn/PaymentReturn";
 import OnlineBlindBox from "./pages/UserPages/OnlineBlindBox/OnlineBlindBox";
 import ManageBlog from "./pages/AdminPages/ManageBlog/ManageBlog";
 import BlogDetail from "./pages/UserPages/BlogDetail/BlogDetail";
+import Dashboard from "./pages/AdminPages/Dashboard/Dashboard";
 
 function App() {
   const router = createBrowserRouter([
@@ -110,7 +111,7 @@ function App() {
         {
           path: `${route.blogDetail}/:blogPostId`,
           element: <BlogDetail />,
-        }
+        },
       ],
     },
 
@@ -118,6 +119,10 @@ function App() {
       path: route.admin,
       element: <AdminLayout />,
       children: [
+        {
+          path: route.admin,
+          element: <Dashboard />,
+        },
         {
           path: route.accountManagement,
           element: <ManageAccount />,
@@ -148,7 +153,7 @@ function App() {
         },
         {
           path: route.blogManagement,
-          element: <ManageBlog/>,
+          element: <ManageBlog />,
         },
       ],
     },
@@ -183,8 +188,8 @@ function App() {
         },
         {
           path: route.blogManagement,
-          element: <ManageBlog/>,
-        }
+          element: <ManageBlog />,
+        },
       ],
     },
   ]);
