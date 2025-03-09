@@ -37,15 +37,15 @@ export default function RevenueChart() {
       );
     }
     if (selectedMonth === "All") {
-      return Object.values(data[selectedYear]).flatMap(
-        (month) => month.revenue
+      return months.map((month) =>
+        data[selectedYear][month].revenue.reduce((acc, val) => acc + val, 0)
       );
     } else if (selectedWeek === "All") {
       return data[selectedYear][selectedMonth].revenue;
     } else {
       return [data[selectedYear][selectedMonth].revenue[selectedWeek - 1]];
     }
-  }, [selectedYear, selectedMonth, selectedWeek, data]);
+  }, [selectedYear, selectedMonth, selectedWeek, data, months, years]);
 
   const filteredProfitData = useMemo(() => {
     if (selectedYear === "All") {
@@ -56,13 +56,15 @@ export default function RevenueChart() {
       );
     }
     if (selectedMonth === "All") {
-      return Object.values(data[selectedYear]).flatMap((month) => month.profit);
+      return months.map((month) =>
+        data[selectedYear][month].profit.reduce((acc, val) => acc + val, 0)
+      );
     } else if (selectedWeek === "All") {
       return data[selectedYear][selectedMonth].profit;
     } else {
       return [data[selectedYear][selectedMonth].profit[selectedWeek - 1]];
     }
-  }, [selectedYear, selectedMonth, selectedWeek, data]);
+  }, [selectedYear, selectedMonth, selectedWeek, data, months, years]);
 
   const filteredOrderData = useMemo(() => {
     if (selectedYear === "All") {
@@ -73,15 +75,18 @@ export default function RevenueChart() {
       );
     }
     if (selectedMonth === "All") {
-      return Object.values(data[selectedYear]).flatMap(
-        (month) => month.weeklyOrders
+      return months.map((month) =>
+        data[selectedYear][month].weeklyOrders.reduce(
+          (acc, val) => acc + val,
+          0
+        )
       );
     } else if (selectedWeek === "All") {
       return data[selectedYear][selectedMonth].weeklyOrders;
     } else {
       return [data[selectedYear][selectedMonth].weeklyOrders[selectedWeek - 1]];
     }
-  }, [selectedYear, selectedMonth, selectedWeek, data]);
+  }, [selectedYear, selectedMonth, selectedWeek, data, months, years]);
 
   const totalRevenue = useMemo(
     () => filteredData.reduce((acc, val) => acc + val, 0),
