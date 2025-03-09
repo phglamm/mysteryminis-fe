@@ -10,7 +10,7 @@ export default function BestSellerChart() {
 
   const fetchBestSeller = async () => {
     try {
-      const response = await api.get("dashboard/bestsellers");
+      const response = await api.get("Dashboard/bestSellers");
       setBestSellers(response.data);
     } catch (error) {
       console.error("Error fetching data:", error);
