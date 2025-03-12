@@ -10,6 +10,8 @@ export default function ManageBoxOption() {
   const [boxOption, setBoxOption] = useState([]);
   const [box, setBox] = useState([]);
   const [activeTab, setActiveTab] = useState("1"); // Active tab state
+  const [mockLuckyBoxData, setMockLuckyBoxData] = useState([]);
+
 
   const fetchBoxOption = async () => {
     const response = await api.get("BoxOption");
@@ -19,6 +21,32 @@ export default function ManageBoxOption() {
     );
     setBoxOption(sortReponse);
   };
+
+  const fetchLuckyBoxData = async () => {
+    try {
+      const response = await api.get("OnlineSerieBox");
+      const luckyBoxData = response.data.map((item) => ({
+        BoxOptionId: item.boxOption.boxOptionId,  // Lấy boxOptionId từ boxOption
+        CurrentPrice: item.boxOption.displayPrice,  // Lấy displayPrice từ boxOption
+        BasePrice: item.basePrice,
+        IncreasePercent: item.priceIncreasePercent,
+        PriceAfterSecret: item.priceAfterSecret,
+        CurrentTurn: item.turn,
+        MaxTurn: item.maxTurn,
+        Quantity: item.boxOption.boxOptionStock || 0,  // Lấy stock từ boxOption
+      }));
+      setMockLuckyBoxData(luckyBoxData);  // Cập nhật dữ liệu vào state
+    } catch (error) {
+      console.error("Failed to fetch lucky box data:", error);
+    }
+  };
+  
+  
+  
+  useEffect(() => {
+    fetchLuckyBoxData();
+  }, []);
+  
 
   useEffect(() => {
     const fetchBox = async () => {
@@ -165,63 +193,51 @@ export default function ManageBoxOption() {
     },
   ];
 
-  const mockLuckyBoxData = [
-    {
-      OnlineSerieBoxId: 101,
-      BoxId: 1,
-      Price: 29.99,
-      Name: "Lucky Draw A",
-      IsSecretOpen: true,
-      Turn: 3,
-    },
-    {
-      OnlineSerieBoxId: 102,
-      BoxId: 2,
-      Price: 49.99,
-      Name: "Lucky Draw B",
-      IsSecretOpen: false,
-      Turn: 5,
-    },
-    {
-      OnlineSerieBoxId: 103,
-      BoxId: 3,
-      Price: 39.99,
-      Name: "Lucky Draw C",
-      IsSecretOpen: true,
-      Turn: 2,
-    },
-  ];
 
   const columnsLuckyBox = [
     {
-      title: "ID",
-      dataIndex: "OnlineSerieBoxId",
-      key: "OnlineSerieBoxId",
+      title: "Box Option ID",
+      dataIndex: "BoxOptionId",
+      key: "BoxOptionId",
     },
     {
-      title: "From Box ID",
-      dataIndex: "BoxId",
-      key: "BoxId",
+      title: "Current Price",
+      dataIndex: "CurrentPrice",
+      key: "CurrentPrice",
+      render: (value) => value ? value.toLocaleString() : "N/A",  // Safe check for undefined or null
     },
     {
-      title: "Price",
-      dataIndex: "Price",
-      key: "Price",
+      title: "Base Price",
+      dataIndex: "BasePrice",
+      key: "BasePrice",
+      render: (value) => value.toLocaleString(),
     },
     {
-      title: "Name",
-      dataIndex: "Name",
-      key: "Name",
+      title: "Increase Percent",
+      dataIndex: "IncreasePercent",
+      key: "IncreasePercent",
+      render: (value) => `${value}%`,
     },
     {
-      title: "IsSecretOpen",
-      dataIndex: "IsSecretOpen",
-      key: "IsSecretOpen",
+      title: "Price After Secret",
+      dataIndex: "PriceAfterSecret",
+      key: "PriceAfterSecret",
+      render: (value) => value.toLocaleString(),
     },
     {
-      title: "Turn",
-      dataIndex: "Turn",
-      key: "Turn",
+      title: "Current Turn",
+      dataIndex: "CurrentTurn",
+      key: "CurrentTurn",
+    },
+    {
+      title: "Max Turn",
+      dataIndex: "MaxTurn",
+      key: "MaxTurn",
+    },
+    {
+      title: "Quantity",
+      dataIndex: "Quantity",
+      key: "Quantity",
     },
     {
       title: "Action",
@@ -235,7 +251,7 @@ export default function ManageBoxOption() {
       ),
     },
   ];
-
+  
   return (
     <div>
       <Tabs
