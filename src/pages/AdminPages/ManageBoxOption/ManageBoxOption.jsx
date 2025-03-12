@@ -213,7 +213,14 @@ export default function ManageBoxOption() {
             label="For Box's Name"
             rules={[{ required: true, message: "Please enter the Box name" }]}
           >
-            <Select placeholder="Select Box" allowClear>
+            <Select
+              placeholder="Select Box"
+              allowClear
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().includes(input.toLowerCase())
+              }
+            >
               {box.map((box) => (
                 <Select.Option key={box._id} value={box._id}>
                   {box.boxName}
@@ -276,7 +283,14 @@ export default function ManageBoxOption() {
             label="For Box's Name"
             rules={[{ required: true, message: "Please enter the Box name" }]}
           >
-            <Select placeholder="Select Box" allowClear>
+            <Select
+              placeholder="Select Box"
+              allowClear
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().includes(input.toLowerCase())
+              }
+            >
               {box.map((box) => (
                 <Select.Option key={box._id} value={box._id}>
                   {box.boxName}

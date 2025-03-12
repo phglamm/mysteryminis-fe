@@ -368,15 +368,16 @@ const ManageOrder = () => {
             >
               <Upload
                 className="label-form-image"
-                maxCount={selectedItem.openRequestNumber}
+                // maxCount={selectedItem.openRequestNumber}
                 listType="picture-card"
                 fileList={fileList}
                 onPreview={handlePreview}
                 onChange={handleChange}
               >
-                {fileList.length >= selectedItem.openRequestNumber
+                {/* {fileList.length >= selectedItem.openRequestNumber
                   ? null
-                  : uploadButton}
+                  : uploadButton} */}
+                {uploadButton}
               </Upload>
               {previewImage && (
                 <Image
