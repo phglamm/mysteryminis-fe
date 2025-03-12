@@ -7,6 +7,7 @@ import api from "../../../config/api";
 import { useNavigate } from "react-router-dom";
 import { route } from "../../../routes";
 import { useForm } from "antd/es/form/Form";
+import toast from "react-hot-toast";
 
 const CheckOutPage = () => {
   const [discountCode, setDiscountCode] = useState("");
@@ -80,15 +81,27 @@ const CheckOutPage = () => {
 
   const handleCheckout = async (values) => {
     values.userId = user.userId;
+    values.totalPrice = provisional; // Tổng tiền
+    values.shippingFee = shippingFee;
     values.voucherId = 1;
-    values.totalPrice = totalAmount;
     values.orderItemRequestDto = cartItems.map((item) => ({
       quantity: item.quantity,
       price: item.selectedOption.displayPrice,
       boxOptionId: item.selectedOption.boxOptionId,
       originPrice: item.selectedOption.originPrice,
+      isOnlineSerieBox: item.selectedOption.isOnlineSerieBox,
+      userRolledItemId: item.selectedOption.userRolledItemId,
       orderItemOpenRequestNumber: item.orderItemOpenRequestNumber,
     }));
+    if (
+      values.paymentMethod === "COD" &&
+      values.orderItemRequestDto.some(
+        (item) => item.orderItemOpenRequestNumber > 0
+      )
+    ) {
+      toast.error("COD payment method is not available for open blindbox");
+      return;
+    }
     console.log(values);
     if (values.paymentMethod === "VNPAY") {
       try {

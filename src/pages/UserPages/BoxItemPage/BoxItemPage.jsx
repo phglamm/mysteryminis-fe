@@ -91,7 +91,6 @@ export default function BoxItemPage() {
               </div>
             ))}
           </div>
-
           <Pagination
             className="flex justify-center items-center !mt-10"
             current={currentPage}
