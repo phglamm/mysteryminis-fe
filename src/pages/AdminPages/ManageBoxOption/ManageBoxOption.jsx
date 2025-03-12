@@ -1,8 +1,9 @@
-import { Button, Input, Modal, Select, Table, Tabs } from "antd";
+import { Button, Dropdown, Input, Menu, Modal, Select, Table, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import api from "../../../config/api";
 import Form from "antd/es/form/Form";
 import toast from "react-hot-toast";
+import { EllipsisOutlined } from "@ant-design/icons";
 
 export default function ManageBoxOption() {
   const [formAdd] = Form.useForm();
@@ -24,18 +25,19 @@ export default function ManageBoxOption() {
 
   const fetchLuckyBoxData = async () => {
     try {
-      const response = await api.get("OnlineSerieBox");
+      const response = await api.get("online-serie-box");  // Đổi API thành online-serie-box
       const luckyBoxData = response.data.map((item) => ({
-        BoxOptionId: item.boxOption.boxOptionId,  // Lấy boxOptionId từ boxOption
-        CurrentPrice: item.boxOption.displayPrice,  // Lấy displayPrice từ boxOption
+        BoxOptionId: item.boxOption.boxOptionId,
+        CurrentPrice: item.boxOption.displayPrice,
         BasePrice: item.basePrice,
         IncreasePercent: item.priceIncreasePercent,
         PriceAfterSecret: item.priceAfterSecret,
         CurrentTurn: item.turn,
         MaxTurn: item.maxTurn,
-        Quantity: item.boxOption.boxOptionStock || 0,  // Lấy stock từ boxOption
+        Quantity: item.boxOption.boxOptionStock || 0,
+        isPublished: item.isPublished,  // Lấy isPublished
       }));
-      setMockLuckyBoxData(luckyBoxData);  // Cập nhật dữ liệu vào state
+      setMockLuckyBoxData(luckyBoxData);
     } catch (error) {
       console.error("Failed to fetch lucky box data:", error);
     }
@@ -128,6 +130,73 @@ export default function ManageBoxOption() {
       },
     });
   };
+  
+// Hàm xử lý publish
+const handlePublish = async (record) => {
+  try {
+    // Gửi yêu cầu PUT với query parameter `status=true`
+    const response = await api.put(
+      `online-serie-box/${record.onlineSerieBoxId}/publish`,  // Đường dẫn mới
+      null,  // Không cần gửi body
+      { params: { status: true } }  // Gửi query parameter `status=true`
+    );
+    console.log(response.data);
+    toast.success("Box Published successfully");
+    fetchLuckyBoxData();  // Cập nhật lại dữ liệu
+  } catch (error) {
+    console.error("Failed to publish Box:", error);
+    toast.error("Failed to publish Box");
+  }
+};
+
+const handlePublishToggle = async (record) => {
+  try {
+    const newStatus = !record.isPublished;  // Đảo trạng thái publish (true -> false hoặc false -> true)
+    const response = await api.put(
+      `online-serie-box/${record.onlineSerieBoxId}/publish`,  // Đảm bảo đúng endpoint API
+      null,  // Không cần gửi body
+      { params: { status: newStatus } }  // Truyền status (true/false) qua query parameter
+    );
+    toast.success(newStatus ? "Published successfully" : "Unpublished successfully");
+
+    // Cập nhật lại dữ liệu trong bảng
+    setMockLuckyBoxData(
+      mockLuckyBoxData.map((box) =>
+        box.onlineSerieBoxId === record.onlineSerieBoxId
+          ? { ...box, isPublished: newStatus }
+          : box
+      )
+    );
+  } catch (error) {
+    console.error("Failed to update publish status:", error);
+    toast.error("Failed to update publish status");
+  }
+};
+
+
+
+
+
+  const getMenu = (record) => {
+    return (
+      <Menu>
+        <Menu.Item key="update" onClick={() => handleModalUpdate(record)}>
+          Update
+        </Menu.Item>
+        <Menu.Item key="delete" onClick={() => handleDelete(record)}>
+          Delete
+        </Menu.Item>
+        <Menu.Item key="publish" onClick={() => handlePublishToggle(record)}>
+          {record.isPublished ? "Unpublished" : "Publish"}
+        </Menu.Item>
+        {/* <Menu.Item key="detail" onClick={() => handleDetail(record)}>
+          Detail
+        </Menu.Item> */}
+
+      </Menu>
+    );
+  };
+  
 
   const columnBoxOptions = [
     {
@@ -195,61 +264,72 @@ export default function ManageBoxOption() {
 
 
   const columnsLuckyBox = [
-    {
-      title: "Box Option ID",
-      dataIndex: "BoxOptionId",
-      key: "BoxOptionId",
-    },
-    {
-      title: "Current Price",
-      dataIndex: "CurrentPrice",
-      key: "CurrentPrice",
-      render: (value) => value ? value.toLocaleString() : "N/A",  // Safe check for undefined or null
-    },
-    {
-      title: "Base Price",
-      dataIndex: "BasePrice",
-      key: "BasePrice",
-      render: (value) => value.toLocaleString(),
-    },
-    {
-      title: "Increase Percent",
-      dataIndex: "IncreasePercent",
-      key: "IncreasePercent",
-      render: (value) => `${value}%`,
-    },
-    {
-      title: "Price After Secret",
-      dataIndex: "PriceAfterSecret",
-      key: "PriceAfterSecret",
-      render: (value) => value.toLocaleString(),
-    },
-    {
-      title: "Current Turn",
-      dataIndex: "CurrentTurn",
-      key: "CurrentTurn",
-    },
-    {
-      title: "Max Turn",
-      dataIndex: "MaxTurn",
-      key: "MaxTurn",
-    },
-    {
-      title: "Quantity",
-      dataIndex: "Quantity",
-      key: "Quantity",
-    },
+      {
+        title: "Box Option ID",
+        dataIndex: "BoxOptionId",
+        key: "BoxOptionId",
+      },
+      {
+        title: "Current Price",
+        dataIndex: "CurrentPrice",
+        key: "CurrentPrice",
+        render: (value) => value ? value.toLocaleString() : "N/A",  // Safe check for undefined or null
+      },
+      {
+        title: "Base Price",
+        dataIndex: "BasePrice",
+        key: "BasePrice",
+        render: (value) => value.toLocaleString(),
+      },
+      {
+        title: "Increase Percent",
+        dataIndex: "IncreasePercent",
+        key: "IncreasePercent",
+        render: (value) => `${value}%`,
+      },
+      {
+        title: "Price After Secret",
+        dataIndex: "PriceAfterSecret",
+        key: "PriceAfterSecret",
+        render: (value) => value.toLocaleString(),
+      },
+      {
+        title: "Current Turn",
+        dataIndex: "CurrentTurn",
+        key: "CurrentTurn",
+      },
+      {
+        title: "Max Turn",
+        dataIndex: "MaxTurn",
+        key: "MaxTurn",
+      },
+      {
+        title: "Quantity",
+        dataIndex: "Quantity",
+        key: "Quantity",
+      },
+      {
+        title: "Is Secret Open",
+        dataIndex: "isSecretOpen",
+        key: "isSecretOpen",
+        render: (value) => (value ? "true" : "false"), // Hiển thị Secret Opened nếu là true
+      },
+      {
+        title: "Publish",
+        dataIndex: "isPublished",
+        key: "isPublished",
+        render: (value) => (value ? "Published" : "Unpublished"), // Hiển thị "Published" hoặc "Unpublished"
+      },
+      
     {
       title: "Action",
       render: (_index, record) => (
-        <>
-          <div className="flex justify-around items-center">
-            <Button>Update</Button>
-            <Button>Delete</Button>
-          </div>
-        </>
+        <Dropdown overlay={getMenu(record)} trigger={['click']}>
+          <Button icon={<EllipsisOutlined />} />
+        </Dropdown>
       ),
     },
+    
   ];
   
   return (
@@ -273,7 +353,7 @@ export default function ManageBoxOption() {
         {/* Tab 2 - Manage Online Lucky Box */}
         <Tabs.TabPane tab="Manage Online Lucky Box" key="2">
           <div>
-            <Table dataSource={mockLuckyBoxData} columns={columnsLuckyBox} />
+          <Table dataSource={mockLuckyBoxData} columns={columnsLuckyBox} />
           </div>
         </Tabs.TabPane>
       </Tabs>
