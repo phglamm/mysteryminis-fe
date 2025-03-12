@@ -236,11 +236,11 @@ export default function ManageBox() {
         </Tabs.TabPane>
 
         {/* Tab 2 */}
-        <Tabs.TabPane tab="Manage Online Lucky Box" key="2">
+        {/* <Tabs.TabPane tab="Manage Online Lucky Box" key="2">
           <div>
             <Table dataSource={mockLuckyBoxData} columns={columnsLuckyBox} />
           </div>
-        </Tabs.TabPane>
+        </Tabs.TabPane> */}
 
         {/* Tab 3 */}
       </Tabs>

@@ -1,4 +1,4 @@
-import { Button, Input, Modal, Select, Table } from "antd";
+import { Button, Input, Modal, Select, Table, Tabs } from "antd";
 import { useEffect, useState } from "react";
 import api from "../../../config/api";
 import Form from "antd/es/form/Form";
@@ -9,6 +9,7 @@ export default function ManageBoxOption() {
   const [formUpdate] = Form.useForm();
   const [boxOption, setBoxOption] = useState([]);
   const [box, setBox] = useState([]);
+  const [activeTab, setActiveTab] = useState("1"); // Active tab state
 
   const fetchBoxOption = async () => {
     const response = await api.get("BoxOption");
@@ -164,14 +165,104 @@ export default function ManageBoxOption() {
     },
   ];
 
+  const mockLuckyBoxData = [
+    {
+      OnlineSerieBoxId: 101,
+      BoxId: 1,
+      Price: 29.99,
+      Name: "Lucky Draw A",
+      IsSecretOpen: true,
+      Turn: 3,
+    },
+    {
+      OnlineSerieBoxId: 102,
+      BoxId: 2,
+      Price: 49.99,
+      Name: "Lucky Draw B",
+      IsSecretOpen: false,
+      Turn: 5,
+    },
+    {
+      OnlineSerieBoxId: 103,
+      BoxId: 3,
+      Price: 39.99,
+      Name: "Lucky Draw C",
+      IsSecretOpen: true,
+      Turn: 2,
+    },
+  ];
+
+  const columnsLuckyBox = [
+    {
+      title: "ID",
+      dataIndex: "OnlineSerieBoxId",
+      key: "OnlineSerieBoxId",
+    },
+    {
+      title: "From Box ID",
+      dataIndex: "BoxId",
+      key: "BoxId",
+    },
+    {
+      title: "Price",
+      dataIndex: "Price",
+      key: "Price",
+    },
+    {
+      title: "Name",
+      dataIndex: "Name",
+      key: "Name",
+    },
+    {
+      title: "IsSecretOpen",
+      dataIndex: "IsSecretOpen",
+      key: "IsSecretOpen",
+    },
+    {
+      title: "Turn",
+      dataIndex: "Turn",
+      key: "Turn",
+    },
+    {
+      title: "Action",
+      render: (_index, record) => (
+        <>
+          <div className="flex justify-around items-center">
+            <Button>Update</Button>
+            <Button>Delete</Button>
+          </div>
+        </>
+      ),
+    },
+  ];
+
   return (
     <div>
-      <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
-        Create Options for Box
-      </Button>
+      <Tabs
+        activeKey={activeTab}
+        onChange={setActiveTab}
+        destroyInactiveTabPane
+      >
+        {/* Tab 1 */}
+        <Tabs.TabPane tab="Manage Box Options" key="1">
+          <div>
+            <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
+              Create Options for Box
+            </Button>
 
-      <Table dataSource={boxOption} columns={columnBoxOptions} />
+            <Table dataSource={boxOption} columns={columnBoxOptions} />
+          </div>
+        </Tabs.TabPane>
 
+        {/* Tab 2 - Manage Online Lucky Box */}
+        <Tabs.TabPane tab="Manage Online Lucky Box" key="2">
+          <div>
+            <Table dataSource={mockLuckyBoxData} columns={columnsLuckyBox} />
+          </div>
+        </Tabs.TabPane>
+      </Tabs>
+
+      {/* Modal for Add Box Option */}
       <Modal
         title="Add BoxOption"
         visible={isModalAddOpen}
@@ -235,6 +326,7 @@ export default function ManageBoxOption() {
         </Form>
       </Modal>
 
+      {/* Modal for Update Box Option */}
       <Modal
         title="Update BoxOption"
         visible={isModalUpdateOpen}
