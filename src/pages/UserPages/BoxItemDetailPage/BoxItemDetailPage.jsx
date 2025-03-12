@@ -10,6 +10,7 @@ import { useForm } from "antd/es/form/Form";
 import { useSelector } from "react-redux";
 import { selectUser } from "./../../../Redux/features/counterSlice";
 import toast from "react-hot-toast";
+import moment from "moment/moment";
 const { Panel } = Collapse;
 
 export default function BoxItemDetailPage() {
@@ -18,6 +19,8 @@ export default function BoxItemDetailPage() {
   const [relevantBoxItem, setRelevantBoxItem] = useState([]);
   const [form] = useForm();
   const [loading, setLoading] = useState(false);
+  const [votes, setVotes] = useState([]);
+  const [showAllComments, setShowAllComments] = useState(false);
 
   const navigate = useNavigate();
   const user = useSelector(selectUser);
@@ -34,7 +37,21 @@ export default function BoxItemDetailPage() {
     }
     setLoading(false);
   };
+
+  const fetchAllVotesByBoxItem = async () => {
+    setLoading(true);
+    try {
+      const response = await api.get(`boxItem/${boxItemId}/votes`);
+      console.log(response.data);
+      setVotes(response.data);
+    } catch (error) {
+      console.error("Failed to fetch BoxItem:", error);
+      toast.error("Failed to fetch BoxItem");
+    }
+    setLoading(false);
+  };
   useEffect(() => {
+    fetchAllVotesByBoxItem();
     fetchBoxItemDetail();
   }, [boxItemId]);
 
@@ -67,6 +84,8 @@ export default function BoxItemDetailPage() {
       const response = await api.post("BoxItem/Vote", value);
       console.log(response.data);
       fetchBoxItemDetail();
+      fetchAllVotesByBoxItem();
+      toast.success("Vote successfully");
       form.resetFields();
     } catch (error) {
       console.log(error.response.data);
@@ -80,6 +99,7 @@ export default function BoxItemDetailPage() {
       </div>
     );
   }
+  const displayedVotes = showAllComments ? votes : votes.slice(0, 3);
 
   return (
     <div className="mt-[10%] container mx-auto">
@@ -138,6 +158,40 @@ export default function BoxItemDetailPage() {
               </Panel>
             </Collapse>
           </div>
+        </div>
+        <div className="mt-10">
+          {displayedVotes.length > 0 && (
+            <>
+              <h2 className="text-2xl font-bold  mb-4">All Votes</h2>
+              <div className="grid grid-cols-1 gap-4">
+                {displayedVotes.map((vote) => (
+                  <div key={vote._id} className="p-4  rounded-lg shadow-md">
+                    <p className="text-lg">
+                      <strong>User:</strong> {vote.username}
+                    </p>
+                    <p className="text-lg">
+                      <strong>Rating:</strong>{" "}
+                      <Rate value={vote.rating} disabled />
+                    </p>
+                    <p className="text-lg">
+                      <strong>Date:</strong>{" "}
+                      {moment(vote.lastUpdated).format("DD-MM-YYYY")}
+                    </p>
+                  </div>
+                ))}
+              </div>
+              {votes.length > 3 && (
+                <div className="mt-4 text-center">
+                  <Button
+                    className="!bg-blue-300 !text-white !font-bold !rounded-lg"
+                    onClick={() => setShowAllComments(!showAllComments)}
+                  >
+                    {showAllComments ? "Show Less" : "Show More"}
+                  </Button>
+                </div>
+              )}
+            </>
+          )}
         </div>
         <div style={{ marginTop: "50px" }}>
           <h2
