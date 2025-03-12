@@ -210,11 +210,12 @@ const ManageOrder = () => {
   const handleUpdateUpload = async (values) => {
     const imgURLs = fileList.map((file) => file.url);
     console.log(imgURLs);
-
+    values.orderStatusCheckCardImage = imgURLs;
+    console.log(values);
     try {
       const response = await api.post(
-        `OrderItem?orderItemId=${selectedItem._id}`,
-        imgURLs
+        `orderItem/updateCheckCard/${selectedItem._id}`,
+        values
       );
       console.log(response.data);
       setFileList([]);

@@ -271,7 +271,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                                     onVisibleChange: (vis) => setVisible(vis),
                                   }}
                                 >
-                                  {checkCards.map((img, imgIndex) => (
+                                  {checkCard.map((img, imgIndex) => (
                                     <Image
                                       key={imgIndex}
                                       style={{ display: "none" }}
