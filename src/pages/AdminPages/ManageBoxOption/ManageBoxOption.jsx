@@ -289,6 +289,12 @@ export default function ManageBoxOption() {
       render: (value) => (value ? "Opened" : "Not Yet"),
     },
     {
+      title: "Published",
+      dataIndex: "isPublished",
+      key: "isPublished",
+      render: (value) => (value ? "Published" : "Unpublished"),
+    },
+    {
       title: "In Box",
       dataIndex: "isSecretOpen",
       key: "isSecretOpen",
@@ -336,8 +342,7 @@ export default function ManageBoxOption() {
       const newStatus = !record.isPublished;
       console.log(newStatus);
       const response = await api.put(
-        `online-serie-box/${record.onlineSerieBoxId}/publish`,
-        { params: { status: newStatus } }
+        `online-serie-box/${record.boxOption.boxOptionId}/publish?status=${newStatus}`
       );
       console.log(response.data);
       toast.success(
