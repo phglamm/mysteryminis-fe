@@ -4,7 +4,6 @@ import api from "../../../config/api";
 import CardBoxItem from "../../../components/CardBoxItem/CardBoxItem";
 import { Pagination, Spin } from "antd";
 import TiltedCard from "../../../components/React_Bits/TiltedCard/TiltedCard";
-import BlurText from "./../../../components/React_Bits/BlurText/BlurText";
 import toast from "react-hot-toast";
 
 export default function BoxItemPage() {
@@ -69,13 +68,8 @@ export default function BoxItemPage() {
             showTooltip={true}
             displayOverlayContent={true}
           />
-          <BlurText
-            text="Hot Items"
-            delay={100}
-            animateBy="words"
-            direction="top"
-            className="text-5xl font-bold text-center mt-10"
-          />
+
+          <h4 className="text-5xl font-bold text-center mt-10">Hot Items</h4>
           <div className="grid grid-cols-4 gap-4">
             {currentBoxItem.map((item) => (
               <div
