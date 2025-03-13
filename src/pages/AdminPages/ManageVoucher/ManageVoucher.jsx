@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Button, Tag, Modal, Form, Input, DatePicker, InputNumber } from "antd";
+import { Table, Button, Tag, Modal, Form, Input, DatePicker, InputNumber, message } from "antd";
 import axios from "axios";
 import api from "../../../config/api";
 
@@ -15,24 +15,39 @@ const ManageVoucher = () => {
     const fetchVouchers = async () => {
         try {
             const response = await api.get("Voucher");
+            console.log("Fetched Vouchers:", response.data); 
             setVouchers(response.data);
         } catch (error) {
             console.error("Error fetching vouchers:", error);
         }
     };
+    
 
     const handleCreate = async (values) => {
         try {
-            await api.post("Voucher", values, {
-            });
-            fetchVouchers();
+            const formattedValues = {
+                voucherName: values.voucherName,
+                voucherDiscount: values.voucherDiscount,
+                voucherStartDate: values.voucherStartDate.toISOString(),
+                voucherEndDate: values.voucherEndDate.toISOString(),
+                maxDiscount: values.maxDiscount,
+                numOfVoucher: values.numOfVoucher,
+            };
+
+            const response = await api.post("Voucher", formattedValues);
+            console.log("Created Voucher Response:", response.data); // Log dữ liệu phản hồi
+
+            message.success("Voucher added successfully!");
+            await fetchVouchers(); // Reload danh sách
             setIsModalVisible(false);
             form.resetFields();
+
         } catch (error) {
-            console.error("Error creating voucher:", error.response ? error.response.data : error);
+            console.error("Error creating voucher:", error);
+            message.error("Failed to add voucher. Please try again.");
         }
     };
-    
+
 
     const columns = [
         {
@@ -44,11 +59,6 @@ const ManageVoucher = () => {
             title: "Name",
             dataIndex: "voucherName",
             key: "voucherName",
-        },
-        {
-            title: "Code",
-            dataIndex: "voucherCode",
-            key: "voucherCode",
         },
         {
             title: "Discount",
@@ -75,6 +85,11 @@ const ManageVoucher = () => {
             render: (amount) => `$${amount}`,
         },
         {
+            title: "Number of Vouchers",
+            dataIndex: "numOfVoucher",
+            key: "numOfVoucher",
+        },
+        {
             title: "Status",
             dataIndex: "isDeleted",
             key: "isDeleted",
@@ -90,14 +105,12 @@ const ManageVoucher = () => {
                     <Button
                         type="primary"
                         style={{ backgroundColor: "#313857", borderColor: "#FFF1F2", color: "#FFF1F2" }}
-                        // onClick={() => handleEdit(record)}
                     >
                         Update
                     </Button>
                     <Button
                         type="default"
                         style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f", color: "#fff" }}
-                        // onClick={() => handleDelete(record.voucherId)}
                     >
                         Delete
                     </Button>
@@ -124,8 +137,8 @@ const ManageVoucher = () => {
                 columns={columns}
                 dataSource={vouchers}
                 rowKey="voucherId"
-                scroll={{ x: "max-content" }}
             />
+
 
             <Modal
                 title="Create Voucher"
@@ -134,23 +147,23 @@ const ManageVoucher = () => {
                 footer={null}
             >
                 <Form form={form} layout="vertical" onFinish={handleCreate}>
-                    <Form.Item name="voucherName" label="Voucher Name" rules={[{ required: true }]}> 
+                    <Form.Item name="voucherName" label="Voucher Name" rules={[{ required: true }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="voucherCode" label="Voucher Code" rules={[{ required: true }]}> 
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="voucherDiscount" label="Discount (%)" rules={[{ required: true }]}> 
+                    <Form.Item name="voucherDiscount" label="Discount (%)" rules={[{ required: true }]}>
                         <InputNumber min={0} max={100} style={{ width: "100%" }} />
                     </Form.Item>
-                    <Form.Item name="voucherStartDate" label="Start Date" rules={[{ required: true }]}> 
+                    <Form.Item name="voucherStartDate" label="Start Date" rules={[{ required: true }]}>
                         <DatePicker style={{ width: "100%" }} />
                     </Form.Item>
-                    <Form.Item name="voucherEndDate" label="End Date" rules={[{ required: true }]}> 
+                    <Form.Item name="voucherEndDate" label="End Date" rules={[{ required: true }]}>
                         <DatePicker style={{ width: "100%" }} />
                     </Form.Item>
-                    <Form.Item name="maxDiscount" label="Max Discount ($)" rules={[{ required: true }]}> 
+                    <Form.Item name="maxDiscount" label="Max Discount ($)" rules={[{ required: true }]}>
                         <InputNumber min={0} style={{ width: "100%" }} />
+                    </Form.Item>
+                    <Form.Item name="numOfVoucher" label="Number of Vouchers" rules={[{ required: true }]}>
+                        <InputNumber min={1} style={{ width: "100%" }} />
                     </Form.Item>
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
                         <Button
