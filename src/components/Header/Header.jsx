@@ -211,7 +211,7 @@ export default function Header() {
                   >
                     <motion.div className="flex flex-row justify-center items-center gap-2">
                       <span className="w-[30%] h-full rounded-xl flex justify-center items-center">
-                        <img src={item.imageUrl} alt="brand" />
+                        <img src={item.ImageUrl} alt="brand" />
                       </span>
 
                       <span className="w-[70%]">{item.brandName}</span>

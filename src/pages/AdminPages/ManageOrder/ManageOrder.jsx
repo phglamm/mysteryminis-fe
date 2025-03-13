@@ -137,11 +137,63 @@ const ManageOrder = () => {
           >
             View
           </Button>
+          {record.orderStatus.orderStatusName === "PROCESSING" ||
+          record.orderStatus.orderStatusName === "SHIPPING" ||
+          record.orderStatus.orderStatusName === "ARRIVED" ? (
+            <>
+              <Button
+                type="primary"
+                style={{ backgroundColor: "#313857", color: "#FFF1F2" }}
+                onClick={() => handleUpdatePrevOrderStatus(record)}
+              >
+                Turn back Order Status
+              </Button>
+            </>
+          ) : (
+            <></>
+          )}
+          {record.orderStatus.orderStatusName === "PROCESSING" ||
+          record.orderStatus.orderStatusName === "SHIPPING" ||
+          record.orderStatus.orderStatusName === "PENDING" ? (
+            <>
+              {" "}
+              <Button
+                type="primary"
+                style={{ backgroundColor: "#313857", color: "#FFF1F2" }}
+                onClick={() => handleUpdateNextOrderStatus(record)}
+              >
+                Process Order Status
+              </Button>
+            </>
+          ) : (
+            <></>
+          )}
         </Space>
       ),
     },
   ];
-
+  const handleUpdatePrevOrderStatus = async (order) => {
+    try {
+      const response = await api.put(`orderStatus/prev/${order._id}`);
+      console.log(response.data);
+      fetchOrders();
+      toast.success("Update Order Status Success");
+    } catch (error) {
+      console.log(error.response.data);
+      toast.error(error.response.data);
+    }
+  };
+  const handleUpdateNextOrderStatus = async (order) => {
+    try {
+      const response = await api.put(`orderStatus/next/${order._id}`);
+      console.log(response.data);
+      fetchOrders();
+      toast.success("Update Order Status Success");
+    } catch (error) {
+      console.log(error.response.data);
+      toast.error(error.response.data);
+    }
+  };
   // Lọc và sắp xếp đơn hàng theo ngày mới nhất
   const filteredData = orders
     .filter((order) => {
