@@ -83,6 +83,8 @@ const CheckOutPage = () => {
   const handleCheckout = async (values) => {
     values.userId = user._id;
     values.voucherId = "67c5952e4436f2dd6b93470d";
+    values.subTotal = provisional;
+    values.shippingFee = shippingFee ? shippingFee : 0;
     values.totalPrice = totalAmount;
     values.orderItemRequestDto = cartItems.map((item) => ({
       quantity: item.quantity,

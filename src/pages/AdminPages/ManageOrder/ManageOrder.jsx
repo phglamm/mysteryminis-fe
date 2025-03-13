@@ -382,7 +382,15 @@ const ManageOrder = () => {
             </div>
             <div className="flex flex-col justify-end items-end">
               <p>
-                <strong>Total:</strong>{" "}
+                <strong>Total Price:</strong>{" "}
+                {selectedOrder.subTotal.toLocaleString()} đ
+              </p>
+              <p>
+                <strong>Shipping Fee:</strong>{" "}
+                {selectedOrder.shippingFee.toLocaleString()} đ
+              </p>
+              <p className="text-lg">
+                <strong>Order Total:</strong>{" "}
                 {selectedOrder.totalPrice.toLocaleString()} đ
               </p>
               <p>

@@ -324,6 +324,12 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
 
               <div className=" gap-4 px-8 p-2 bg-white h-fit border-dashed border-t-1">
                 <div className="flex flex-col text-end text-2xl w-full gap-4 py-4">
+                  <div className="text-lg ">
+                    Total price: {order.subTotal.toLocaleString() + " đ"}{" "}
+                  </div>
+                  <div className="text-lg ">
+                    Shipping Fee: {order.shippingFee.toLocaleString() + " đ"}{" "}
+                  </div>
                   <div>
                     Order Total: {order.totalPrice.toLocaleString() + " đ"}
                   </div>
