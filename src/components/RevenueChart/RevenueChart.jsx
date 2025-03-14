@@ -12,6 +12,7 @@ export default function RevenueChart() {
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedWeek, setSelectedWeek] = useState("All");
   a;
+  b;
   const fetchRevenue = async () => {
     try {
       const response = await api.get("dashboard/revenue");
