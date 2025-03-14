@@ -10,8 +10,6 @@ import { fetchBoxesHomePage } from "../../../config/Data";
 import { useDispatch } from "react-redux";
 import { loadBoxes } from "../../../Redux/features/boxSlice";
 
-
-
 export default function Homepage() {
   const [cardData, setCardData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -25,7 +23,10 @@ export default function Homepage() {
       const boxes = data.slice(0, 10).map((box) => ({
         id: box.boxId,
         name: box.boxName,
-        imageSrc: box.imageUrl.length > 0 ? box.imageUrl[0] : "https://via.placeholder.com/150",
+        imageSrc:
+          box.imageUrl.length > 0
+            ? box.imageUrl[0]
+            : "https://via.placeholder.com/150",
       }));
       setCardData(boxes);
     });
@@ -44,14 +45,14 @@ export default function Homepage() {
   console.log("Card Data: ", cardData);
   const categories = ["All", "BestSeller", "Sale Off", "Yooki", "BabyThree"];
 
-  if(loading || !cardData.length) {
+  if (loading || !cardData.length) {
     return (
       <div className="w-full h-full min-h-screen  flex justify-center items-center">
         <Spin size="large" />
       </div>
     );
   }
-  
+
   return (
     <div className="mt-[10%]">
       <ImageContent />
@@ -60,7 +61,7 @@ export default function Homepage() {
         className="text-center flex flex-col items-center"
         style={{ userSelect: "none" }}
       >
-        <BlurText
+        {/* <BlurText
           text="MYSTERY MINIS"
           delay={50}
           animateBy="letters"
@@ -73,7 +74,12 @@ export default function Homepage() {
           animateBy="letters"
           direction="bottom"
           className="text-3xl mb-2 text-gray-500 font-sans"
-        />
+        /> */}
+
+        <h className="text-6xl mb-4 font-sans">MYSTERY MINIS</h>
+        <h4 className="text-3xl mb-2 text-gray-500 font-sans">
+          Unbox the Unexpected! Every Box Holds a Secret!
+        </h4>
         <motion.div
           initial={{ scale: 1, opacity: 0 }}
           whileInView={{ opacity: 1 }}

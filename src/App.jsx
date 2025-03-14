@@ -1,5 +1,9 @@
 import "./App.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import {
+  createBrowserRouter,
+  Navigate,
+  RouterProvider,
+} from "react-router-dom";
 import { route } from "./routes";
 import UserLayout from "./layouts/UserLayout/UserLayout";
 
@@ -33,6 +37,7 @@ import ManageBlog from "./pages/AdminPages/ManageBlog/ManageBlog";
 import BlogDetail from "./pages/UserPages/BlogDetail/BlogDetail";
 import Dashboard from "./pages/AdminPages/Dashboard/Dashboard";
 import OnlinePackage from "./pages/UserPages/OnlinePackage/OnlinePackage";
+import ProtectedRoute from "./routes/ProtectedRoute";
 
 function App() {
   const router = createBrowserRouter([
@@ -42,6 +47,7 @@ function App() {
       children: [
         {
           path: route.home,
+
           element: <Homepage />,
         },
         {
@@ -122,7 +128,11 @@ function App() {
 
     {
       path: route.admin,
-      element: <AdminLayout />,
+      element: (
+        <ProtectedRoute roles={[1]}>
+          <AdminLayout />
+        </ProtectedRoute>
+      ),
       children: [
         {
           path: route.admin,
@@ -165,7 +175,12 @@ function App() {
 
     {
       path: route.staff,
-      element: <AdminLayout />,
+
+      element: (
+        <ProtectedRoute>
+          <AdminLayout />
+        </ProtectedRoute>
+      ),
       children: [
         {
           path: route.accountManagement,
@@ -196,6 +211,10 @@ function App() {
           element: <ManageBlog />,
         },
       ],
+    },
+    {
+      path: `*`, // This handles invalid routes under the admin section
+      element: <Navigate to={route.home} replace />, // Redirect to admin dashboard
     },
   ]);
 

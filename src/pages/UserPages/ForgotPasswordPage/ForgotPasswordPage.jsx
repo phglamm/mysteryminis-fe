@@ -1,7 +1,6 @@
 import { useForm } from "antd/es/form/Form";
 import { Button, Form, Input } from "antd";
 import { motion } from "framer-motion";
-import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 import toast from "react-hot-toast";
 import api from "../../../config/api";
 
@@ -29,13 +28,7 @@ export default function ForgotPasswordPage() {
         transition={{ duration: 3 }}
         className=" p-8 rounded-2xl w-180"
       >
-        <BlurText
-          text="Reset Password"
-          delay={150}
-          animateBy="words"
-          direction="top"
-          className="text-5xl text-center mb-10 font-bold"
-        />
+        <h4 className="text-5xl text-center mb-10 font-bold">Reset Password</h4>
 
         <Form
           form={form}

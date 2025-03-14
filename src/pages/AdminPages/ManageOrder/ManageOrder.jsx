@@ -68,7 +68,7 @@ const ManageOrder = () => {
       sorter: (a, b) =>
         dayjs(b.orderCreatedAt).unix() - dayjs(a.orderCreatedAt).unix(), // Sắp xếp theo ngày mới nhất
     },
-    { title: "Customer ID", dataIndex: "userId", key: "userId" },
+    { title: "Customer Name", dataIndex: "userName", key: "userName" },
     {
       title: "Items",
       dataIndex: "orderItems",
@@ -351,6 +351,10 @@ const ManageOrder = () => {
               ))}
             </div>
             <div className="flex flex-col justify-end items-end">
+              <p>
+                <strong>Shipping:</strong>{" "}
+                {selectedOrder.shippingFee.toLocaleString()} đ
+              </p>
               <p>
                 <strong>Total:</strong>{" "}
                 {selectedOrder.totalPrice.toLocaleString()} đ

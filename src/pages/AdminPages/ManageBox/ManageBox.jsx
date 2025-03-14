@@ -5,7 +5,6 @@ import api from "../../../config/api";
 import toast from "react-hot-toast";
 
 export default function ManageBox() {
-  const [activeTab, setActiveTab] = useState("1");
   const [formAdd] = useForm();
   const [formUpdate] = useForm();
 
@@ -147,103 +146,12 @@ export default function ManageBox() {
     },
   ];
 
-  const mockLuckyBoxData = [
-    {
-      OnlineSerieBoxId: 101,
-      BoxId: 1,
-      Price: 29.99,
-      Name: "Lucky Draw A",
-      IsSecretOpen: true,
-      Turn: 3,
-    },
-    {
-      OnlineSerieBoxId: 102,
-      BoxId: 2,
-      Price: 49.99,
-      Name: "Lucky Draw B",
-      IsSecretOpen: false,
-      Turn: 5,
-    },
-    {
-      OnlineSerieBoxId: 103,
-      BoxId: 3,
-      Price: 39.99,
-      Name: "Lucky Draw C",
-      IsSecretOpen: true,
-      Turn: 2,
-    },
-  ];
-
-  const columnsLuckyBox = [
-    {
-      title: "ID",
-      dataIndex: "OnlineSerieBoxId",
-      key: "OnlineSerieBoxId",
-    },
-    {
-      title: "From Box ID",
-      dataIndex: "BoxId",
-      key: "BoxId",
-    },
-    {
-      title: "Price",
-      dataIndex: "Price",
-      key: "Price",
-    },
-    {
-      title: "Name",
-      dataIndex: "Name",
-      key: "Name",
-    },
-    {
-      title: "IsSecretOpen",
-      dataIndex: "IsSecretOpen",
-      key: "IsSecretOpen",
-    },
-    {
-      title: "Turn",
-      dataIndex: "Turn",
-      key: "Turn",
-    },
-    {
-      title: "Action",
-      render: (_index, record) => (
-        <>
-          <div className="flex justify-around items-center">
-            <Button>Update</Button>
-            <Button>Delete</Button>
-          </div>
-        </>
-      ),
-    },
-  ];
-
   return (
     <div>
-      <Tabs
-        activeKey={activeTab}
-        onChange={setActiveTab}
-        destroyInactiveTabPane
-      >
-        {/* Tab 1 */}
-        <Tabs.TabPane tab="Manage Box" key="1">
-          <div>
-            <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
-              Create Box
-            </Button>
-            <Table dataSource={box} columns={columnsBox} />
-          </div>
-        </Tabs.TabPane>
-
-        {/* Tab 2 */}
-        <Tabs.TabPane tab="Manage Online Lucky Box" key="2">
-          <div>
-            <Table dataSource={mockLuckyBoxData} columns={columnsLuckyBox} />
-          </div>
-        </Tabs.TabPane>
-
-        {/* Tab 3 */}
-      </Tabs>
+      <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
+        Create Box
+      </Button>
+      <Table dataSource={box} columns={columnsBox} />
 
       <Modal
         title="Add Box"

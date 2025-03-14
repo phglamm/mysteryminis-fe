@@ -4,7 +4,6 @@ import CardProduct from "../../../components/CardProduct/CardProduct";
 import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import TiltedCard from "../../../components/React_Bits/TiltedCard/TiltedCard";
-import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 
 const ProductPage = () => {
   const [brands, setBrands] = useState([]);
@@ -76,13 +75,9 @@ const ProductPage = () => {
         showMobileWarning={true}
         showTooltip={true}
       />
-      <BlurText
-        text="Our Blindbox Collection"
-        delay={100}
-        animateBy="words"
-        direction="top"
-        className="text-5xl font-bold text-center mt-10"
-      />
+      <h4 className="text-5xl font-bold text-center mt-10">
+        Our Blindbox Collection
+      </h4>
       <div className="mt-[5%]">
         <div style={{ display: "flex", alignItems: "flex-start" }}>
           {/* Sidebar */}
