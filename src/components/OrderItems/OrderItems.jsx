@@ -28,8 +28,8 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
   console.log(checkCard);
   const fetchOrders = async () => {
     try {
-      const response = await api.get(`Order?userId=${user.userId}`);
-      // const response = await api.get('Order');
+      // const response = await api.get(`Order?userId=${user.userId}`);
+      const response = await api.get('Order');
       setOrders(response.data);
       console.log(response.data);
     } catch (error) {

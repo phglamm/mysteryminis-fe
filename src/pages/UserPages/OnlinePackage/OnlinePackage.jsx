@@ -126,12 +126,15 @@ const OnlinePackage = () => {
                                         />
                                     }
                                     onClick={box.turn !== box.maxTurn ? handleSelectedBox : undefined}
-                                    actions={[box.tturn === box.maxTurn ? <span>Out of Turn</span> : <span>Buy Now</span>]}
+                                    actions={[box.tturn === box.maxTurn ? <span>Out of Turn</span> : 
+                                        <div className="flex flex-row w-full gap-2">
+                                            <span className="w-[70%]">Buy Now</span>
+                                            <span className="w-[30%]">{box.turn}/{box.maxTurn}</span>
+                                        </div>]}
                                 >
                                     <h3 className="text-lg font-bold">{box.boxOption.boxOptionName}</h3>
                                     <div className="flex flex-row w-full gap-2">
-                                        <div className="w-3/4 text-[1vw]">{box.BoxOptionPrice}</div>
-                                        <div className="w-1/4">{box.BoxOptionStock}</div>
+                                        <div className="w-3/4 text-[1vw]">{box.basePrice}</div>
                                     </div>
                                 </Card>
                             </Badge.Ribbon>
