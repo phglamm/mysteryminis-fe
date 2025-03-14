@@ -2,86 +2,10 @@ import { Badge, Card } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../../config/api";
+
 const OnlinePackage = () => {
-    const naviagate = useNavigate();
+    const navigate = useNavigate();
     const [Package, setPackage] = useState([]);
-    // const boxes = [
-    //     {
-    //         BoxId: 1,
-    //         BoxOptionsName: "Mystery Anime Box",
-    //         ImageUrl: "https://cdn2-retail-images.kiotviet.vn/2024/09/29/littleusastore/863e8d65616149eba761909126772369.png",
-    //         BoxOptionPrice: 200000,
-    //         OriginPrice: 49.99,
-    //         DisplayPrice: 29.99,
-    //         BoxOptionStock: 100,
-    //         IsDeleted: false,
-    //         IsOnlineSerieBox: true,
-    //         Brand: "Anime Deluxe",
-    //         BoxItem: [
-    //             { BoxItemName: "Naruto Keychain", BoxItemId: 101, IsSecret: false },
-    //             { BoxItemName: "One Piece Figure", BoxItemId: 102, IsSecret: true },
-    //         ],
-    //         OnlineSerieBox: {
-    //             BasePrice: 29.99,
-    //             PriceAfterSecret: 39.99,
-    //             PriceIncreasePercent: 10,
-    //             Name: "Anime Deluxe Series",
-    //             IsSecretOpen: false,
-    //             Turn: 1,
-    //             MaxTurn: 5,
-    //         },
-    //     },
-    //     {
-    //         BoxId: 2,
-    //         BoxOptionsName: "Gaming Loot Box",
-    //         ImageUrl: "https://cdn2-retail-images.kiotviet.vn/2024/09/29/littleusastore/863e8d65616149eba761909126772369.png",
-    //         BoxOptionPrice: 49.99,
-    //         OriginPrice: 79.99,
-    //         DisplayPrice: 49.99,
-    //         BoxOptionStock: 50,
-    //         IsDeleted: false,
-    //         Brand: "Gamer's Paradise",
-    //         IsOnlineSerieBox: false,
-    //         BoxItem: [
-    //             { BoxItemName: "RGB Gaming Mouse", BoxItemId: 201, IsSecret: false },
-    //             { BoxItemName: "Limited Edition Headset", BoxItemId: 202, IsSecret: true },
-    //         ],
-    //         OnlineSerieBox: {
-    //             BasePrice: 19.99,
-    //             PriceAfterSecret: 29.99,
-    //             PriceIncreasePercent: 15,
-    //             Name: "Fashion Mystery Series",
-    //             IsSecretOpen: true,
-    //             Turn: 2,
-    //             MaxTurn: 3,
-    //         },
-    //     },
-    //     {
-    //         BoxId: 3,
-    //         BoxOptionsName: "Fashion Blind Box",
-    //         ImageUrl: "https://cdn2-retail-images.kiotviet.vn/2024/09/29/littleusastore/863e8d65616149eba761909126772369.png",
-    //         BoxOptionPrice: 19.99,
-    //         OriginPrice: 39.99,
-    //         DisplayPrice: 19.99,
-    //         BoxOptionStock: 200,
-    //         IsDeleted: false,
-    //         Brand: "Anime Deluxe",
-    //         IsOnlineSerieBox: true,
-    //         BoxItem: [
-    //             { BoxItemName: "Designer Socks", BoxItemId: 301, IsSecret: false },
-    //             { BoxItemName: "Luxury Sunglasses", BoxItemId: 302, IsSecret: true },
-    //         ],
-    //         OnlineSerieBox: {
-    //             BasePrice: 19.99,
-    //             PriceAfterSecret: 29.99,
-    //             PriceIncreasePercent: 15,
-    //             Name: "Fashion Mystery Series",
-    //             IsSecretOpen: true,
-    //             Turn: 3,
-    //             MaxTurn: 3,
-    //         },
-    //     },
-    // ];
 
     const fetchPackages = async () => {
         try {
@@ -96,9 +20,11 @@ const OnlinePackage = () => {
     useEffect(() => {
         fetchPackages();
     }, []);
-    const handleSelectedBox = (e) => {
-        naviagate("/online-blindbox");
+
+    const handleSelectedBox = (box) => {
+        navigate(`/online-blindbox/${box.onlineSerieBoxId}`);
     };
+
     const groupedByBrand = Package.reduce((acc, box) => {
         if (!acc[box.brandDtoResponse.brandName]) {
             acc[box.brandDtoResponse.brandName] = [];
@@ -125,11 +51,11 @@ const OnlinePackage = () => {
                                             className="h-[10vw] w-full object-cover"
                                         />
                                     }
-                                    onClick={box.turn !== box.maxTurn ? handleSelectedBox : undefined}
-                                    actions={[box.tturn === box.maxTurn ? <span>Out of Turn</span> : 
+                                    onClick={box.turn !== box.maxTurn ? () => handleSelectedBox(box) : undefined}
+                                    actions={[box.turn === box.maxTurn ? <span>Out of Turn</span> : 
                                         <div className="flex flex-row w-full gap-2">
-                                            <span className="w-[70%]">Buy Now</span>
-                                            <span className="w-[30%]">{box.turn}/{box.maxTurn}</span>
+                                            <span className="w-[80%]">Buy Now</span>
+                                            <span className="w-[20%]">{box.turn}/{box.maxTurn}</span>
                                         </div>]}
                                 >
                                     <h3 className="text-lg font-bold">{box.boxOption.boxOptionName}</h3>
