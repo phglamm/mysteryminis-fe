@@ -14,6 +14,7 @@ import {
 import { RiFeedbackLine } from "react-icons/ri";
 import { CiDiscount1 } from "react-icons/ci";
 import { MdOutlineSmartToy } from "react-icons/md";
+import { GiReceiveMoney } from "react-icons/gi";
 
 import { route } from "../../routes";
 import { Link, useLocation } from "react-router-dom";
@@ -68,6 +69,8 @@ export default function Sidebar() {
         ]),
         getItem("Manage Brand", route.brandManagement, <DropboxOutlined />),
         getItem("Manage Discount", route.discountManagement, <CiDiscount1 />),
+        getItem("Manage Voucher", route.voucherManagement, <GiReceiveMoney />),
+
         getItem("Back to Home", "/", <HomeOutlined />),
       ]);
     }
@@ -105,6 +108,9 @@ export default function Sidebar() {
           route.chatWithCustomer,
           <CommentOutlined />
         ),
+        getItem("Manage Voucher", route.voucherManagement, <GiReceiveMoney />),
+        
+
 
         getItem("Back to Home", "/", <HomeOutlined />),
       ]);

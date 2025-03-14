@@ -33,6 +33,7 @@ import ManageBlog from "./pages/AdminPages/ManageBlog/ManageBlog";
 import BlogDetail from "./pages/UserPages/BlogDetail/BlogDetail";
 import Dashboard from "./pages/AdminPages/Dashboard/Dashboard";
 import OnlinePackage from "./pages/UserPages/OnlinePackage/OnlinePackage";
+import ManageVoucher from "./pages/AdminPages/ManageVoucher/ManageVoucher";
 
 function App() {
   const router = createBrowserRouter([
@@ -160,6 +161,10 @@ function App() {
           path: route.blogManagement,
           element: <ManageBlog />,
         },
+        {
+          path: route.voucherManagement,
+          element: <ManageVoucher />,
+        },
       ],
     },
 
@@ -194,6 +199,10 @@ function App() {
         {
           path: route.blogManagement,
           element: <ManageBlog />,
+        },
+        {
+          path: route.voucherManagement,
+          element: <ManageVoucher />,
         },
       ],
     },
