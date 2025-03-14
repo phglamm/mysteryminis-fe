@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Table, Button, Tag, Modal, Form, Input, DatePicker, InputNumber, message } from "antd";
-import axios from "axios";
 import api from "../../../config/api";
+import dayjs from "dayjs";
 
 const ManageVoucher = () => {
     const [vouchers, setVouchers] = useState([]);
     const [isModalVisible, setIsModalVisible] = useState(false);
+    const [editingVoucher, setEditingVoucher] = useState(null);
     const [form] = Form.useForm();
 
     useEffect(() => {
@@ -15,13 +16,11 @@ const ManageVoucher = () => {
     const fetchVouchers = async () => {
         try {
             const response = await api.get("Voucher");
-            console.log("Fetched Vouchers:", response.data); 
             setVouchers(response.data);
         } catch (error) {
             console.error("Error fetching vouchers:", error);
         }
     };
-    
 
     const handleCreate = async (values) => {
         try {
@@ -34,69 +33,70 @@ const ManageVoucher = () => {
                 numOfVoucher: values.numOfVoucher,
             };
 
-            const response = await api.post("Voucher", formattedValues);
-            console.log("Created Voucher Response:", response.data); // Log dữ liệu phản hồi
+            if (editingVoucher) {
+                // Update API
+                await api.put(`Voucher/${editingVoucher.voucherId}`, formattedValues);
+                message.success("Voucher updated successfully!");
+            } else {
+                // Create API
+                await api.post("Voucher", formattedValues);
+                message.success("Voucher added successfully!");
+            }
 
-            message.success("Voucher added successfully!");
-            await fetchVouchers(); // Reload danh sách
+            fetchVouchers();
             setIsModalVisible(false);
             form.resetFields();
-
+            setEditingVoucher(null);
         } catch (error) {
-            console.error("Error creating voucher:", error);
-            message.error("Failed to add voucher. Please try again.");
+            console.error("Error saving voucher:", error);
+            message.error("Failed to save voucher. Please try again.");
         }
     };
 
+
+    const showEditModal = (voucher) => {
+        setEditingVoucher(voucher);
+        form.setFieldsValue({
+            ...voucher,
+            voucherStartDate: voucher.voucherStartDate ? dayjs(voucher.voucherStartDate) : null,
+            voucherEndDate: voucher.voucherEndDate ? dayjs(voucher.voucherEndDate) : null,
+        });
+        setIsModalVisible(true);
+    };
+
+    const handleDelete = (voucherId) => {
+        Modal.confirm({
+            title: 'Are you sure you want to delete this voucher?',
+            content: 'This action cannot be undone.',
+            okText: 'Yes',
+            okType: 'danger',
+            cancelText: 'No',
+            onOk: async () => {
+                try {
+                    await api.delete(`Voucher/${voucherId}`);
+                    message.success('Voucher deleted successfully!');
+                    fetchVouchers(); // Reload danh sách voucher sau khi xóa
+                } catch (error) {
+                    console.error('Error deleting voucher:', error);
+                    message.error('Failed to delete voucher.');
+                }
+            },
+        });
+    };
 
     const columns = [
         {
             title: "ID",
             dataIndex: "voucherId",
             key: "voucherId",
+            defaultSortOrder: 'ascend',
         },
-        {
-            title: "Name",
-            dataIndex: "voucherName",
-            key: "voucherName",
-        },
-        {
-            title: "Discount",
-            dataIndex: "voucherDiscount",
-            key: "voucherDiscount",
-            render: (discount) => `${discount}%`,
-        },
-        {
-            title: "Start Date",
-            dataIndex: "voucherStartDate",
-            key: "voucherStartDate",
-            render: (date) => new Date(date).toLocaleDateString(),
-        },
-        {
-            title: "End Date",
-            dataIndex: "voucherEndDate",
-            key: "voucherEndDate",
-            render: (date) => new Date(date).toLocaleDateString(),
-        },
-        {
-            title: "Max Discount",
-            dataIndex: "maxDiscount",
-            key: "maxDiscount",
-            render: (amount) => `$${amount}`,
-        },
-        {
-            title: "Number of Vouchers",
-            dataIndex: "numOfVoucher",
-            key: "numOfVoucher",
-        },
-        {
-            title: "Status",
-            dataIndex: "isDeleted",
-            key: "isDeleted",
-            render: (isDeleted) => (
-                <Tag color={isDeleted ? "red" : "green"}>{isDeleted ? "Inactive" : "Active"}</Tag>
-            ),
-        },
+        { title: "Name", dataIndex: "voucherName", key: "voucherName" },
+        { title: "Discount", dataIndex: "voucherDiscount", key: "voucherDiscount", render: (discount) => `${discount}%` },
+        { title: "Start Date", dataIndex: "voucherStartDate", key: "voucherStartDate", render: (date) => new Date(date).toLocaleDateString() },
+        { title: "End Date", dataIndex: "voucherEndDate", key: "voucherEndDate", render: (date) => new Date(date).toLocaleDateString() },
+        { title: "Max Discount", dataIndex: "maxDiscount", key: "maxDiscount", render: (amount) => `$${amount}` },
+        { title: "Number of Vouchers", dataIndex: "numOfVoucher", key: "numOfVoucher" },
         {
             title: "Action",
             key: "action",
@@ -104,12 +104,14 @@ const ManageVoucher = () => {
                 <>
                     <Button
                         type="primary"
-                        style={{ backgroundColor: "#313857", borderColor: "#FFF1F2", color: "#FFF1F2" }}
+                        onClick={() => showEditModal(record)}
+                        style={{ backgroundColor: "#313857", borderColor: "#FFF1F2", color: "#FFF1F2", marginRight: 8 }}
                     >
                         Update
                     </Button>
                     <Button
                         type="default"
+                        onClick={() => handleDelete(record.voucherId)}
                         style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f", color: "#fff" }}
                     >
                         Delete
@@ -117,33 +119,25 @@ const ManageVoucher = () => {
                 </>
             ),
         },
+
     ];
 
     return (
         <div style={{ padding: 20, maxWidth: "100%", overflowX: "auto" }}>
             <h2 style={{ fontSize: "30px" }}>Manage Vouchers</h2>
-            <Button type="primary"
-                style={{
-                    marginBottom: 16,
-                    backgroundColor: "#313857",
-                    borderColor: "#FFF1F2",
-                    color: "#FFF1F2",
-                }}
-                onClick={() => setIsModalVisible(true)}
-            >
+            <Button type="primary" onClick={() => setIsModalVisible(true)} style={{ marginBottom: 16, backgroundColor: "#313857", borderColor: "#FFF1F2", color: "#FFF1F2" }}>
                 Create Voucher
             </Button>
-            <Table
-                columns={columns}
-                dataSource={vouchers}
-                rowKey="voucherId"
-            />
-
+            <Table columns={columns} dataSource={vouchers} rowKey="voucherId" />
 
             <Modal
-                title="Create Voucher"
+                title={editingVoucher ? "Update Voucher" : "Create Voucher"}
                 visible={isModalVisible}
-                onCancel={() => setIsModalVisible(false)}
+                onCancel={() => {
+                    setIsModalVisible(false);
+                    form.resetFields();
+                    setEditingVoucher(null);
+                }}
                 footer={null}
             >
                 <Form form={form} layout="vertical" onFinish={handleCreate}>
@@ -166,15 +160,10 @@ const ManageVoucher = () => {
                         <InputNumber min={1} style={{ width: "100%" }} />
                     </Form.Item>
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-                        <Button
-                            style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f", color: "#fff" }}
-                            onClick={() => setIsModalVisible(false)}
-                        >
+                        <Button style={{ backgroundColor: "#ff4d4f", borderColor: "#ff4d4f", color: "#fff" }} onClick={() => setIsModalVisible(false)}>
                             Cancel
                         </Button>
-                        <Button type="primary" htmlType="submit"
-                            style={{ backgroundColor: "#313857", borderColor: "#FFF1F2", color: "#FFF1F2" }}
-                        >
+                        <Button type="primary" htmlType="submit" style={{ backgroundColor: "#313857", borderColor: "#FFF1F2", color: "#FFF1F2" }}>
                             OK
                         </Button>
                     </div>
