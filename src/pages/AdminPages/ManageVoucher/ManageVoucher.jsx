@@ -90,12 +90,13 @@ const ManageVoucher = () => {
             dataIndex: "voucherId",
             key: "voucherId",
             defaultSortOrder: 'ascend',
-        },
+            sorter: (a, b) => b.voucherId - a.voucherId, // Sorting from largest to smallest
+        },        
         { title: "Name", dataIndex: "voucherName", key: "voucherName" },
         { title: "Discount", dataIndex: "voucherDiscount", key: "voucherDiscount", render: (discount) => `${discount}%` },
         { title: "Start Date", dataIndex: "voucherStartDate", key: "voucherStartDate", render: (date) => new Date(date).toLocaleDateString() },
         { title: "End Date", dataIndex: "voucherEndDate", key: "voucherEndDate", render: (date) => new Date(date).toLocaleDateString() },
-        { title: "Max Discount", dataIndex: "maxDiscount", key: "maxDiscount", render: (amount) => `$${amount}` },
+        { title: "Max Discount", dataIndex: "maxDiscount", key: "maxDiscount", render: (amount) => `${amount.toLocaleString()}₫` },
         { title: "Number of Vouchers", dataIndex: "numOfVoucher", key: "numOfVoucher" },
         {
             title: "Action",
