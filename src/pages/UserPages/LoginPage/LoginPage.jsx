@@ -4,7 +4,6 @@ import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import "./LoginPage.scss";
 import { route } from "./../../../routes/index";
-import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 import api from "./../../../config/api";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import Cookies from "js-cookie";
@@ -82,13 +81,9 @@ export default function LoginPage() {
           transition={{ duration: 3 }}
           className=" p-8 rounded-2xl w-180"
         >
-          <BlurText
-            text="Welcome to Mystery Minis "
-            delay={150}
-            animateBy="words"
-            direction="top"
-            className="text-5xl text-center mb-10 font-bold"
-          />
+          <h4 className="text-5xl text-center mb-10 font-bold">
+            Welcome to Mystery Minis
+          </h4>
 
           <Form
             form={form}
