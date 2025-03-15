@@ -41,7 +41,7 @@ export default function Header() {
 
   // Define navigation links
   const navItems = [
-    { label: "ONLINE BLINDBOX", path: "/online-blindbox" },
+    { label: "ONLINE BLINDBOX", path: route.onlinePackage },
     { label: "HOT ITEMS", path: route.boxItemPage },
     { label: "BLOGS", path: route.blog },
   ];

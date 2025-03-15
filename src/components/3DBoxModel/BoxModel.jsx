@@ -1,114 +1,180 @@
-import { Canvas } from "@react-three/fiber";
-import { useGLTF, useAnimations } from "@react-three/drei";
-import { motion } from "framer-motion";
+import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { useGLTF, useAnimations, OrbitControls, Environment } from "@react-three/drei";
+import { motion, useSpring } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import * as THREE from "three";
-import { Modal } from "antd";
-import logo from "../../assets/images/Logo-removebg.png";
-import secretRun from "../../assets/images/secretVid.mp4"; 
-import commonRun from "../../assets/images/commonVid.mp4";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../Redux/features/counterSlice";
+import ShowRewardModal from "../ShowRewardModal/ShowRewardModal";
+import { TextureLoader } from "three";
+import api from "../../config/api";
+import bg360 from "../../assets/images/360bg.jpg";
+import secretRun from "../../assets/images/secretVid.mp4";
+import commontRun from "../../assets/images/commonVid.mp4";
 
-const BoxModel = ({ plays, setPlays }) => {
+const BoxModel = ({ plays, setPlays, onlineSerieBoxId, fetchBlindBox, showVideo, setShowVideo }) => {
+  const [isInteracting, setIsInteracting] = useState(false);
   const [rewardModalVisible, setRewardModalVisible] = useState(false);
-  const [showVideo, setShowVideo] = useState(false);
+
+  const [interactionDisabled, setInteractionDisabled] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
+  const [reward, setReward] = useState(null);
+  const hasInteracted = useRef(false);
   const videoRef = useRef(null);
+  const controlsRef = useRef(null);
+  const cameraRef = useRef(null);
+
+  const user = useSelector(selectUser);
+
+  const initialCameraPosition = new THREE.Vector3(-150, 20, 0);
+  const IntroCameraPosition = new THREE.Vector3(60, 70, 80);
+
+  const smoothX = useSpring(initialCameraPosition.x, {});
+  const smoothY = useSpring(initialCameraPosition.y, {});
+  const smoothZ = useSpring(initialCameraPosition.z, {});
+
+  const texture = useLoader(THREE.TextureLoader, bg360);
+  useEffect(() => {
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    texture.colorSpace = THREE.SRGBColorSpace;
+  }, [texture]);
+  
+
+  useEffect(() => {
+    if (!isInteracting && hasInteracted.current) {
+      smoothX.set(initialCameraPosition.x);
+      smoothY.set(initialCameraPosition.y);
+      smoothZ.set(initialCameraPosition.z);
+
+      setInteractionDisabled(true);
+      setTimeout(() => setInteractionDisabled(false), 1000);
+    }
+  }, [isInteracting]);
+
+  const unboxOnlineBlindBox = async () => {
+    setReward(null);
+    try {
+      const response = await api.post(`online-serie-box/unbox`, {
+        userId: user.userId,
+        onlineSerieBoxId: onlineSerieBoxId,
+      });
+      if (response && response.data) {
+        setReward(response.data);
+      } else {
+        console.error("Unexpected response format:", response);
+      }
+    } catch (error) {
+      console.error("Error unboxing online blind box:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (plays) {
+      unboxOnlineBlindBox();
+    }
+  }, [plays]);
+
+  const CameraAnimation = () => {
+    useEffect(() => {
+      if (cameraRef.current && showIntro) {
+        cameraRef.current.position.copy(IntroCameraPosition);
+        setTimeout(() => {
+          smoothX.set(initialCameraPosition.x);
+          smoothY.set(initialCameraPosition.y);
+          smoothZ.set(initialCameraPosition.z);
+        }, 1500);
+        setShowIntro(false);
+      }
+    }, []);
+
+    useFrame(() => {
+      if (!isInteracting && cameraRef.current) {
+        cameraRef.current.position.lerp(
+          new THREE.Vector3(smoothX.get(), smoothY.get(), smoothZ.get()),
+          0.009  
+        );
+        cameraRef.current.lookAt(0, 0, 0);
+      }
+    });
+    return null;
+  };
 
   const Model = () => {
     const { scene, animations } = useGLTF("../../../public/BoxModel3D/box.glb");
     const { actions } = useAnimations(animations, scene);
 
-     // Handle preventing scroll when modal is open
-  useEffect(() => {
-    if (rewardModalVisible) {
-      document.documentElement.style.overflow = "hidden"; // Disable scrolling
-      document.body.style.overflow = "hidden";
-    } else {
-      document.documentElement.style.overflow = "auto"; // Enable scrolling
-      document.body.style.overflow = "auto";
-    }
-
-    // Cleanup on unmount
-    return () => {
-      document.documentElement.style.overflow = "auto";
-      document.body.style.overflow = "auto";
-    };
-  }, [rewardModalVisible]);
-  
     useEffect(() => {
-      if (plays && actions) {
-        const action = actions[Object.keys(actions)[0]]; // Get the first animation
+      if (plays && actions && reward) {
+        const action = actions[Object.keys(actions)[0]];
         if (action) {
           action.reset().setLoop(THREE.LoopOnce, 1).play();
-          action.clampWhenFinished = true; // Keep final animation frame
-          
-          // Detect when animation finishes
+          action.clampWhenFinished = true;
           action.getMixer().addEventListener("finished", () => {
             setPlays(false);
-            setShowVideo(true); // Start video after box animation ends
+            setShowVideo(true);
             videoRef.current?.play();
           });
         }
       }
     }, [plays, actions]);
 
-    return <primitive object={scene} />;
+    return <primitive object={scene} scale={[13, 13, 13]} />;
   };
-
-  const AnimatedModel = () => (
-    <motion.group
-      animate={{ rotateY: [0, Math.PI * 2] }} // Rotate 360 degrees
-      transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
-    >
-      <Model />
-    </motion.group>
-  );
 
   return (
     <div className="w-full h-full">
-      <Canvas camera={{ position: [-150, 20, 0], fov: 3 }}>
+      <Canvas
+        camera={{ position: [-150, 20, 0], fov: 40 }}
+        onCreated={({ scene, camera }) => {
+          scene.background = texture;
+          cameraRef.current = camera;
+        }}
+      >
         <ambientLight intensity={1} />
         <directionalLight position={[-150, 20, 0]} />
-        <AnimatedModel />
+
+        <OrbitControls
+          ref={controlsRef}
+          enableZoom={false}
+          enablePan={false}
+          enableRotate={!interactionDisabled}
+          onStart={() => {
+            if (!interactionDisabled) {
+              setIsInteracting(true);
+              hasInteracted.current = true;
+            }
+          }}
+          onEnd={() => setIsInteracting(false)}
+        />
+
+        <CameraAnimation />
+        <Model />
       </Canvas>
 
-      {/* Background Video (Only Shows When Needed) */}
       {showVideo && (
         <video
           ref={videoRef}
           autoPlay
           muted
-          className="fixed top-0 left-0 w-full h-full object-cover z-10"
+          className="fixed top-0 left-0 w-full h-full object-cover z-20"
           onPlay={() => {
-            setTimeout(() => {
-              setRewardModalVisible(true); // Show modal
-            }, 3000);
+            setTimeout(() => setRewardModalVisible(true), 3000);
           }}
         >
-          <source src={secretRun} type="video/mp4" />
+          <source src={reward?.isSecret ? secretRun : commontRun} type="video/mp4" />
         </video>
       )}
 
-      {/* Modal (Only Shows After Video Ends) */}
-      <Modal 
-        open={rewardModalVisible} 
-        onOk={() => setRewardModalVisible(false)} 
-        onCancel={() =>{
-          setRewardModalVisible(false);
-          setShowVideo(false);
-        } }
-        centered
-        footer={null}
-        width={800}
-        className="text-center z-20" // Ensure modal is above video
-        maskStyle={{
-          backgroundColor: "transparent", // Fully transparent mask
+      <ShowRewardModal 
+        reward={reward} 
+        visible={rewardModalVisible} 
+        onClose={() => { 
+          setRewardModalVisible(false); 
+          setShowVideo(false); 
+          fetchBlindBox();
         }}
-      >
-        <div className="flex justify-center items-center">
-          <img src={logo} alt="logo" className="w-1/2 h-[20vw]" />
-        </div>
-        <p>You have won a reward!</p>
-      </Modal>
+        
+      />
     </div>
   );
 };

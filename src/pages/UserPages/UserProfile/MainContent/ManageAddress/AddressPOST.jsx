@@ -13,6 +13,7 @@ const { Option } = Select;
 
 const AddressPOST = ({ setAddAddress }) => {
   const user = useSelector(selectUser);
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     phoneNumber: "",
@@ -107,15 +108,17 @@ const AddressPOST = ({ setAddAddress }) => {
   };
 
   const handleUpdateAddress = async () => {
-    console.log("formData", formData);
+    setLoading(true);
     try {
       const response = await api.post("Address", formData);
       console.log(response.data);
       toast.success("Address Added successfully");
-      setAddAddress(false);
     } catch (error) {
       toast.error("Failed to add address");
       console.error("Error adding address:", error);
+    } finally {
+      setLoading(false);
+      setAddAddress(false);
     }
   };
 
@@ -236,7 +239,7 @@ const AddressPOST = ({ setAddAddress }) => {
 
       {/* Save Button */}
       <div className="flex justify-between">
-        <motion.div
+        <motion.button
           className="text-center bg-black text-white rounded-full p-2 w-1/4 mx-auto mt-4 cursor-pointer"
           whileHover={{
             scale: 1.1,
@@ -251,9 +254,10 @@ const AddressPOST = ({ setAddAddress }) => {
             fontWeight: "bold",
           }}
           onClick={handleUpdateAddress}
+          disabled={loading}
         >
-          Save Changes
-        </motion.div>
+          {loading ? "Saving..." : "Save Changes"}
+        </motion.button>
       </div>
     </div>
   );

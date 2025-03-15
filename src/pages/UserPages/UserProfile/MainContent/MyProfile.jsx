@@ -209,6 +209,7 @@ const MyProfile = ({
               color: "black",
               fontWeight: "bold",
             }}
+            
             whileTap={{
               scale: 0.9,
               backgroundColor: "black",

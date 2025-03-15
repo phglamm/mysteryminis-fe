@@ -19,7 +19,7 @@ const UserProfile = () => {
             case "My Profile":
                 return <MyProfile isEditing={isEditing} setIsEditing={setIsEditing} resetPassword={resetPassword} setResetPassword={setResetPassword} />;
             case "Address Book":
-                return <AddressBook isEditing={isEditing} setIsEditing={setIsEditing} addAddress={addAddress} setAddAdress={setAddAddress} />;
+                return <AddressBook isEditing={isEditing} setIsEditing={setIsEditing} addAddress={addAddress} setAddAddress={setAddAddress} />;
             case "Earned Rewards":
                 return <EarnedRewards />;
             case "My Orders":

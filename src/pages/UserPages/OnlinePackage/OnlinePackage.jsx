@@ -1,93 +1,35 @@
 import { Badge, Card } from "antd";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-const OnlinePackage = () => {
-    const naviagate = useNavigate();
-    const boxes = [
-        {
-            BoxId: 1,
-            BoxOptionsName: "Mystery Anime Box",
-            ImageUrl: "https://cdn2-retail-images.kiotviet.vn/2024/09/29/littleusastore/863e8d65616149eba761909126772369.png",
-            BoxOptionPrice: 200000,
-            OriginPrice: 49.99,
-            DisplayPrice: 29.99,
-            BoxOptionStock: 100,
-            IsDeleted: false,
-            IsOnlineSerieBox: true,
-            Brand: "Anime Deluxe",
-            BoxItem: [
-                { BoxItemName: "Naruto Keychain", BoxItemId: 101, IsSecret: false },
-                { BoxItemName: "One Piece Figure", BoxItemId: 102, IsSecret: true },
-            ],
-            OnlineSerieBox: {
-                BasePrice: 29.99,
-                PriceAfterSecret: 39.99,
-                PriceIncreasePercent: 10,
-                Name: "Anime Deluxe Series",
-                IsSecretOpen: false,
-                Turn: 1,
-                MaxTurn: 5,
-            },
-        },
-        {
-            BoxId: 2,
-            BoxOptionsName: "Gaming Loot Box",
-            ImageUrl: "https://cdn2-retail-images.kiotviet.vn/2024/09/29/littleusastore/863e8d65616149eba761909126772369.png",
-            BoxOptionPrice: 49.99,
-            OriginPrice: 79.99,
-            DisplayPrice: 49.99,
-            BoxOptionStock: 50,
-            IsDeleted: false,
-            Brand: "Gamer's Paradise",
-            IsOnlineSerieBox: false,
-            BoxItem: [
-                { BoxItemName: "RGB Gaming Mouse", BoxItemId: 201, IsSecret: false },
-                { BoxItemName: "Limited Edition Headset", BoxItemId: 202, IsSecret: true },
-            ],
-            OnlineSerieBox: {
-                BasePrice: 19.99,
-                PriceAfterSecret: 29.99,
-                PriceIncreasePercent: 15,
-                Name: "Fashion Mystery Series",
-                IsSecretOpen: true,
-                Turn: 2,
-                MaxTurn: 3,
-            },
-        },
-        {
-            BoxId: 3,
-            BoxOptionsName: "Fashion Blind Box",
-            ImageUrl: "https://cdn2-retail-images.kiotviet.vn/2024/09/29/littleusastore/863e8d65616149eba761909126772369.png",
-            BoxOptionPrice: 19.99,
-            OriginPrice: 39.99,
-            DisplayPrice: 19.99,
-            BoxOptionStock: 200,
-            IsDeleted: false,
-            Brand: "Anime Deluxe",
-            IsOnlineSerieBox: true,
-            BoxItem: [
-                { BoxItemName: "Designer Socks", BoxItemId: 301, IsSecret: false },
-                { BoxItemName: "Luxury Sunglasses", BoxItemId: 302, IsSecret: true },
-            ],
-            OnlineSerieBox: {
-                BasePrice: 19.99,
-                PriceAfterSecret: 29.99,
-                PriceIncreasePercent: 15,
-                Name: "Fashion Mystery Series",
-                IsSecretOpen: true,
-                Turn: 3,
-                MaxTurn: 3,
-            },
-        },
-    ];
+import api from "../../../config/api";
 
-    const handleSelectedBox = (e) => {
-        naviagate("/online-blindbox");
-    };
-    const groupedByBrand = boxes.reduce((acc, box) => {
-        if (!acc[box.Brand]) {
-            acc[box.Brand] = [];
+const OnlinePackage = () => {
+    const navigate = useNavigate();
+    const [Package, setPackage] = useState([]);
+
+    const fetchPackages = async () => {
+        try {
+            const response = await api.get("online-serie-box");
+            setPackage(response.data);
+            console.log(response.data);
+        } catch (error) {
+            console.error(error);
         }
-        acc[box.Brand].push(box);
+    };
+
+    useEffect(() => {
+        fetchPackages();
+    }, []);
+
+    const handleSelectedBox = (box) => {
+        navigate(`/online-blindbox/${box.onlineSerieBoxId}`);
+    };
+
+    const groupedByBrand = Package.reduce((acc, box) => {
+        if (!acc[box.brandDtoResponse.brandName]) {
+            acc[box.brandDtoResponse.brandName] = [];
+        }
+        acc[box.brandDtoResponse.brandName].push(box);
         return acc;
     }, {});
 
@@ -98,24 +40,27 @@ const OnlinePackage = () => {
                     <h2 className="text-2xl font-bold mb-4 border-b-1 border-gray-600">{brand}</h2>
                     <div className="flex flex-wrap gap-10 justify-center">
                         {groupedByBrand[brand].map((box) => (
-                            <Badge.Ribbon key={box.BoxId} text={`Box ID: ${box.BoxId}`} color={box.OnlineSerieBox.IsSecretOpen ? "lime" : "gold"}>
+                            <Badge.Ribbon key={box.onlineSerieBoxId} text={`Box ID: ${box.onlineSerieBoxId}`} color={box.IsSecretOpen ? "lime" : "gold"}>
                                 <Card
-                                    className={`m-2 p-4 shadow-lg w-64 ${box.OnlineSerieBox.Turn === box.OnlineSerieBox.MaxTurn ? "opacity-50 cursor-not-allowed" : ""}`}
-                                    hoverable={box.OnlineSerieBox.Turn !== box.OnlineSerieBox.MaxTurn}
+                                    className={`m-2 p-4 shadow-lg w-64 ${box.turn === box.maxTurn ? "opacity-50 cursor-not-allowed" : ""}`}
+                                    hoverable={box.turn !== box.maxTurn}
                                     cover={
                                         <img
                                             alt="example"
-                                            src={box.ImageUrl}
+                                            src={box.imageUrl}
                                             className="h-[10vw] w-full object-cover"
                                         />
                                     }
-                                    onClick={box.OnlineSerieBox.Turn !== box.OnlineSerieBox.MaxTurn ? handleSelectedBox : undefined}
-                                    actions={[box.OnlineSerieBox.Turn === box.OnlineSerieBox.MaxTurn ? <span>Out of Turn</span> : <span>Buy Now</span>]}
+                                    onClick={box.turn !== box.maxTurn ? () => handleSelectedBox(box) : undefined}
+                                    actions={[box.turn === box.maxTurn ? <span>Out of Turn</span> : 
+                                        <div className="flex flex-row w-full gap-2">
+                                            <span className="w-[80%]">Buy Now</span>
+                                            <span className="w-[20%]">{box.turn}/{box.maxTurn}</span>
+                                        </div>]}
                                 >
-                                    <h3 className="text-lg font-bold">{box.BoxOptionsName}</h3>
+                                    <h3 className="text-lg font-bold">{box.boxOption.boxOptionName}</h3>
                                     <div className="flex flex-row w-full gap-2">
-                                        <div className="w-3/4 text-[1vw]">{box.BoxOptionPrice}</div>
-                                        <div className="w-1/4">{box.BoxOptionStock}</div>
+                                        <div className="w-3/4 text-[1vw]">{box.basePrice}</div>
                                     </div>
                                 </Card>
                             </Badge.Ribbon>

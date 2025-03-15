@@ -113,7 +113,7 @@ function App() {
           element: <PaymentReturnPage />,
         },
         {
-          path: route.onlineBlindBox,
+          path: `${route.onlineBlindBox}/:packageId`,
           element: <OnlineBlindBox />,
         },
         {

@@ -6,30 +6,22 @@ import api from "../../config/api";
 import OrderSteps from "../OrderStepper/OrderStepper";
 
 import toast from "react-hot-toast";
-import { selectUser } from "../../Redux/features/counterSlice";
-import { useSelector } from "react-redux";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Image } from "antd";
 
-const checkCards = [
-  "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg",
-  "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg",
-  "https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg",
-];
 
 const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [ViewDetails, setViewDetailsState] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [orders, setOrders] = useState([]);
-  const user = useSelector(selectUser);
   const [loadingCancel, setLoadingCancel] = useState(false);
   const [visible, setVisible] = useState(false);
   const [checkCard, setCheckCard] = useState(null);
   console.log(checkCard);
   const fetchOrders = async () => {
     try {
-      const response = await api.get(`Order?userId=${user.userId}`);
-      // const response = await api.get('Order');
+      // const response = await api.get(`Order?userId=${user.userId}`);
+      const response = await api.get('Order');
       setOrders(response.data);
       console.log(response.data);
     } catch (error) {
