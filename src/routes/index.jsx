@@ -37,4 +37,5 @@ export const route = {
   paymentReturn: "/payment-return",
   onlineBlindBox: "/online-blindbox",
   onlinePackage: "/online-package",
+  confirmEmail: "/confirm-email",
 };

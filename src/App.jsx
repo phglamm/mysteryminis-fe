@@ -38,6 +38,7 @@ import BlogDetail from "./pages/UserPages/BlogDetail/BlogDetail";
 import Dashboard from "./pages/AdminPages/Dashboard/Dashboard";
 import OnlinePackage from "./pages/UserPages/OnlinePackage/OnlinePackage";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import ConfirmEmailPage from "./pages/UserPages/ConfirmEmailPage/ConfirmEmailPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -123,6 +124,10 @@ function App() {
           path: route.onlinePackage,
           element: <OnlinePackage />,
         },
+        {
+          path: route.confirmEmail,
+          element: <ConfirmEmailPage />,
+        }
       ],
     },
 
