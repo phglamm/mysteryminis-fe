@@ -160,6 +160,7 @@ export default function Sidebar() {
                 {item.children.map((subItem) => (
                   <Menu.Item
                     key={subItem.key}
+                    icon={subItem.icon}
                     onClick={(e) => handleSelectKey(e.keyPath[1])}
                   >
                     <Link
