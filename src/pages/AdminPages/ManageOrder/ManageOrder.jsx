@@ -290,16 +290,36 @@ const ManageOrder = () => {
                     className="flex justify-between items-center gap-5"
                   >
                     <div className="flex justify-start items-center gap-5">
-                      <img
-                        src={item.imageUrl}
-                        alt=""
-                        className="h-20  w-20 border "
-                      />
-                      <div>
-                        <p>Name: {item.boxName}</p>
-                        <p>Option: {item.boxOptionName}</p>
-                        <p>Quantity: {item.quantity}</p>
-                      </div>
+                      {item.userRolledItemForManageOrder != null ? (
+                        <>
+                          <img
+                            src={
+                              item.userRolledItemForManageOrder.boxItemImageUrl
+                            }
+                            alt=""
+                            className="h-20  w-20 border "
+                          />
+                          <div>
+                            <p>Name: {item.boxName}</p>
+                            <p>Option: {item.boxOptionName}</p>
+                            <p>From Online Lucky Box</p>
+                            <p>Quantity: {item.quantity}</p>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <img
+                            src={item.imageUrl}
+                            alt=""
+                            className="h-20  w-20 border "
+                          />
+                          <div>
+                            <p>Name: {item.boxName}</p>
+                            <p>Option: {item.boxOptionName}</p>
+                            <p>Quantity: {item.quantity}</p>
+                          </div>
+                        </>
+                      )}
                     </div>
                     <div>
                       <p>{item.orderPrice.toLocaleString() + " đ"}</p>

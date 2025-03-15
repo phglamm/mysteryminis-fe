@@ -39,14 +39,17 @@ const ProductDetailPage = () => {
         const response = await api.get(`Box/withDTO/${id}`);
         console.log(response.data);
         setBox(response.data);
-        const defaultOption = response.data.boxOptions.reduce(
-          (minOption, option) => {
-            return option.displayPrice < minOption.displayPrice
-              ? option
-              : minOption;
-          },
-          response.data.boxOptions[0]
+
+        const filterResponse = response.data.boxOptions.filter(
+          (option) => option.isOnlineSerieBox === false
         );
+
+        console.log(filterResponse);
+        const defaultOption = filterResponse.reduce((minOption, option) => {
+          return option.displayPrice < minOption.displayPrice
+            ? option
+            : minOption;
+        }, filterResponse[0]);
         setSelectedOptionName(defaultOption.boxOptionName);
         setSelectedPrice(defaultOption.displayPrice);
         setChooseOption(defaultOption);
@@ -171,47 +174,49 @@ const ProductDetailPage = () => {
                 width: "100%",
               }}
             >
-              {box.boxOptions.map((option, index) => (
-                <button
-                  key={option.boxOptionId}
-                  style={{
-                    padding: "10px 16px",
-                    border:
-                      chooseOption &&
-                      chooseOption.boxOptionId === option.boxOptionId
-                        ? "2px solid black"
-                        : "1px solid #ccc",
-                    borderRadius: "8px",
-                    fontSize: "14px",
-                    cursor: "pointer",
-                    fontWeight:
-                      chooseOption &&
-                      chooseOption.boxOptionId === option.boxOptionId
-                        ? "bold"
-                        : "normal",
-                    backgroundColor:
-                      chooseOption &&
-                      chooseOption.boxOptionId === option.boxOptionId
-                        ? "#fff"
-                        : "#f0f0f0",
-                    color: "#333",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "8px",
-                    boxShadow:
-                      chooseOption &&
-                      chooseOption.boxOptionId === option.boxOptionId
-                        ? "0 0 5px rgba(0,0,0,0.3)"
-                        : "none",
-                    minWidth: "150px",
-                    minHeight: "40px",
-                    boxSizing: "border-box",
-                  }}
-                  onClick={() => handleOptionChange(option)}
-                >
-                  {option.boxOptionName}
-                </button>
-              ))}
+              {box.boxOptions
+                .filter((option) => option.isOnlineSerieBox === false)
+                .map((option, index) => (
+                  <button
+                    key={option.boxOptionId}
+                    style={{
+                      padding: "10px 16px",
+                      border:
+                        chooseOption &&
+                        chooseOption.boxOptionId === option.boxOptionId
+                          ? "2px solid black"
+                          : "1px solid #ccc",
+                      borderRadius: "8px",
+                      fontSize: "14px",
+                      cursor: "pointer",
+                      fontWeight:
+                        chooseOption &&
+                        chooseOption.boxOptionId === option.boxOptionId
+                          ? "bold"
+                          : "normal",
+                      backgroundColor:
+                        chooseOption &&
+                        chooseOption.boxOptionId === option.boxOptionId
+                          ? "#fff"
+                          : "#f0f0f0",
+                      color: "#333",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      boxShadow:
+                        chooseOption &&
+                        chooseOption.boxOptionId === option.boxOptionId
+                          ? "0 0 5px rgba(0,0,0,0.3)"
+                          : "none",
+                      minWidth: "150px",
+                      minHeight: "40px",
+                      boxSizing: "border-box",
+                    }}
+                    onClick={() => handleOptionChange(option)}
+                  >
+                    {option.boxOptionName}
+                  </button>
+                ))}
             </div>
           </div>
 

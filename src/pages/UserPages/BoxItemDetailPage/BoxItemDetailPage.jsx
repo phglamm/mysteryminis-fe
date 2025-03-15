@@ -162,7 +162,9 @@ export default function BoxItemDetailPage() {
         <div className="mt-10">
           {displayedVotes.length > 0 && (
             <>
-              <h2 className="text-2xl font-bold  mb-4">All Votes</h2>
+              <h2 className="text-2xl font-bold  mb-4">
+                All Votes ({boxItem.numOfVote} votes)
+              </h2>
               <div className="grid grid-cols-1 gap-4">
                 {displayedVotes.map((vote) => (
                   <div key={vote._id} className="p-4  rounded-lg shadow-md">
