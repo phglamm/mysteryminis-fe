@@ -154,6 +154,16 @@ const ProductDetailPage = () => {
     setSelectedImage(imageUrl);
   };
 
+  const calculateAverageRating = (votes) => {
+    if (!votes || votes.length === 0) return 0;
+    const totalRating = votes.reduce((acc, vote) => acc + vote.rating, 0);
+    return (totalRating / votes.length).toFixed(1);
+  };
+
+  // Tính rating trung bình và tổng số feedbacks
+  const averageRating = calculateAverageRating(displayedVotes);
+  const totalFeedbackCount = displayedVotes.length;
+
   return (
     <div className="product-detail-page container mx-auto mt-[10%]">
       {/* Chi tiết sản phẩm */}
@@ -176,6 +186,11 @@ const ProductDetailPage = () => {
           <h1 style={{ fontSize: "25px", fontWeight: "bold", color: "#333" }}>
             {box.boxName}
           </h1>
+          <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
+            <Rate value={Number(averageRating)} disabled />
+            <span>{averageRating} ({totalFeedbackCount} feedbacks)</span>
+          </div>
+
           <p style={{ fontSize: "20px", color: "#e60000", fontWeight: "bold" }}>
             {formatPrice(selectedPrice)}
           </p>
@@ -305,58 +320,54 @@ const ProductDetailPage = () => {
 
       {/* Tất cả đánh giá */}
       <div className="mt-10">
-      <h2 className="text-2xl font-bold mb-4">Feedback</h2>
-  {displayedVotes.length > 0 ? (
-    <>
-      <div className="grid grid-cols-1 gap-4">
-        {displayedVotes.slice(0, showAllComments ? undefined : 3).map((vote) => (
-          <div key={vote.feedbackId} className="p-4 rounded-lg shadow-md">
-            <p className="text-lg">
-              <strong>User:</strong> {vote.userName}
-            </p>
-            <p className="text-lg">
-              <strong>Rating:</strong> <Rate value={vote.rating} disabled />
-            </p>
-            <p className="text-lg">
-              <strong>Date:</strong>{" "}
-              {moment(vote.updatedAt).format("DD-MM-YYYY")}
-            </p>
-            {/* Hiển thị hình ảnh feedback */}
-            {vote.images?.map((image, index) => (
-              <img
-                key={index}
-                src={image.imageUrl}
-                alt={`Feedback image ${index + 1}`}
-                style={{ width: 50, height: 50, cursor: "pointer" }}
-                onClick={() => handleImageClick(image.fullImageUrl)}
-              />
-            ))}
-            {selectedImage && (
-              <div className="mt-2">
-                <img src={selectedImage} alt="Selected" style={{ width: "100%" }} />
+        <h2 className="text-2xl font-bold mb-4">Feedback</h2>
+        {displayedVotes.length > 0 ? (
+          <>
+            <div className="grid grid-cols-1 gap-4">
+              {displayedVotes.slice(0, showAllComments ? undefined : 3).map((vote) => (
+                <div key={vote.feedbackId} className="p-4 rounded-lg shadow-md">
+                  <p className="text-lg">
+                    <strong>User: </strong> {vote.userName}
+                  </p>
+                  <p className="text-lg">
+                    <strong>Content: </strong> 
+                    {vote.feedbackContent}
+                  </p>
+                  <p className="text-lg">
+                    <strong>Rating: </strong> <Rate value={vote.rating} disabled />
+                  </p>
+                  <p className="text-lg">
+                    <strong>Date: </strong>{" "}
+                    {moment(vote.updatedAt).format("DD-MM-YYYY")}
+                  </p>
+                  {/* Hiển thị hình ảnh từ imageUrl trong feedback */}
+                  {vote.imageUrl && (
+                    <img
+                      src={vote.imageUrl}
+                      alt="Feedback image"
+                      style={{ width: "10%", height: "auto", marginTop: "10px" }}
+                    />
+                  )}
+                </div>
+              ))}
+            </div>
+            {displayedVotes.length > 3 && (
+              <div className="mt-4 text-center">
+                <Button
+                  className="!bg-blue-300 !text-white !font-bold !rounded-lg"
+                  onClick={() => setShowAllComments(!showAllComments)}
+                >
+                  {showAllComments ? "Show Less" : "Show More"}
+                </Button>
               </div>
             )}
+          </>
+        ) : (
+          <div className="text-lg text-center text-gray-500">
+            No feedback yet.
           </div>
-        ))}
+        )}
       </div>
-      {displayedVotes.length > 3 && (
-        <div className="mt-4 text-center">
-          <Button
-            className="!bg-blue-300 !text-white !font-bold !rounded-lg"
-            onClick={() => setShowAllComments(!showAllComments)}
-          >
-            {showAllComments ? "Show Less" : "Show More"}
-          </Button>
-        </div>
-      )}
-    </>
-  ) : (
-    <div className="text-lg text-center text-gray-500">
-      No feedback yet.
-    </div>
-  )}
-</div>
-
 
       {/* Danh sách sản phẩm liên quan */}
       {relevantBox.length > 0 && (
