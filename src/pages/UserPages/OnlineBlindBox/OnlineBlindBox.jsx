@@ -50,17 +50,21 @@ const OnlineBlindBox = () => {
                 {blindbox.boxItemResponseDtos
                   ?.slice(0, 3)
                   .map((item, index) => (
-                    <img
-                      key={index}
-                      src={item.imageUrl}
-                      alt={item.boxItemName}
-                      className="w-[80%] bg-red-200 h-[25%]"
-                    />
+                    <div key={index}>
+                      <div>{item.boxItemName}</div>
+                      <img
+                        
+                        src={item.imageUrl}
+                        alt={item.boxItemName}
+                        className="w-[80%] rounded-3xl bg-red-200 h-[25%]"
+                      />
+                    </div>
+                    
                   ))}
               </div>
 
               {/* Center Section */}
-              <div className="h-fit justify-between flex flex-col pt-[5%] w-[40%] relative z-40">
+              <div className="h-fit justify-between flex flex-col pt-[4%] w-[40%] relative z-40">
                 <div>
                   <div className="text-4xl z-40 font-bold">
                     {blindbox.boxOption.boxOptionName}
