@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Collapse, Row, Col, Spin } from "antd";
+import { Button, Collapse, Row, Col, Spin, Rate } from "antd";
 import ReactImageGallery from "react-image-gallery";
 import CardProduct from "../../../components/CardProduct/CardProduct"; // Import CardProduct
 import "react-image-gallery/styles/css/image-gallery.css";
@@ -15,6 +15,7 @@ import {
   selectFavoriteItems,
 } from "../../../Redux/features/favoriteSlice";
 import toast from "react-hot-toast";
+import moment from "moment";
 const { Panel } = Collapse;
 
 const ProductDetailPage = () => {
@@ -26,6 +27,9 @@ const ProductDetailPage = () => {
 
   const [box, setBox] = useState();
   const [relevantBox, setRelevantBox] = useState([]);
+  const [displayedVotes, setDisplayedVotes] = useState([]);
+  const [showAllComments, setShowAllComments] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -75,6 +79,18 @@ const ProductDetailPage = () => {
       fetchRelevantBox();
     }
   }, [box]);
+
+  useEffect(() => {
+    const fetchFeedback = async () => {
+      try {
+        const response = await api.get(`/Feedback/boxes/${id}/feedback`);
+        setDisplayedVotes(response.data);
+      } catch (error) {
+        console.error("Failed to fetch feedback:", error);
+      }
+    };
+    fetchFeedback();
+  }, [id]);
 
   useEffect(() => {
     if (box) {
@@ -133,6 +149,11 @@ const ProductDetailPage = () => {
     thumbnail: image.boxImageUrl,
   }));
 
+
+  const handleImageClick = (imageUrl) => {
+    setSelectedImage(imageUrl);
+  };
+
   return (
     <div className="product-detail-page container mx-auto mt-[10%]">
       {/* Chi tiết sản phẩm */}
@@ -144,6 +165,7 @@ const ProductDetailPage = () => {
             flexDirection: "column",
             alignItems: "center",
             width: "100%",
+            height: "100%",
           }}
         >
           <ReactImageGallery items={boxImages} showNav={false} />
@@ -280,6 +302,61 @@ const ProductDetailPage = () => {
           </Collapse>
         </div>
       </div>
+
+      {/* Tất cả đánh giá */}
+      <div className="mt-10">
+      <h2 className="text-2xl font-bold mb-4">Feedback</h2>
+  {displayedVotes.length > 0 ? (
+    <>
+      <div className="grid grid-cols-1 gap-4">
+        {displayedVotes.slice(0, showAllComments ? undefined : 3).map((vote) => (
+          <div key={vote.feedbackId} className="p-4 rounded-lg shadow-md">
+            <p className="text-lg">
+              <strong>User:</strong> {vote.userName}
+            </p>
+            <p className="text-lg">
+              <strong>Rating:</strong> <Rate value={vote.rating} disabled />
+            </p>
+            <p className="text-lg">
+              <strong>Date:</strong>{" "}
+              {moment(vote.updatedAt).format("DD-MM-YYYY")}
+            </p>
+            {/* Hiển thị hình ảnh feedback */}
+            {vote.images?.map((image, index) => (
+              <img
+                key={index}
+                src={image.imageUrl}
+                alt={`Feedback image ${index + 1}`}
+                style={{ width: 50, height: 50, cursor: "pointer" }}
+                onClick={() => handleImageClick(image.fullImageUrl)}
+              />
+            ))}
+            {selectedImage && (
+              <div className="mt-2">
+                <img src={selectedImage} alt="Selected" style={{ width: "100%" }} />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+      {displayedVotes.length > 3 && (
+        <div className="mt-4 text-center">
+          <Button
+            className="!bg-blue-300 !text-white !font-bold !rounded-lg"
+            onClick={() => setShowAllComments(!showAllComments)}
+          >
+            {showAllComments ? "Show Less" : "Show More"}
+          </Button>
+        </div>
+      )}
+    </>
+  ) : (
+    <div className="text-lg text-center text-gray-500">
+      No feedback yet.
+    </div>
+  )}
+</div>
+
 
       {/* Danh sách sản phẩm liên quan */}
       {relevantBox.length > 0 && (
