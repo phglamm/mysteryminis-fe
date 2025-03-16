@@ -7,7 +7,7 @@ export const route = {
   userProfile: "/userProfile",
   favorite: "/favorite",
   blogDetail: "/blog",
-
+  confirmEmail: "/confirm-email",
 
   admin: "/admin",
   dashboard: "dashboard",
@@ -20,7 +20,7 @@ export const route = {
   brandManagement: "brand-management",
   boxImageManagement: "box-image-management",
   boxOptionManagement: "box-option-management",
-  voucherManagement : "voucher-management",
+  voucherManagement: "voucher-management",
 
   staff: "/staff",
   feedbackManagement: "feedback-management",
