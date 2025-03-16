@@ -1,5 +1,15 @@
 import { useState, useEffect } from "react";
-import { Table, Button, Space, Tabs, Modal, Upload, Image, Form } from "antd";
+import {
+  Table,
+  Button,
+  Space,
+  Tabs,
+  Modal,
+  Upload,
+  Image,
+  Form,
+  Input,
+} from "antd";
 import api from "../../../config/api";
 import dayjs from "dayjs"; // Import thư viện format ngày giờ
 import toast from "react-hot-toast";
@@ -18,6 +28,30 @@ const ManageOrder = () => {
   const [selectedItem, setSelectedItem] = useState(null);
   const [formUpload] = useForm();
 
+  const [isModalRefund, setIsModalRefund] = useState(false);
+  const [formRefund] = useForm();
+
+  const handleRefund = async (values) => {
+    console.log(values);
+    try {
+      const response = await api.put(
+        `order-item/${selectedItem.orderItemId}/refund`,
+        values
+      );
+      console.log(response.data);
+      fetchOrders();
+      toast.success("Refund success");
+      setIsModalRefund(false);
+    } catch (error) {
+      console.error("Error refunding:", error);
+      toast.error(error.response.data);
+    }
+  };
+
+  const showModalRefund = (item) => {
+    setIsModalRefund(true);
+    setSelectedItem(item);
+  };
   const showModalUpload = (item) => {
     setIsModalUpload(true);
     setSelectedItem(item);
@@ -321,8 +355,23 @@ const ManageOrder = () => {
                         </>
                       )}
                     </div>
-                    <div>
+                    <div className="flex flex-col justify-end items-center">
                       <p>{item.orderPrice.toLocaleString() + " đ"}</p>
+
+                      <>
+                        {item.refundStatus === "Request" ? (
+                          <div>
+                            <Button onClick={() => showModalRefund(item)}>
+                              Input number of refund
+                            </Button>
+                          </div>
+                        ) : (
+                          <></>
+                        )}
+                        {item.refundStatus === "Resolved" && (
+                          <p>Refund: {item.numOfRefund} quantity</p>
+                        )}
+                      </>
                     </div>
                     {/* {item.openRequestNumber > 0 ? (
                       item.orderStatusCheckCardImage?.length === 0 ? (
@@ -371,6 +420,10 @@ const ManageOrder = () => {
               ))}
             </div>
             <div className="flex flex-col justify-end items-end">
+              <p>
+                <strong>Subtotal:</strong>{" "}
+                {selectedOrder.subTotal?.toLocaleString()} đ
+              </p>
               <p>
                 <strong>Shipping:</strong>{" "}
                 {selectedOrder.shippingFee.toLocaleString()} đ
@@ -437,6 +490,30 @@ const ManageOrder = () => {
             </Form>
           </div>
         )}
+      </Modal>
+
+      <Modal
+        visible={isModalRefund}
+        onCancel={() => {
+          formRefund.resetFields();
+          setIsModalRefund(false);
+        }}
+        onOk={formRefund.submit}
+      >
+        <Form layout="vertical" form={formRefund} onFinish={handleRefund}>
+          <Form.Item
+            name="numOfRefund"
+            label="Number of refund"
+            rules={[
+              {
+                required: true,
+                message: "Please input number of refund!",
+              },
+            ]}
+          >
+            <Input type="number" />
+          </Form.Item>
+        </Form>
       </Modal>
     </div>
   );

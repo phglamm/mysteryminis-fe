@@ -7,8 +7,9 @@ import OrderSteps from "../OrderStepper/OrderStepper";
 
 import toast from "react-hot-toast";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Image } from "antd";
-
+import { Button, Image } from "antd";
+import { useSelector } from "react-redux";
+import { selectUser } from "./../../Redux/features/counterSlice";
 
 const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [ViewDetails, setViewDetailsState] = useState(false);
@@ -18,10 +19,11 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [visible, setVisible] = useState(false);
   const [checkCard, setCheckCard] = useState(null);
   console.log(checkCard);
+  const user = useSelector(selectUser);
   const fetchOrders = async () => {
     try {
-      // const response = await api.get(`Order?userId=${user.userId}`);
-      const response = await api.get('Order');
+      const response = await api.get(`Order?userId=${user.userId}`);
+      // const response = await api.get("Order");
       setOrders(response.data);
       console.log(response.data);
     } catch (error) {
@@ -83,6 +85,19 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
     })
     .sort((b, a) => new Date(a.orderCreatedAt) - new Date(b.orderCreatedAt));
 
+  const handleRefund = async (item) => {
+    try {
+      const response = await api.put(
+        `order-item/${item.orderItemId}/refund-request`
+      );
+      console.log(response.data);
+      fetchOrders();
+      setViewDetailsState(false);
+      toast.success("Your Order has been refunded request");
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
     <motion.div
       className={`overflow-y-scroll flex flex-col mb-[5%]  `}
@@ -224,7 +239,12 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                     <div className="flex gap-1 w-2/4">
                       <div className="w-1/4 bg-pink-200">
                         <img
-                          src={item.imageUrl}
+                          src={
+                            item.userRolledItemForManageOrder
+                              ? item.userRolledItemForManageOrder
+                                  .boxItemImageUrl
+                              : item.imageUrl
+                          }
                           alt={item.boxName}
                           className="w-full h-full object-cover"
                         />
@@ -239,6 +259,13 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                         <span className="text-sm text-gray-400">
                           Quanity: {item.quantity}
                         </span>
+                        {item.userRolledItemForManageOrder != null ? (
+                          <span className="text-sm text-gray-400">
+                            <p>From Online Lucky Box</p>
+                          </span>
+                        ) : (
+                          <></>
+                        )}
                       </div>
                     </div>
 
@@ -291,7 +318,40 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                     </div>
                     <div className="flex justify-center items-center w-1/4">
                       {ViewDetails ? (
-                        <div>{item.orderPrice.toLocaleString() + " đ"}</div>
+                        <div className="flex flex-col items-center">
+                          <div>{item.orderPrice.toLocaleString() + " đ"}</div>
+
+                          {order.currentStatusId === 5 && (
+                            <>
+                              {item.refundStatus === "Available" ? (
+                                <>
+                                  <div>
+                                    <Button onClick={() => handleRefund(item)}>
+                                      Request Refund
+                                    </Button>
+                                  </div>
+                                </>
+                              ) : (
+                                <></>
+                              )}
+
+                              {item.refundStatus === "Request" ? (
+                                <div>
+                                  <Button disabled>Requested Refund</Button>
+                                </div>
+                              ) : (
+                                <></>
+                              )}
+
+                              {item.refundStatus === "Resolved" && (
+                                <p>
+                                  Your Item has been refunded:{" "}
+                                  {item.numOfRefund} quantity
+                                </p>
+                              )}
+                            </>
+                          )}
+                        </div>
                       ) : (
                         <motion.button
                           className="border-1 px-3 py-1 w-[80%] rounded-md font-bold"
