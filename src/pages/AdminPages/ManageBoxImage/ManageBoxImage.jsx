@@ -331,8 +331,8 @@ export default function ManageBoxImage() {
             >
               {box.map((box) => (
                 <Select.Option
-                  key={box._id}
-                  value={box._id}
+                  key={box.boxId}
+                  value={box.boxId}
                   showSearch
                   filterOption={(input, option) =>
                     option.children.toLowerCase().includes(input.toLowerCase())

@@ -167,7 +167,10 @@ export default function BoxItemDetailPage() {
               </h2>
               <div className="grid grid-cols-1 gap-4">
                 {displayedVotes.map((vote) => (
-                  <div key={vote._id} className="p-4  rounded-lg shadow-md">
+                  <div
+                    key={vote.userVotedBoxItemId}
+                    className="p-4  rounded-lg shadow-md"
+                  >
                     <p className="text-lg">
                       <strong>User:</strong> {vote.username}
                     </p>
