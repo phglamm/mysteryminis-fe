@@ -259,6 +259,7 @@ export default function ManageBoxOption() {
       title: "First Price",
       dataIndex: "basePrice",
       key: "basePrice",
+      render: (value) => value.toLocaleString(),
     },
     {
       title: "Percent Increased per Turn",
@@ -295,10 +296,9 @@ export default function ManageBoxOption() {
       render: (value) => (value ? "Published" : "Unpublished"),
     },
     {
-      title: "In Box",
-      dataIndex: "isSecretOpen",
-      key: "isSecretOpen",
-      render: (value) => (value ? "Opened" : "Not Yet"),
+      title: "Stocks",
+      dataIndex: ["boxOption", "boxOptionStock"],
+      key: ["boxOption", "boxOptionStock"],
     },
     {
       title: "Action",

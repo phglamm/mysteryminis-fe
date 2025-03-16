@@ -192,14 +192,7 @@ export default function ManageBox() {
               }
             >
               {brand.map((brand) => (
-                <Select.Option
-                  key={brand._id}
-                  value={brand._id}
-                  showSearch
-                  filterOption={(input, option) =>
-                    option.children.toLowerCase().includes(input.toLowerCase())
-                  }
-                >
+                <Select.Option key={brand.brandId} value={brand.brandId}>
                   {brand.brandName}
                 </Select.Option>
               ))}

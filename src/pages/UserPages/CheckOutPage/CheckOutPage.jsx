@@ -81,8 +81,9 @@ const CheckOutPage = () => {
 
   const handleCheckout = async (values) => {
     values.userId = user.userId;
-    values.totalPrice = provisional; // Tổng tiền
+    values.subTotal = provisional;
     values.shippingFee = shippingFee;
+    values.totalPrice = provisional + shippingFee; // Tổng tiền
     values.voucherId = 1;
     values.orderItemRequestDto = cartItems.map((item) => ({
       quantity: item.quantity,

@@ -24,9 +24,12 @@ const CardProduct = ({ product }) => {
     (option) => option.boxOptionStock > 0
   );
 
-  const displayPrice = product.boxOptions.reduce((minPrice, option) => {
+  const filterBoxOption = product.boxOptions.filter(
+    (option) => option.isOnlineSerieBox === false
+  );
+  const displayPrice = filterBoxOption.reduce((minPrice, option) => {
     return option.displayPrice < minPrice ? option.displayPrice : minPrice;
-  }, product.boxOptions[0]?.displayPrice);
+  }, filterBoxOption[0]?.displayPrice);
 
   const formatPrice = (price) => {
     return price?.toLocaleString("vi-VN", {
