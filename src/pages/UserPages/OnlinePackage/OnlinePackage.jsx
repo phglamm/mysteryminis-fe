@@ -10,9 +10,9 @@ const OnlinePackage = () => {
     const fetchPackages = async () => {
         try {
             const response = await api.get("online-serie-box");
-            setPackage(response.data);
-            console.log(response.data);
-        } catch (error) {
+            const publishedPackages = response.data.filter((box) => box.isPublished === true); // Filter for isPublish === true
+            setPackage(publishedPackages);
+        } catch (error) {   
             console.error(error);
         }
     };
@@ -34,7 +34,7 @@ const OnlinePackage = () => {
     }, {});
 
     return (
-        <div className="flex flex-col pt-[10%] items-center justify-center">
+        <div className="flex h-fit min-h-screen flex-col pt-[10%] items-center justify-center">
             {Object.keys(groupedByBrand).map((brand) => (
                 <div key={brand} className="mb-6 w-full text-center px-[20%]">
                     <h2 className="text-2xl font-bold mb-4 border-b-1 border-gray-600">{brand}</h2>

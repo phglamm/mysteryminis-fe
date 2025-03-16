@@ -38,19 +38,25 @@ const OnlineBlindBox = () => {
         blindbox.boxOption && (
           <div className="flex bg-black flex-col h-full justify-center items-center w-full">
             <div className="flex justify-center h-full w-full relative">
-              <div className="w-[50%] flex justify-center items-center h-[100%] absolute z-10 ">
+              <div className="w-[50%] flex justify-center items-center h-[100%] absolute z-10">
                 <img src={Logo} alt="Logo" className="w-[50%] h-fit" />
               </div>
               {/* Left Section */}
-              <div className="h-full flex gap-5 flex-col justify-center items-center w-[30%] relative z-40">
-                {blindbox.boxItemResponseDtos.slice(0,3).map((item, index) => (
-                  <img
-                    key={index}
-                    src={item.imageUrl}
-                    alt={item.boxItemName}
-                    className="w-[80%] bg-red-200 h-[25%] "
-                  />
-                ))}
+              <div
+                className={`h-full flex gap-5 flex-col justify-center items-center w-[30%] relative ${
+                  showVideo ? "z-10" : "z-40"
+                }`}
+              >
+                {blindbox.boxItemResponseDtos
+                  ?.slice(0, 3)
+                  .map((item, index) => (
+                    <img
+                      key={index}
+                      src={item.imageUrl}
+                      alt={item.boxItemName}
+                      className="w-[80%] bg-red-200 h-[25%]"
+                    />
+                  ))}
               </div>
 
               {/* Center Section */}
@@ -60,7 +66,7 @@ const OnlineBlindBox = () => {
                     {blindbox.boxOption.boxOptionName}
                   </div>
                   <div className="z-40">
-                    {blindbox.brandDtoResponse.brandName}
+                    {blindbox.brandDtoResponse?.brandName}
                   </div>
                 </div>
               </div>
@@ -75,7 +81,7 @@ const OnlineBlindBox = () => {
               <div className="h-full w-full absolute z-30 flex flex-col items-center">
                 {/* BoxModel - Background Layer */}
                 {blindbox.onlineSerieBoxId && (
-                  <div className="absolute top-0 left-0 w-full h-full z-10">
+                  <div className="absolute top-0 left-0 w-full h-full z-20">
                     <BoxModel
                       plays={plays}
                       setPlays={setPlays}
@@ -89,13 +95,17 @@ const OnlineBlindBox = () => {
               </div>
 
               {/* Right Section */}
-              <div className="h-full flex gap-5 flex-col justify-center items-center w-[30%] relative z-40">
-                {blindbox.boxItemResponseDtos.slice(-3).map((item, index) => (
+              <div
+                className={`h-full flex gap-5 flex-col justify-center items-center w-[30%] relative ${
+                  showVideo ? "z-10" : "z-40"
+                }`}
+              >
+                {blindbox.boxItemResponseDtos?.slice(3,6).map((item, index) => (
                   <img
                     key={index}
                     src={item.imageUrl}
                     alt={item.boxItemName}
-                    className="w-[80%] bg-red-200 h-[25%] "
+                    className="w-[80%] bg-red-200 h-[25%]"
                   />
                 ))}
               </div>

@@ -8,7 +8,7 @@ import { selectUser } from "../../Redux/features/counterSlice";
 import ShowRewardModal from "../ShowRewardModal/ShowRewardModal";
 import { TextureLoader } from "three";
 import api from "../../config/api";
-import bg360 from "../../assets/images/360bg.jpg";
+import bg360 from "../../assets/images/360pic2.jpg";
 import secretRun from "../../assets/images/secretVid.mp4";
 import commontRun from "../../assets/images/commonVid.mp4";
 
