@@ -180,7 +180,7 @@ const ManageOrder = () => {
   const filteredData = orders
     .filter((order) => {
       if (activeTab === "All") return true;
-      if (activeTab === "Refund") return order.refundRequest;
+      if (activeTab === "Refund") return order.refundRequest === true;
       if (activeTab === "Cancelled") return order.currentStatusId === 4;
       if (activeTab === "Arrived") return order.currentStatusId === 5;
       if (activeTab === "Processing") return order.openRequest === true;

@@ -184,7 +184,13 @@ export default function ManageBox() {
             label="Brand"
             rules={[{ required: true, message: "Please select Brand" }]}
           >
-            <Select placeholder="Select Brand">
+            <Select
+              placeholder="Select Brand"
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().includes(input.toLowerCase())
+              }
+            >
               {brand.map((brand) => (
                 <Select.Option key={brand.brandId} value={brand.brandId}>
                   {brand.brandName}

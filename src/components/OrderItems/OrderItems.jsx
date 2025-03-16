@@ -22,8 +22,8 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const user = useSelector(selectUser);
   const fetchOrders = async () => {
     try {
-      const response = await api.get(`Order?userId=${user.userId}`);
-      // const response = await api.get("Order");
+      // const response = await api.get(`Order?userId=${user.userId}`);
+      const response = await api.get("Order");
       setOrders(response.data);
       console.log(response.data);
     } catch (error) {
@@ -384,8 +384,12 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
 
               <div className=" gap-4 px-8 p-2 bg-white h-fit border-dashed border-t-1">
                 <div className="flex flex-col text-end text-2xl w-full gap-4 py-4">
+                  <div>Subtotal: {order.subTotal.toLocaleString() + " đ"}</div>
                   <div>
-                    Order Total: {order.totalPrice.toLocaleString() + " đ"}
+                    Shipping Fee: {order.shippingFee.toLocaleString() + " đ"}
+                  </div>
+                  <div>
+                    Total Order: {order.totalPrice.toLocaleString() + " đ"}
                   </div>
                   <div className="text-sm text-gray-500">
                     Payment Method: {order.paymentMethod}{" "}

@@ -105,6 +105,7 @@ export default function ManageBoxImage() {
   };
 
   const handleChange = async ({ fileList: newFileList }) => {
+    console.log("uploading...");
     const updatedFileList = await Promise.all(
       newFileList.map(async (file) => {
         if (file.status !== "done") {
