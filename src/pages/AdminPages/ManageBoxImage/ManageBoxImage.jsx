@@ -5,30 +5,31 @@ import uploadFile from "./../../../utils/UploadImage";
 import { PlusOutlined } from "@ant-design/icons";
 import api from "./../../../config/api";
 import toast from "react-hot-toast";
+import { addBoxImage, deleteBoxImage, getAllBoxImages, updateBoxImage } from "../../../services/AdminServices/ManageBoxImageServices.js/ManageBoxImageServices";
+import { getAllBoxes } from "../../../services/AdminServices/ManageBoxServices/ManageBoxServices";
 
 export default function ManageBoxImage() {
   const [formAdd] = Form.useForm();
   const [formUpdate] = Form.useForm();
-  const [boxImage, setBoxImage] = useState([]);
-  const [box, setBox] = useState([]);
-
-  const fetchBoxImage = async () => {
-    const response = await api.get("BoxImage");
-    console.log(response.data);
-    const sortReponse = response.data.sort(
-      (a, b) => b.boxImageId - a.boxImageId
-    );
-    setBoxImage(sortReponse);
-  };
+  const [boxImage, setBoxImages] = useState([]);
+  const [box, setBoxes] = useState([]);
+  const [fileList, setFileList] = useState([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+  const [selectedBoxImage, setSelectedBoxImage] = useState(null);
   useEffect(() => {
-    const fetchBox = async () => {
-      const response = await api.get("Box");
-      console.log(response.data);
-      setBox(response.data);
+    const fetchData = async () => {
+      try {
+        const fetchedBoxImages = await getAllBoxImages();
+        const fetchedBoxes = await getAllBoxes();
+        setBoxImages(fetchedBoxImages);
+        setBoxes(fetchedBoxes);
+      } catch (error) {
+        toast.error("Failed to load data");
+      }
     };
-
-    fetchBoxImage();
-    fetchBox();
+    fetchData();
   }, []);
 
   const columnBoxImage = [
@@ -93,9 +94,6 @@ export default function ManageBoxImage() {
     });
   };
 
-  const [fileList, setFileList] = useState([]);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -127,28 +125,19 @@ export default function ManageBoxImage() {
   const [isModalAddOpen, setIsModalAddOpen] = useState(false);
 
   const handleAdd = async (values) => {
-    // Validate form inputs
-    console.log(values);
-    const imgURLs = fileList.map((file) => file.url);
-    values.boxImageUrl = imgURLs[0];
-    console.log(values.boxImageUrl);
     try {
-      const response = await api.post(`BoxImage`, values);
-      console.log("Add response:", response.data);
-      fetchBoxImage();
+      const imgURLs = fileList.map((file) => file.url);
+      values.boxImageUrl = imgURLs[0];
+      await addBoxImage(values);
+      toast.success("Box image added successfully");
       setIsModalAddOpen(false);
       setFileList([]);
       formAdd.resetFields();
-      toast.success("Add Box successfully");
+      setBoxImages(await getAllBoxImages());
     } catch (error) {
-      setFileList([]);
-      toast.error("Failed to add BoxImage");
-      console.error("Failed to add BoxImage:", error.response?.data || error);
+      toast.error("Failed to add box image");
     }
   };
-
-  const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
-  const [selectedBoxImage, setSelectedBoxImage] = useState(null);
 
   const handleModalUpdate = (record) => {
     console.log(record);
@@ -161,46 +150,29 @@ export default function ManageBoxImage() {
   };
 
   const handleUpdate = async (values) => {
-    console.log(selectedBoxImage);
-    console.log(fileList);
-    console.log(selectedBoxImage.boxImageUrl);
-    if (fileList && fileList.length > 0) {
-      const imagURLUpdate = fileList.map((file) => file.url);
-      values.boxImageUrl = imagURLUpdate[0];
-    } else {
-      values.boxImageUrl = selectedBoxImage.boxImageUrl;
-    }
-    console.log(values);
     try {
-      const response = await api.put(
-        `BoxImage/${selectedBoxImage.boxImageId}`,
-        values
-      ); // Call API to update
-      console.log(response.data);
-      toast.success("Updated successfully");
-      fetchBoxImage();
-      setIsModalUpdateOpen(false); // Close modal
-      setSelectedBoxImage(null); // Reset selected brand
+      values.boxImageUrl = fileList.length > 0 ? fileList[0].url : selectedBoxImage.boxImageUrl;
+      await updateBoxImage(selectedBoxImage.boxImageId, values);
+      toast.success("Box image updated successfully");
+      setIsModalUpdateOpen(false);
+      setSelectedBoxImage(null);
       setFileList([]);
+      setBoxImages(await getAllBoxImages());
     } catch (error) {
-      console.error(
-        "Failed to update Box's Image:",
-        error.response?.data || error
-      );
-      toast.error("Failed to update Box's Image");
+      toast.error("Failed to update box image");
     }
   };
 
-  const handleDelete = (values) => {
+  const handleDelete = (boxImage) => {
     Modal.confirm({
-      title: "Are you sure you want to delete this Box's Image?",
+      title: "Are you sure you want to delete this box image?",
       onOk: async () => {
         try {
-          await api.delete(`BoxImage/${values.boxImageId}`);
-          toast.success("Box's Image deleted successfully");
-          fetchBoxImage();
+          await deleteBoxImage(boxImage.boxImageId);
+          toast.success("Box image deleted successfully");
+          setBoxImages(await getAllBoxImages());
         } catch (error) {
-          toast.error("Failed to delete Box's Image");
+          toast.error("Failed to delete box image");
         }
       },
     });

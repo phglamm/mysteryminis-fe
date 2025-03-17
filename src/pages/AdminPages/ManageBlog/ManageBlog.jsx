@@ -1,11 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { Button, Form, Table, Modal, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
-import api from "../../../config/api"; // Đảm bảo đúng đường dẫn đến api.jsx
 import toast from "react-hot-toast";
+import { addBlog, deleteBlog, getAllBlogs, updateBlog } from "../../../services/AdminServices/ManageBlogServices/ManageBlogServices";
 
 export default function ManageBlog() {
-  const [activeTab, setActiveTab] = useState("1");
   const [formAdd] = useForm();
   const [formUpdate] = useForm();
 
@@ -15,38 +15,30 @@ export default function ManageBlog() {
   const [selectedBlog, setSelectedBlog] = useState(null);
 
   // Fetch all blogs
-  const fetchBlogs = async () => {
-    try {
-      const response = await api.get("BlogPost");
-      setBlogs(response.data);
-    } catch (error) {
-      console.error("Failed to fetch blogs:", error);
-    }
-  };
-
   useEffect(() => {
-    fetchBlogs(); // Call the fetchBlogs function when the component mounts
+    const fetchBlogs = async () => {
+      try {
+        const data = await getAllBlogs();
+        setBlogs(data);
+      } catch (error) {
+        console.error("Failed to fetch blogs:", error);
+      }
+    };
+    fetchBlogs();
   }, []);
 
   // Handle adding new blog
   const handleAdd = async (values) => {
     try {
-      // Kiểm tra lại API endpoint
-      const response = await api.post("BlogPost", values);
-      setBlogs([...blogs, response.data]);
+      const newBlog = await addBlog(values);
+      setBlogs([...blogs, newBlog]);
       toast.success("Blog added successfully");
       setIsModalAddOpen(false);
       formAdd.resetFields();
     } catch (error) {
-      console.error("Failed to add blog:", error);
       toast.error("Failed to add blog");
-      // Hiển thị lỗi chi tiết từ API nếu có
-      if (error.response) {
-        console.error("API error details:", error.response.data);
-      }
     }
   };
-  
 
   // Handle updating a blog
   const handleModalUpdate = (blog) => {
@@ -57,7 +49,7 @@ export default function ManageBlog() {
 
   const handleUpdate = async (values) => {
     try {
-      const response = await api.put(`BlogPost/${selectedBlog.blogPostId}`, values);
+      await updateBlog(selectedBlog.blogPostId, values);
       setBlogs(
         blogs.map((blog) =>
           blog.blogPostId === selectedBlog.blogPostId ? { ...blog, ...values } : blog
@@ -67,7 +59,6 @@ export default function ManageBlog() {
       setIsModalUpdateOpen(false);
       setSelectedBlog(null);
     } catch (error) {
-      console.error("Failed to update blog:", error);
       toast.error("Failed to update blog");
     }
   };
@@ -78,7 +69,7 @@ export default function ManageBlog() {
       title: "Are you sure you want to delete this blog?",
       onOk: async () => {
         try {
-          await api.delete(`BlogPost/${blogId}`);
+          await deleteBlog(blogId);
           setBlogs(blogs.filter((blog) => blog.blogPostId !== blogId));
           toast.success("Blog deleted successfully");
         } catch (error) {

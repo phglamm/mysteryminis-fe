@@ -1,27 +1,29 @@
 import { Button, Form, Image, Input, Modal, Select, Table, Upload } from "antd";
 import { useEffect, useState } from "react";
-import api from "../../../config/api";
 import toast from "react-hot-toast";
 import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/UploadImage";
+import { addBoxItem, deleteBoxItem, fetchBoxItems, updateBoxItem } from "../../../services/AdminServices/ManageBoxItemServices/ManageBoxItemServices";
+import { getAllBoxes } from "../../../services/AdminServices/ManageBoxServices/ManageBoxServices";
 
 export default function ManageBoxItem() {
   const [formAdd] = Form.useForm();
   const [formUpdate] = Form.useForm();
   const [boxItem, setBoxItem] = useState([]);
   const [box, setBox] = useState([]);
+  const [fileList, setFileList] = useState([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewItem, setPreviewItem] = useState("");
 
   const fetchBoxItem = async () => {
-    const response = await api.get("BoxItem");
-    console.log(response.data);
-    const sortReponse = response.data.sort((a, b) => b.boxItemId - a.boxItemId);
-    setBoxItem(sortReponse);
+    const data = await fetchBoxItems();
+    setBoxItem(data);
   };
+  
   useEffect(() => {
     const fetchBox = async () => {
-      const response = await api.get("Box");
-      console.log(response.data);
-      setBox(response.data);
+      const data = await getAllBoxes();
+      setBox(data);
     };
     fetchBoxItem();
     fetchBox();
@@ -105,9 +107,7 @@ export default function ManageBoxItem() {
     });
   };
 
-  const [fileList, setFileList] = useState([]);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewItem, setPreviewItem] = useState("");
+
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj);
@@ -138,24 +138,18 @@ export default function ManageBoxItem() {
   const [isModalAddOpen, setIsModalAddOpen] = useState(false);
 
   const handleAdd = async (values) => {
-    console.log(values);
-    const imgURLs = fileList.map((file) => file.url);
-    values.imageUrl = imgURLs[0];
-    console.log(values.imageUrl);
-    try {
-      const response = await api.post(`BoxItem`, values);
-      console.log("Add response:", response.data);
-      fetchBoxItem();
-      setIsModalAddOpen(false);
-      setFileList([]);
-      formAdd.resetFields();
-      toast.success("Add Box successfully");
-    } catch (error) {
-      setFileList([]);
-      toast.error("Failed to add BoxItem");
-      console.error("Failed to add BoxItem:", error.response?.data || error);
-    }
-  };
+  try {
+    values.imageUrl = fileList.map((file) => file.url)[0];
+    await addBoxItem(values);
+    fetchBoxItem();
+    setIsModalAddOpen(false);
+    setFileList([]);
+    formAdd.resetFields();
+    toast.success("Box item added successfully");
+  } catch {
+    toast.error("Failed to add BoxItem");
+  }
+};
 
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
   const [selectedBoxItem, setSelectedBoxItem] = useState(null);
@@ -171,50 +165,33 @@ export default function ManageBoxItem() {
   };
 
   const handleUpdate = async (values) => {
-    console.log(selectedBoxItem);
-    console.log(fileList);
-    console.log(selectedBoxItem.imageUrl);
-    if (fileList && fileList.length > 0) {
-      const imagURLUpdate = fileList.map((file) => file.url);
-      values.imageUrl = imagURLUpdate[0];
-    } else {
-      values.imageUrl = selectedBoxItem.imageUrl;
-    }
-    console.log(values);
     try {
-      const response = await api.put(
-        `BoxItem/${selectedBoxItem.boxItemId}`,
-        values
-      ); // Call API to update
-      console.log(response.data);
-      toast.success("Updated successfully");
+      values.imageUrl = fileList.length ? fileList[0].url : selectedBoxItem.imageUrl;
+      await updateBoxItem(selectedBoxItem.boxItemId, values);
       fetchBoxItem();
-      setIsModalUpdateOpen(false); // Close modal
-      setSelectedBoxItem(null); // Reset selected brand
+      setIsModalUpdateOpen(false);
       setFileList([]);
-    } catch (error) {
-      console.error(
-        "Failed to update Box's Item:",
-        error.response?.data || error
-      );
-      toast.error("Failed to update Box's Item");
+      toast.success("Box item updated successfully");
+    } catch {
+      toast.error("Failed to update BoxItem");
     }
   };
 
-  const handleDelete = (values) => {
+  const handleDelete = async (record) => {
     Modal.confirm({
       title: "Are you sure you want to delete this Box's Item?",
       onOk: async () => {
         try {
-          await api.delete(`BoxItem/${values.boxItemId}`);
-          toast.success("Box's Item deleted successfully");
+          await deleteBoxItem(record.boxItemId);
           fetchBoxItem();
-        } catch (error) {
-          toast.error("Failed to delete Box's Item");
+          toast.success("Box item deleted successfully");
+        } catch {
+          toast.error("Failed to delete BoxItem");
         }
       },
     });
   };
+  
   return (
     <div>
       <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>

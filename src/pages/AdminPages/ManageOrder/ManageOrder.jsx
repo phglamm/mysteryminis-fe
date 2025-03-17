@@ -10,12 +10,12 @@ import {
   Form,
   Input,
 } from "antd";
-import api from "../../../config/api";
 import dayjs from "dayjs"; // Import thư viện format ngày giờ
 import toast from "react-hot-toast";
 import uploadFile from "../../../utils/UploadImage";
 import { PlusOutlined } from "@ant-design/icons";
 import { useForm } from "antd/es/form/Form";
+import { fetchOrders, refundOrderItem, uploadOrderItemFiles } from "../../../services/AdminServices/ManageOrderServices/ManageOrderServices";
 const { TabPane } = Tabs;
 
 const ManageOrder = () => {
@@ -31,20 +31,15 @@ const ManageOrder = () => {
   const [isModalRefund, setIsModalRefund] = useState(false);
   const [formRefund] = useForm();
 
-  const handleRefund = async (values) => {
-    console.log(values);
+    const handleRefund = async (values) => {
     try {
-      const response = await api.put(
-        `order-item/${selectedItem.orderItemId}/refund`,
-        values
-      );
-      console.log(response.data);
-      fetchOrders();
+      await refundOrderItem(selectedItem.orderItemId, values);
       toast.success("Refund success");
       setIsModalRefund(false);
+      setOrders(await fetchOrders());
     } catch (error) {
       console.error("Error refunding:", error);
-      toast.error(error.response.data);
+      toast.error(error.response?.data || "Refund failed");
     }
   };
 
@@ -71,25 +66,18 @@ const ManageOrder = () => {
     setIsModalVisible(false);
     setSelectedOrder(null);
   };
-  const fetchOrders = async () => {
-    try {
-      const response = await api.get("Order");
-      console.log("API Response:", response.data);
 
-      if (Array.isArray(response.data)) {
-        setOrders(response.data);
-      } else if (response.data.orders) {
-        setOrders(response.data.orders);
-      } else {
-        console.error("Unexpected data format:", response.data);
+    useEffect(() => {
+    const loadOrders = async () => {
+      try {
+        const ordersData = await fetchOrders();
+        setOrders(ordersData);
+      } catch (error) {
+        console.error("Error fetching orders:", error);
+        toast.error("Failed to load orders");
       }
-    } catch (error) {
-      console.error("Error fetching orders:", error);
-    }
-  };
-
-  useEffect(() => {
-    fetchOrders();
+    };
+    loadOrders();
   }, []);
 
   const columns = [
@@ -239,23 +227,19 @@ const ManageOrder = () => {
     setFileList(updatedFileList);
   };
 
-  const handleUpdateUpload = async (values) => {
+  const handleUpdateUpload = async () => {
     const imgURLs = fileList.map((file) => file.url);
-    console.log(imgURLs);
-
     try {
-      const response = await api.post(
-        `OrderItem?orderItemId=${selectedItem.orderItemId}`,
-        imgURLs
-      );
-      console.log(response.data);
+      await uploadOrderItemFiles(selectedItem.orderItemId, imgURLs);
       setFileList([]);
-      fetchOrders();
       toast.success("Upload Success");
+      setOrders(await fetchOrders());
     } catch (error) {
-      console.log(error.response.data);
+      console.error("Upload failed", error);
+      toast.error("Upload failed");
     }
   };
+
   return (
     <div style={{ padding: 20 }}>
       <h2 style={{ fontSize: "30px" }}>Manage Orders</h2>

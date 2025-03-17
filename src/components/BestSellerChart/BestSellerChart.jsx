@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
-import api from "../../config/api";
+import { getBestSellers } from "../../services/AdminServices/DashboardServices/DashboardServices";
 
 Chart.register(...registerables);
 
 export default function BestSellerChart() {
   const [bestSellers, setBestSellers] = useState([]);
 
-  const fetchBestSeller = async () => {
-    try {
-      const response = await api.get("Dashboard/bestSellers");
-      setBestSellers(response.data);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
-
   useEffect(() => {
+    const fetchBestSeller = async () => {
+      try {
+        const bestSellersData = await getBestSellers();
+        setBestSellers(bestSellersData);
+      } catch (error) {
+        console.error("Error fetching best sellers:", error);
+      }
+    };
+
     fetchBestSeller();
   }, []);
 
