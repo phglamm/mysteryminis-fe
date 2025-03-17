@@ -4,6 +4,8 @@ import { Button } from "antd";
 import api from "../../../config/api";
 import BoxModel from "../../../components/3DBoxModel/BoxModel";
 import Logo from "../../../assets/images/Logo-removebg.png";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../../Redux/features/counterSlice";
 
 const OnlineBlindBox = () => {
   const [plays, setPlays] = useState(false);
@@ -11,6 +13,7 @@ const OnlineBlindBox = () => {
   const [loading, setLoading] = useState(true); // New loading state
   const [showVideo, setShowVideo] = useState(false);
   const { packageId } = useParams();
+  const user = useSelector(selectUser)
   console.log("Selected Box ID from URL:", packageId);
 
   const fetchBlindBox = useCallback(async () => {
@@ -29,6 +32,40 @@ const OnlineBlindBox = () => {
   useEffect(() => {
     fetchBlindBox();
   }, [fetchBlindBox]);
+
+  const paymentHandler = async () => {
+    try {
+      const requestData = {
+        userId: user.userId, // Replace with actual user ID
+        totalPrice: blindbox.boxOption.displayPrice || 0,
+        subTotal: blindbox.boxOption.displayPrice || 0,
+        shippingFee: 0,
+        voucherId: 1,
+        paymentMethod: "VNPAY", // Modify as needed
+     // Replace with actual address ID if required   
+        discountAmount: 0,
+        orderItemRequestDto: [
+          {
+            quantity: 1,
+            price: blindbox.boxOption.displayPrice || 0,
+            boxOptionId: blindbox.boxOption.boxOptionId || 0,
+            originPrice: blindbox.boxOption.displayPrice || 0,
+            isOnlineSerieBox: true,
+            orderItemOpenRequestNumber: 0,
+          },
+        ],
+      };
+  
+      console.log("Sending payment request:", requestData);
+  
+      const response = await api.post("Payment/make-Payment", requestData);
+      console.log("Payment successful:", response.data);
+      window.location.assign(response.data);
+      // setPlays(true);
+    } catch (error) {
+      console.error("Payment failed:", error);
+    }
+  };
 
   return (
     <div className="lg:pt-[6.8%] pt-[12%] h-screen justify-center items-center text-center flex flex-col">
@@ -50,16 +87,20 @@ const OnlineBlindBox = () => {
                 {blindbox.boxItemResponseDtos
                   ?.slice(0, 3)
                   .map((item, index) => (
-                    <div key={index}>
-                      <div>{item.boxItemName}</div>
-                      <img
-                        
-                        src={item.imageUrl}
-                        alt={item.boxItemName}
-                        className="w-[80%] rounded-3xl bg-red-200 h-[25%]"
-                      />
+                    <div key={index} className="items-center gap-3 w-[80%] rounded-3xl bg-white/70 border-2 h-[25%] flex flex-row">
+                      <div className=" bg-gray-500/70 h-[25%] rounded-3xl w-[80%] z-40 absolute"></div>
+
+                      <div className=" items-center px-3 gap-3 w-[100%] rounded-3x h-[100%] flex flex-row">
+                        <img
+                          src={item.imageUrl}
+                          alt={item.boxItemName}
+                          className=" bg-red-200 w-[40%] h-[70%] relative z-30 rounded-xl"
+                        />
+                        <div className="text-center z-30 relative px-5 w-[60%] font-bold truncate">
+                          {item.boxItemName}
+                        </div>
+                      </div>
                     </div>
-                    
                   ))}
               </div>
 
@@ -77,7 +118,7 @@ const OnlineBlindBox = () => {
 
               {/* Button - Foreground */}
               <div className="absolute bottom-20 z-40">
-                <Button onClick={() => setPlays(!plays)}>
+                <Button onClick={paymentHandler}>
                   {blindbox.boxOption.displayPrice}
                 </Button>
               </div>
@@ -104,14 +145,23 @@ const OnlineBlindBox = () => {
                   showVideo ? "z-10" : "z-40"
                 }`}
               >
-                {blindbox.boxItemResponseDtos?.slice(3,6).map((item, index) => (
-                  <img
-                    key={index}
-                    src={item.imageUrl}
-                    alt={item.boxItemName}
-                    className="w-[80%] bg-red-200 h-[25%]"
-                  />
-                ))}
+                {blindbox.boxItemResponseDtos
+                  ?.slice(3, 6)
+                  .map((item, index) => (
+                    <div
+                      className=" items-center px-3 gap-3 w-[80%] rounded-3xl bg-white/70 border-2 h-[25%] flex flex-row"
+                      key={index}
+                    >
+                      <img
+                        src={item.imageUrl}
+                        alt={item.boxItemName}
+                        className=" bg-red-200 w-[40%] h-[70%] rounded-xl"
+                      />
+                      <div className="text-center px-5 w-[60%] font-bold truncate">
+                        {item.boxItemName}
+                      </div>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>
