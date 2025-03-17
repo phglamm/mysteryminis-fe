@@ -11,11 +11,10 @@ export default function RegisterPage() {
   const [form] = useForm();
   const navigate = useNavigate();
   const handleRegister = async (values) => {
-    values.roleId = 3;
-    values.isTestAccount = false;
+    values.roleId = "67c56cb5d4a2bb65a6ef719a";
     console.log(values);
     try {
-      const response = await api.post("Account/register", values);
+      const response = await api.post("authentication/register", values);
       console.log(response.data);
       console.log("register success");
       toast.success("Register success!");
@@ -50,7 +49,7 @@ export default function RegisterPage() {
         >
           <Form.Item
             label={<span className="text-lg font-medium">Username</span>}
-            name="userName"
+            name="username"
             rules={[
               { required: true, message: "Please type in your Username!" },
             ]}
@@ -92,7 +91,7 @@ export default function RegisterPage() {
 
           <Form.Item
             label={<span className="text-lg font-medium">Phone</span>}
-            name="phoneNumber"
+            name="phone"
             rules={[
               { required: true, message: "Please type in your phone number!" },
             ]}
