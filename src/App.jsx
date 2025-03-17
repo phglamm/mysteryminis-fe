@@ -187,7 +187,7 @@ function App() {
       path: route.staff,
 
       element: (
-        <ProtectedRoute>
+        <ProtectedRoute roles={[2]}>
           <AdminLayout />
         </ProtectedRoute>
       ),
