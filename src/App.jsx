@@ -37,6 +37,7 @@ import ManageBlog from "./pages/AdminPages/ManageBlog/ManageBlog";
 import BlogDetail from "./pages/UserPages/BlogDetail/BlogDetail";
 import Dashboard from "./pages/AdminPages/Dashboard/Dashboard";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import ConfirmEmailPage from "./pages/UserPages/ConfirmEmailPage/ConfirmEmailPage";
 
 function App() {
   const router = createBrowserRouter([
@@ -116,6 +117,10 @@ function App() {
         {
           path: `${route.blogDetail}/:blogPostId`,
           element: <BlogDetail />,
+        },
+        {
+          path: `${route.confirmEmail}/:token`,
+          element: <ConfirmEmailPage />,
         },
       ],
     },

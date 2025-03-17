@@ -7,7 +7,7 @@ export const route = {
   userProfile: "/userProfile",
   favorite: "/favorite",
   blogDetail: "/blog",
-
+  confirmEmail: "/confirm-email",
 
   admin: "/admin",
   dashboard: "dashboard",
