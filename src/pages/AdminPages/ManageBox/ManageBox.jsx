@@ -143,14 +143,27 @@ export default function ManageBox() {
         <>
           <div className="flex flex-col gap-3 items-center">
             <div className="flex justify-between items-center gap-7">
-              <Button onClick={() => handleModalUpdate(record)}>Update</Button>
-              <Button onClick={() => handleDelete(record)}>Delete</Button>
+              <Button 
+                onClick={() => handleModalUpdate(record)} 
+                style={{ backgroundColor: '#313857', color: 'white' }}
+              >
+                Update
+              </Button>
+              <Button 
+                onClick={() => handleDelete(record)} 
+                style={{ backgroundColor: '#FF3333', color: 'white' }}
+              >
+                Delete
+              </Button>
             </div>
-            <Button>Create Online Blindbox</Button>
+            <Button style={{ backgroundColor: 'rgb(219, 112, 147)', color: 'white' }}>
+              Create Online Blindbox
+            </Button>
           </div>
         </>
       ),
-    },
+    }
+    
   ];
 
   const mockLuckyBoxData = [
@@ -215,11 +228,12 @@ export default function ManageBox() {
       title: "Action",
       render: (_index, record) => (
         <div className="flex justify-around items-center">
-          <Button>Update</Button>
-          <Button>Delete</Button>
+          <Button style={{ backgroundColor: '#313857', color: 'white' }}>Update</Button>
+          <Button style={{ backgroundColor: '#FF3333', color: 'white' }}>Delete</Button>
         </div>
       ),
-    },
+    }
+    
   ];
 
   return (
@@ -231,7 +245,9 @@ export default function ManageBox() {
       >
         <Tabs.TabPane tab="Manage Box" key="1">
           <div>
-            <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
+            <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}
+                        style={{ backgroundColor: '#313857', color: 'white' }}
+>
               Create Box
             </Button>
             <Table dataSource={box} columns={columnsBox} />

@@ -75,8 +75,13 @@ export default function ManageBoxItem() {
       render: (_index, record) => (
         <>
           <div className="flex justify-around items-center">
-            <Button onClick={() => handleModalUpdate(record)}>Update</Button>
-            <Button onClick={() => handleDelete(record)}>Delete</Button>
+            <Button onClick={() => handleModalUpdate(record)}
+                        style={{ backgroundColor: '#313857', color: 'white' }}
+              >Update</Button>
+            <Button 
+            onClick={() => handleDelete(record)}
+            style={{ backgroundColor: '#FF3333', color: 'white' }}
+              >Delete</Button>
           </div>
         </>
       ),
@@ -213,7 +218,9 @@ export default function ManageBoxItem() {
 
   return (
     <div>
-      <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
+      <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}
+                  style={{ backgroundColor: '#313857', color: 'white' }}
+        >
         Create Items for Box
       </Button>
 
