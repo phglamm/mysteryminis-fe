@@ -1,10 +1,10 @@
 import { motion } from "framer-motion";
 import { Button, Form, Input } from "antd";
 import { useForm } from "antd/es/form/Form";
-import api from "../../../config/api";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { route } from "../../../routes";
+import { resetPassword } from "../../../services/UserServices/AuthServices/AuthServices";
 
 export default function ResetPasswordPage() {
   const [form] = useForm();
@@ -21,18 +21,17 @@ export default function ResetPasswordPage() {
   }
 
   const handleSend = async (value) => {
-    console.log(value);
     value.token = token;
     value.email = email;
     try {
-      const response = await api.post("Account/reset-password", value);
-      console.log(response.data);
+      await resetPassword(value);
       toast.success("Password reset successfully");
       navigate(route.login);
     } catch (error) {
-      console.log(error.response.data);
+      console.error(error.response?.data || "An error occurred");
     }
   };
+
   return (
     <div className="flex items-center justify-center min-h-screen mt-[10%]">
       <motion.div

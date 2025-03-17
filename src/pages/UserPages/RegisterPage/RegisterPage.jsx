@@ -3,27 +3,25 @@ import { motion } from "framer-motion";
 import { Button, Form, Input, Radio } from "antd";
 import { useForm } from "antd/es/form/Form";
 import { route } from "../../../routes";
-import api from "../../../config/api";
 import toast from "react-hot-toast";
+import { registerUser } from "../../../services/UserServices/AuthServices/AuthServices";
 
 export default function RegisterPage() {
   const [form] = useForm();
   const navigate = useNavigate();
-  const handleRegister = async (values) => {
+
+   const handleRegister = async (values) => {
     values.roleId = 3;
     values.isTestAccount = false;
-    console.log(values);
     try {
-      const response = await api.post("Account/register", values);
-      console.log(response.data);
-      console.log("register success");
+      await registerUser(values);
       toast.success("Register success!");
       navigate(route.login);
     } catch (error) {
-      toast.error(error.response.data);
-      console.log(error.response.data);
+      toast.error(error.response?.data || "Registration failed");
     }
   };
+
   return (
     <div className="flex items-center justify-center min-h-screen mt-[10%]">
       <motion.div

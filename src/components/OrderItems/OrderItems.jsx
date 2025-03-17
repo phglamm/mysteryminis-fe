@@ -2,14 +2,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import api from "../../config/api";
 import OrderSteps from "../OrderStepper/OrderStepper";
-
 import toast from "react-hot-toast";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Button, Image } from "antd";
-import { useSelector } from "react-redux";
-import { selectUser } from "./../../Redux/features/counterSlice";
+
+import {
+  cancelOrder,
+  fetchOrders,
+  requestRefund,
+} from "../../services/ManageOrderServices/ManageOrderServices";
 
 const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [ViewDetails, setViewDetailsState] = useState(false);
@@ -18,43 +20,31 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [loadingCancel, setLoadingCancel] = useState(false);
   const [visible, setVisible] = useState(false);
   const [checkCard, setCheckCard] = useState(null);
-  console.log(checkCard);
-  const user = useSelector(selectUser);
-  const fetchOrders = async () => {
+
+  const loadOrders = async () => {
     try {
-      // const response = await api.get(`Order?userId=${user.userId}`);
-      const response = await api.get("Order");
-      setOrders(response.data);
-      console.log(response.data);
+      const data = await fetchOrders();
+      setOrders(data);
     } catch (error) {
       console.error(error);
     }
   };
 
   useEffect(() => {
-    fetchOrders();
-  }, []);
+    loadOrders();
+  }, [selectedCategory]);
 
   useEffect(() => {
     setViewDetails(ViewDetails);
   }, [ViewDetails]);
 
-  useEffect(() => {
-    fetchOrders();
-  }, []);
-
-  useEffect(() => {
-    setViewDetails(ViewDetails);
-  }, [ViewDetails]);
-
-  const cancelOrders = async (orderId) => {
+  const handleCancelOrder = async (orderId) => {
     setLoadingCancel(true);
     try {
-      const response = await api.put(`Order/cancel/${orderId}`);
-      console.log(response.data);
-      fetchOrders();
-      setViewDetailsState(false);
+      await cancelOrder(orderId);
       toast.success("Order has been cancelled");
+      loadOrders();
+      setViewDetailsState(false);
     } catch (error) {
       console.error(error);
     } finally {
@@ -87,17 +77,15 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
 
   const handleRefund = async (item) => {
     try {
-      const response = await api.put(
-        `order-item/${item.orderItemId}/refund-request`
-      );
-      console.log(response.data);
-      fetchOrders();
-      setViewDetailsState(false);
+      await requestRefund(item.orderItemId);
       toast.success("Your Order has been refunded request");
+      loadOrders();
+      setViewDetailsState(false);
     } catch (error) {
       console.error(error);
     }
   };
+
   return (
     <motion.div
       className={`overflow-y-scroll flex flex-col mb-[5%]  `}
@@ -413,7 +401,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                         scale: 1.1,
                       }}
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => cancelOrders(order.orderId)}
+                      onClick={() => handleCancelOrder(order.orderId)}
                       disabled={loadingCancel}
                     >
                       {loadingCancel ? (
@@ -444,7 +432,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                       >
                         Rate
                       </motion.button>
-                      <motion.button
+                      {/* <motion.button
                         className="border-1 px-3 py-1 w-[40%] text-[0.9vw] rounded-md font-bold"
                         initial={{ border: "1px solid #f3f4f6" }}
                         whileHover={{
@@ -454,9 +442,10 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                           scale: 1.1,
                         }}
                         whileTap={{ scale: 0.9 }}
+                        onClick={() => handleRefund(order)}
                       >
                         Request for Return/Refund
-                      </motion.button>
+                      </motion.button> */}
                     </>
                   ) : (
                     <></>

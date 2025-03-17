@@ -4,8 +4,12 @@ import { useState, useEffect } from "react";
 import { UserOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import axios from "axios";
-import api from "../../../../../config/api";
+import {
+  fetchDistricts,
+  fetchProvinces,
+  fetchWards,
+  updateAddress,
+} from "../../../../../services/UserServices/AddressServices/AddressServices";
 
 const { Option } = Select;
 
@@ -30,71 +34,42 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
   });
 
   useEffect(() => {
-    fetchProvinces();
-    if (formData.provinceId) fetchDistricts(formData.provinceId);
-    if (formData.districtId) fetchWards(formData.districtId);
+    (async () => {
+      setProvinces(await fetchProvinces());
+      if (formData.provinceId)
+        setDistricts(await fetchDistricts(formData.provinceId));
+      if (formData.districtId) setWards(await fetchWards(formData.districtId));
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const fetchProvinces = async () => {
-    try {
-      const response = await axios.get("https://online-gateway.ghn.vn/shiip/public-api/master-data/province", {
-        headers: { Token: "62417330-f6d2-11ef-91ea-021c91d80158" },
-      });
-      if (response.data.code === 200) setProvinces(response.data.data);
-    } catch (err) {
-      console.error("Error fetching provinces:", err);
-    }
-  };
-
-  const fetchDistricts = async (provinceId) => {
-    try {
-      const response = await axios.get("https://online-gateway.ghn.vn/shiip/public-api/master-data/district", {
-        headers: { Token: "62417330-f6d2-11ef-91ea-021c91d80158" },
-      });
-      if (response.data.code === 200) {
-        setDistricts(response.data.data.filter((d) => d.ProvinceID === provinceId));
-      }
-    } catch (err) {
-      console.error("Error fetching districts:", err);
-    }
-  };
-
-  const fetchWards = async (districtId) => {
-    try {
-      const response = await axios.get("https://online-gateway.ghn.vn/shiip/public-api/master-data/ward", {
-        params: { district_id: districtId },
-        headers: { Token: "62417330-f6d2-11ef-91ea-021c91d80158" },
-      });
-      if (response.data.code === 200) setWards(response.data.data);
-    } catch (err) {
-      console.error("Error fetching wards:", err);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const updateAddress = async () => {
+  const handleUpdate = async () => {
     setLoading(true);
-    try {
-      await api.put(`Address`, formData);
+    const result = await updateAddress(formData);
+    if (result.success) {
       toast.success("Address updated successfully!");
       setIsEditing(false);
-    } catch (err) {
+    } else {
       toast.error("Failed to update address");
-      console.error("Error updating address:", err);
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (
     <div>
       {["name", "phoneNumber", "addressDetail"].map((field) => (
-        <div key={field} className="flex flex-row items-center border-t pt-4 mb-4 border-gray-300">
-          <span className="basis-1/4 capitalize">{field.replace(/([A-Z])/g, " $1").trim()}</span>
+        <div
+          key={field}
+          className="flex flex-row items-center border-t pt-4 mb-4 border-gray-300"
+        >
+          <span className="basis-1/4 capitalize">
+            {field.replace(/([A-Z])/g, " $1").trim()}
+          </span>
           <span className="basis-2/4">
             <Input
               name={field}
@@ -102,14 +77,16 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
               onChange={handleChange}
               placeholder={`Enter your ${field}`}
               prefix={<UserOutlined style={{ color: "rgba(0,0,0,.25)" }} />}
-              suffix={<InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />}
+              suffix={
+                <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
+              }
             />
           </span>
         </div>
       ))}
 
- {/* Province Select */}
- <div className="flex flex-row items-center border-t pt-4 mb-4 border-gray-300">
+      {/* Province Select */}
+      <div className="flex flex-row items-center border-t pt-4 mb-4 border-gray-300">
         <span className="basis-1/3 px-9 text-center ">
           <Select
             style={{ width: "100%" }}
@@ -201,9 +178,19 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
       <div className="flex justify-between">
         <motion.button
           className="text-center bg-black text-white rounded-full p-2 w-1/4 mx-auto mt-4 cursor-pointer"
-          whileHover={{ scale: 1.1, backgroundColor: "red", color: "black", fontWeight: "bold" }}
-          whileTap={{ scale: 0.9, backgroundColor: "black", color: "white", fontWeight: "bold" }}
-          onClick={updateAddress}
+          whileHover={{
+            scale: 1.1,
+            backgroundColor: "red",
+            color: "black",
+            fontWeight: "bold",
+          }}
+          whileTap={{
+            scale: 0.9,
+            backgroundColor: "black",
+            color: "white",
+            fontWeight: "bold",
+          }}
+          onClick={handleUpdate}
           disabled={loading}
         >
           {loading ? "Saving..." : "Save Changes"}
