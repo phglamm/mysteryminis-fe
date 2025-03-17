@@ -21,6 +21,7 @@ import logo from "../../assets/images/Logo-removebg.png";
 import "./Sidebar.scss";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../Redux/features/counterSlice";
+
 export default function Sidebar() {
   function getItem(label, key, icon, children) {
     return {
@@ -30,6 +31,7 @@ export default function Sidebar() {
       children,
     };
   }
+
   const [items, setItems] = useState([]);
   const [key, setKey] = useState();
   const location = useLocation();
@@ -37,10 +39,10 @@ export default function Sidebar() {
     location.pathname.split("/")[location.pathname.split("/").length - 1];
 
   const dataOpen = JSON.parse(localStorage.getItem("keys")) ?? [];
-
   const [openKeys, setOpenKeys] = useState(dataOpen);
 
   const user = useSelector(selectUser);
+  
   useEffect(() => {
     if (user.roleId === 1) {
       setItems([
@@ -68,6 +70,7 @@ export default function Sidebar() {
         ]),
         getItem("Manage Brand", route.brandManagement, <DropboxOutlined />),
         getItem("Manage Discount", route.discountManagement, <CiDiscount1 />),
+        getItem("Manage Feedback", route.feedbackManagement, <RiFeedbackLine />),  // Added here
         getItem("Back to Home", "/", <HomeOutlined />),
       ]);
     }
@@ -105,15 +108,15 @@ export default function Sidebar() {
           route.chatWithCustomer,
           <CommentOutlined />
         ),
-
         getItem("Back to Home", "/", <HomeOutlined />),
       ]);
     }
-  }, []);
+  }, [user]);
 
   const handleSubMenuOpen = (keyMenuItem) => {
     setOpenKeys(keyMenuItem);
   };
+
   const handleSelectKey = (keyPath) => {
     setKey(keyPath);
   };
@@ -181,8 +184,8 @@ export default function Sidebar() {
                     item.key === "/"
                       ? "/"
                       : user.roleId === 1
-                      ? `/admin/${item.key}`
-                      : `/staff/${item.key}`
+                        ? `/admin/${item.key}`
+                        : `/staff/${item.key}`
                   }
                 >
                   {item.label}
