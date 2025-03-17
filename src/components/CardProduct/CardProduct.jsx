@@ -51,7 +51,7 @@ const CardProduct = ({ product }) => {
           position: "relative",
           overflow: "hidden",
           minHeight: "320px",
-          minWidth: "220px",
+          width: "300px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
@@ -75,7 +75,7 @@ const CardProduct = ({ product }) => {
               src={hovered && hoverImageUrl ? hoverImageUrl : firstImageUrl}
               alt={boxName}
               style={{
-                width: "250px",
+                width: "100%",
                 height: "100%",
                 objectFit: "cover",
                 transition: "opacity 0.3s ease-in-out",

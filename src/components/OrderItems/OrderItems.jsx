@@ -158,8 +158,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                 className={`items-center flex flex-col px-10 py-5 `}
               >
                 <OrderSteps order={order} />
-
-                <div className="flex w-full flex-row gap-[7%]">
+                <div className="flex w-full flex-row gap-[22%]">
                   {order.orderItems.length > 0 ? (
                     order.orderStatusDetail?.map((status, index) => (
                       <div

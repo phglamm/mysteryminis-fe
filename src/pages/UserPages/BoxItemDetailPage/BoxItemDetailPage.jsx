@@ -164,7 +164,9 @@ export default function BoxItemDetailPage() {
         <div className="mt-10">
           {displayedVotes.length > 0 && (
             <>
-              <h2 className="text-2xl font-bold  mb-4">All Votes</h2>
+              <h2 className="text-2xl font-bold  mb-4">
+                All Votes ({votes.length})
+              </h2>
               <div className="grid grid-cols-1 gap-4">
                 {displayedVotes.map((vote) => (
                   <div key={vote._id} className="p-4  rounded-lg shadow-md">
@@ -196,19 +198,21 @@ export default function BoxItemDetailPage() {
           )}
         </div>
         <div style={{ marginTop: "50px" }}>
-          <h2
-            style={{
-              fontSize: "22px",
-              fontWeight: "bold",
-              color: "#333",
-              marginBottom: "16px",
-            }}
-          >
-            Item in 1 box
-          </h2>
           <div className="grid grid-cols-4 gap-4">
             {relevantBoxItem.map((item) => (
-              <CardBoxItem Item={item} key={item._id} />
+              <>
+                <h2
+                  style={{
+                    fontSize: "22px",
+                    fontWeight: "bold",
+                    color: "#333",
+                    marginBottom: "16px",
+                  }}
+                >
+                  Item in 1 box
+                </h2>
+                <CardBoxItem Item={item} key={item._id} />
+              </>
             ))}
           </div>
         </div>

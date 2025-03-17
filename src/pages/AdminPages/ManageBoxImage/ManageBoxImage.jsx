@@ -238,7 +238,7 @@ export default function ManageBoxImage() {
               onPreview={handlePreview}
               onChange={handleChange}
             >
-              {fileList.length >= 2 ? null : uploadButton}
+              {fileList.length >= 1 ? null : uploadButton}
             </Upload>
             {previewImage && (
               <Image
@@ -300,7 +300,7 @@ export default function ManageBoxImage() {
               onPreview={handlePreview}
               onChange={handleChange}
             >
-              {fileList.length >= 2 ? null : uploadButton}
+              {fileList.length >= 1 ? null : uploadButton}
             </Upload>
             {previewImage && (
               <Image

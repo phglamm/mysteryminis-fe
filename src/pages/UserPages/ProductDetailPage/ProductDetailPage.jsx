@@ -90,7 +90,7 @@ const ProductDetailPage = () => {
   }
 
   const formatPrice = (price) => {
-    return price.toLocaleString("vi-VN", {
+    return price?.toLocaleString("vi-VN", {
       style: "currency",
       currency: "VND",
     });
@@ -278,12 +278,9 @@ const ProductDetailPage = () => {
             }}
           >
             <Panel style={{ fontSize: "20px" }} header="Details" key="1">
+              <div style={{ color: "#555" }}>{box.boxDescription}</div>
               <p style={{ color: "#555" }}>
                 <strong>Brand:</strong> {box.brand?.brandName || "Unknown"}
-              </p>
-              <p style={{ color: "#555" }}>
-                <strong>Size:</strong>{" "}
-                {selectedOptionName || box.boxOptions[0].boxOptionName}
               </p>
             </Panel>
           </Collapse>

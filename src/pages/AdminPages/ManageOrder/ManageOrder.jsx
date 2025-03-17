@@ -270,6 +270,8 @@ const ManageOrder = () => {
         values
       );
       console.log(response.data);
+      setIsModalUpload(false);
+      setIsModalVisible(false);
       setFileList([]);
       fetchOrders();
     } catch (error) {
