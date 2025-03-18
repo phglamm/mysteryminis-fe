@@ -40,7 +40,7 @@ const OnlineBlindBox = () => {
         totalPrice: blindbox.boxOption.displayPrice || 0,
         subTotal: blindbox.boxOption.displayPrice || 0,
         shippingFee: 0,
-        voucherId: 1,
+        voucherId: null,
         paymentMethod: "VNPAY", // Modify as needed
      // Replace with actual address ID if required   
         discountAmount: 0,
@@ -56,7 +56,7 @@ const OnlineBlindBox = () => {
         ],
       };
   
-      console.log("Sending payment request:", requestData);
+      console.log("Sending payment request:", JSON.stringify(requestData));
   
       const response = await api.post("Payment/make-Payment", requestData);
       console.log("Payment successful:", response.data);

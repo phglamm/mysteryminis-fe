@@ -6,12 +6,9 @@ import OrderSteps from "../OrderStepper/OrderStepper";
 import toast from "react-hot-toast";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Button, Image } from "antd";
+import { cancelOrder, fetchOrders, requestRefund } from "../../services/UserServices/ManageOrderServices/ManageOrderServices";
 
-import {
-  cancelOrder,
-  fetchOrders,
-  requestRefund,
-} from "../../services/ManageOrderServices/ManageOrderServices";
+
 
 const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [ViewDetails, setViewDetailsState] = useState(false);
