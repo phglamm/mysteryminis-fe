@@ -245,7 +245,7 @@ const ManageOrder = () => {
 
     try {
       const response = await api.post(
-        `OrderItem?orderItemId=${selectedItem.orderItemId}`,
+        `order-Item?orderItemId=${selectedItem.orderItemId}`,
         imgURLs
       );
       console.log(response.data);
