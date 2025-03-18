@@ -70,7 +70,6 @@ export default function Sidebar() {
           ),
         ]),
         getItem("Manage Brand", route.brandManagement, <DropboxOutlined />),
-        getItem("Manage Discount", route.discountManagement, <CiDiscount1 />),
         getItem("Manage Voucher", route.voucherManagement, <GiReceiveMoney />),
 
         getItem(
