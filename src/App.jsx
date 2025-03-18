@@ -40,6 +40,7 @@ import OnlinePackage from "./pages/UserPages/OnlinePackage/OnlinePackage";
 import ProtectedRoute from "./routes/ProtectedRoute";
 import ManageVoucher from "./pages/AdminPages/ManageVoucher/ManageVoucher";
 import ConfirmEmailPage from "./pages/UserPages/ConfirmEmailPage/ConfirmEmailPage";
+import ManageFeedback from "./pages/AdminPages/ManageFeedback/ManageFeedback";
 
 function App() {
   const router = createBrowserRouter([
@@ -179,6 +180,10 @@ function App() {
         {
           path: route.voucherManagement,
           element: <ManageVoucher />,
+        },
+        {
+          path: route.feedbackManagement,
+          element: <ManageFeedback />,
         },
       ],
     },
