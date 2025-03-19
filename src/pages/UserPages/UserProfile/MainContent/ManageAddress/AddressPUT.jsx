@@ -1,131 +1,19 @@
 /* eslint-disable react/prop-types */
 import { Input, Select } from "antd";
-<<<<<<< HEAD
-import { useEffect, useState } from "react";
-=======
 import { useState, useEffect } from "react";
->>>>>>> MinhLuong/OnlineBlindBox
 import { UserOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-<<<<<<< HEAD
-import axios from "axios";
-=======
 import {
   fetchDistricts,
   fetchProvinces,
   fetchWards,
   updateAddress,
 } from "../../../../../services/UserServices/AddressServices/AddressServices";
->>>>>>> MinhLuong/OnlineBlindBox
 
 const { Option } = Select;
 
 const AddressPUT = ({ setIsEditing, selectedAddress }) => {
-<<<<<<< HEAD
-  const [formData, setFormData] = useState({
-    addressId: selectedAddress.addressId || 0,
-    provinceId: selectedAddress.provinceId || null,
-    province: selectedAddress.province || "",
-    districtId: selectedAddress.districtId || null,
-    district: selectedAddress.district || "",
-    wardCode: selectedAddress.wardCode || null,
-    ward: selectedAddress.ward || "",
-    addressDetail: selectedAddress.addressDetail || "",
-    phoneNumber: selectedAddress.phoneNumber || "",
-    name: selectedAddress.name || "",
-  });
-
-  const [provinces, setProvinces] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [wards, setWards] = useState([]);
-
-  useEffect(() => {
-    fetchProvinces();
-  }, []);
-
-  const fetchProvinces = async () => {
-    try {
-      const response = await axios.get(
-        "https://online-gateway.ghn.vn/shiip/public-api/master-data/province",
-        {
-          headers: { Token: "62417330-f6d2-11ef-91ea-021c91d80158" },
-        }
-      );
-      if (response.data.code === 200) {
-        setProvinces(response.data.data);
-        setDistricts([]);
-        setWards([]);
-      }
-    } catch (err) {
-      console.error("Error fetching provinces:", err);
-    }
-  };
-
-  const fetchDistricts = async (provinceId) => {
-    try {
-      const response = await axios.get(
-        "https://online-gateway.ghn.vn/shiip/public-api/master-data/district",
-        {
-          headers: {
-            Token: "62417330-f6d2-11ef-91ea-021c91d80158",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.data.code === 200) {
-        const filteredDistricts = response.data.data.filter(
-          (d) => d.ProvinceID === provinceId
-        );
-        setDistricts(filteredDistricts);
-      }
-    } catch (err) {
-      console.error("Error fetching districts:", err);
-    }
-  };
-
-  const fetchWards = async (districtId) => {
-    if (!districtId) return;
-
-    try {
-      const response = await axios.get(
-        `https://online-gateway.ghn.vn/shiip/public-api/master-data/ward`,
-        {
-          params: { district_id: districtId },
-          headers: {
-            Token: "62417330-f6d2-11ef-91ea-021c91d80158",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.status === 200 && response.data.code === 200) {
-        setWards(response.data.data);
-      } else {
-        console.error("GHN API returned an error:", response.data);
-      }
-    } catch (err) {
-      console.error("Error fetching wards:", err.response?.data || err.message);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const updateAddress = async () => {
-    try {
-      await api.put(`Address`, formData);
-      toast.success("Address updated successfully!");
-      setIsEditing(false);
-    } catch (err) {
-      console.error("Error updating address:", err);
-    }
-=======
   const [loading, setLoading] = useState(false);
   const [provinces, setProvinces] = useState([]);
   const [districts, setDistricts] = useState([]);
@@ -152,7 +40,7 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
         setDistricts(await fetchDistricts(formData.provinceId));
       if (formData.districtId) setWards(await fetchWards(formData.districtId));
     })();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleChange = (e) => {
@@ -170,15 +58,10 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
       toast.error("Failed to update address");
     }
     setLoading(false);
->>>>>>> MinhLuong/OnlineBlindBox
   };
 
   return (
     <div>
-<<<<<<< HEAD
-      {/* Name, Phone Number & Address Detail Inputs */}
-=======
->>>>>>> MinhLuong/OnlineBlindBox
       {["name", "phoneNumber", "addressDetail"].map((field) => (
         <div
           key={field}
@@ -208,11 +91,7 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
           <Select
             style={{ width: "100%" }}
             placeholder="Select Province"
-<<<<<<< HEAD
-            value={formData.provinceId}
-=======
             value={formData.province}
->>>>>>> MinhLuong/OnlineBlindBox
             onChange={(value) => {
               const selectedProvince = provinces.find(
                 (p) => p.ProvinceID === value
@@ -243,11 +122,7 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
           <Select
             style={{ width: "100%" }}
             placeholder="Select District"
-<<<<<<< HEAD
-            value={formData.districtId}
-=======
             value={formData.district}
->>>>>>> MinhLuong/OnlineBlindBox
             onChange={(value) => {
               const selectedDistrict = districts.find(
                 (d) => d.DistrictID === value
@@ -278,11 +153,7 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
           <Select
             style={{ width: "100%" }}
             placeholder="Select Ward"
-<<<<<<< HEAD
-            value={formData.wardCode}
-=======
             value={formData.ward}
->>>>>>> MinhLuong/OnlineBlindBox
             onChange={(value) => {
               const selectedWard = wards.find((w) => w.WardCode === value);
               setFormData((prev) => ({
@@ -305,11 +176,7 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
 
       {/* Save Button */}
       <div className="flex justify-between">
-<<<<<<< HEAD
-        <motion.div
-=======
         <motion.button
->>>>>>> MinhLuong/OnlineBlindBox
           className="text-center bg-black text-white rounded-full p-2 w-1/4 mx-auto mt-4 cursor-pointer"
           whileHover={{
             scale: 1.1,
@@ -323,18 +190,11 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
             color: "white",
             fontWeight: "bold",
           }}
-<<<<<<< HEAD
-          onClick={updateAddress}
-        >
-          Save Changes
-        </motion.div>
-=======
           onClick={handleUpdate}
           disabled={loading}
         >
           {loading ? "Saving..." : "Save Changes"}
         </motion.button>
->>>>>>> MinhLuong/OnlineBlindBox
       </div>
     </div>
   );
