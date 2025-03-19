@@ -1,8 +1,8 @@
 import { Button, Form, Input, Modal, Table } from "antd";
 import { useEffect, useState } from "react";
-import api from "../../../config/api";
 import { useForm } from "antd/es/form/Form";
 import toast from "react-hot-toast";
+import { addBrand, deleteBrand, fetchBrands, updateBrand } from "../../../services/AdminServices/ManageBrandServices/ManageBrandServices";
 
 export default function ManageBrand() {
   const [brand, setBrand] = useState([]);
@@ -13,10 +13,23 @@ export default function ManageBrand() {
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
   const [selectedBrand, setSelectedBrand] = useState(null);
 
+  useEffect(() => {
+    const getBrands = async () => {
+      try {
+        const brands = await fetchBrands();
+        setBrand(brands);
+      } catch (error) {
+        console.error("Failed to fetch brands:", error);
+        toast.error("Failed to load brands");
+      }
+    };
+    getBrands();
+  }, []);
+
   const handleAdd = async (values) => {
     try {
-      const response = await api.post("Brand", values);
-      setBrand([...brand, response.data]);
+      const newBrand = await addBrand(values);
+      setBrand([...brand, newBrand]);
       toast.success("Brand added successfully");
       setIsModalAddOpen(false);
       formAdd.resetFields();
@@ -34,13 +47,10 @@ export default function ManageBrand() {
 
   const handleUpdate = async (values) => {
     try {
-      const response = await api.put(`Brand/${selectedBrand.brandId}`, values);
-      console.log(response.data);
+      await updateBrand(selectedBrand.brandId, values);
       setBrand(
-        brand.map((brand) =>
-          brand.brandId === selectedBrand.brandId
-            ? { ...brand, ...values }
-            : brand
+        brand.map((b) =>
+          b.brandId === selectedBrand.brandId ? { ...b, ...values } : b
         )
       );
       toast.success("Updated successfully");
@@ -57,26 +67,17 @@ export default function ManageBrand() {
       title: "Are you sure you want to delete this Brand?",
       onOk: async () => {
         try {
-          await api.delete(`Brand/${values.brandId}`);
+          await deleteBrand(values.brandId);
+          setBrand(brand.filter((b) => b.brandId !== values.brandId));
           toast.success("Brand deleted successfully");
-          setBrand(brand.filter((brand) => brand.brandId !== values.brandId));
         } catch (error) {
+          console.error("Failed to delete brand:", error);
           toast.error("Failed to delete brand");
         }
       },
     });
   };
 
-  useEffect(() => {
-    const fetchBrand = async () => {
-      const response = await api.get("Brand");
-      console.log(response.data);
-      const sortReponse = response.data.sort((a, b) => b.brandId - a.brandId);
-      setBrand(sortReponse);
-    };
-
-    fetchBrand();
-  }, []);
 
   const columnBrand = [
     {

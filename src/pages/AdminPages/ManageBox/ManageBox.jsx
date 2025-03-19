@@ -1,33 +1,51 @@
+/* eslint-disable no-unused-vars */
 import { Button, Form, Table, Tabs, Modal, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
-import api from "../../../config/api";
 import toast from "react-hot-toast";
+import { addBox, deleteBox, getAllBoxes, updateBox } from "../../../services/AdminServices/ManageBoxServices/ManageBoxServices";
+import { fetchBrands } from "../../../services/AdminServices/ManageBrandServices/ManageBrandServices";
 
 export default function ManageBox() {
   const [formAdd] = useForm();
   const [formUpdate] = useForm();
 
-  const [box, setBox] = useState([]);
-  const [brand, setBrand] = useState([]);
+  const [boxes, setBoxes] = useState([]);
+  const [brands, setBrands] = useState([]);
 
   const [isModalAddOpen, setIsModalAddOpen] = useState(false);
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
   const [selectedBox, setSelectedBox] = useState(null);
 
+   // Fetch all boxes and brands
+   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const fetchedBoxes = await getAllBoxes();
+        const fetchedBrands = await fetchBrands();
+        setBoxes(fetchedBoxes);
+        setBrands(fetchedBrands);
+      } catch (error) {
+        toast.error("Failed to load data");
+      }
+    };
+    fetchData();
+  }, []);
+
+  // Handle adding new box
   const handleAdd = async (values) => {
     try {
-      const response = await api.post("Box", values);
-      setBox([...box, response.data]);
+      const newBox = await addBox(values);
+      setBoxes([...boxes, newBox]);
       toast.success("Box added successfully");
       setIsModalAddOpen(false);
       formAdd.resetFields();
     } catch (error) {
-      console.error("Failed to add Box:", error);
       toast.error("Failed to add Box");
     }
   };
 
+  // Handle updating a box
   const handleModalUpdate = (box) => {
     setSelectedBox(box);
     formUpdate.setFieldsValue(box);
@@ -36,10 +54,9 @@ export default function ManageBox() {
 
   const handleUpdate = async (values) => {
     try {
-      const response = await api.put(`Box/${selectedBox.boxId}`, values);
-      console.log(response.data);
-      setBox(
-        box.map((box) =>
+      await updateBox(selectedBox.boxId, values);
+      setBoxes(
+        boxes.map((box) =>
           box.boxId === selectedBox.boxId ? { ...box, ...values } : box
         )
       );
@@ -47,43 +64,25 @@ export default function ManageBox() {
       setIsModalUpdateOpen(false);
       setSelectedBox(null);
     } catch (error) {
-      console.error("Failed to update Box:", error);
       toast.error("Failed to update Box");
     }
   };
 
-  const handleDelete = (values) => {
+  // Handle deleting a box
+  const handleDelete = (boxId) => {
     Modal.confirm({
       title: "Are you sure you want to delete this Box?",
       onOk: async () => {
         try {
-          await api.delete(`Box/${values.boxId}`);
+          await deleteBox(boxId);
+          setBoxes(boxes.filter((box) => box.boxId !== boxId));
           toast.success("Box deleted successfully");
-          setBox(box.filter((brand) => brand.boxId !== values.boxId));
         } catch (error) {
           toast.error("Failed to delete Box");
         }
       },
     });
   };
-
-  useEffect(() => {
-    const fetchBox = async () => {
-      const response = await api.get("Box");
-      console.log(response.data);
-      const sortReponse = response.data.sort((a, b) => b.boxId - a.boxId);
-      setBox(sortReponse);
-    };
-
-    const fetchBrand = async () => {
-      const response = await api.get("Brand");
-      console.log(response.data);
-      setBrand(response.data);
-    };
-
-    fetchBox();
-    fetchBrand();
-  }, []);
 
   const columnsBox = [
     {
@@ -97,7 +96,7 @@ export default function ManageBox() {
       key: "boxName",
       filters: [
         ...new Set(
-          box.map((item) => ({
+          boxes.map((item) => ({
             text: item.boxName,
             value: item.boxName,
           }))
@@ -151,7 +150,7 @@ export default function ManageBox() {
       <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
         Create Box
       </Button>
-      <Table dataSource={box} columns={columnsBox} />
+      <Table dataSource={boxes} columns={columnsBox} />
 
       <Modal
         title="Add Box"
@@ -191,7 +190,7 @@ export default function ManageBox() {
                 option.children.toLowerCase().includes(input.toLowerCase())
               }
             >
-              {brand.map((brand) => (
+              {brands.map((brand) => (
                 <Select.Option key={brand.brandId} value={brand.brandId}>
                   {brand.brandName}
                 </Select.Option>
@@ -236,7 +235,7 @@ export default function ManageBox() {
                 option.children.toLowerCase().includes(input.toLowerCase())
               }
             >
-              {brand.map((brand) => (
+              {brands.map((brand) => (
                 <Select.Option key={brand.brandId} value={brand.brandId}>
                   {brand.brandName}
                 </Select.Option>

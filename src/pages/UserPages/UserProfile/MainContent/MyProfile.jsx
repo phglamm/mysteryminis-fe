@@ -3,9 +3,9 @@ import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { Input, Tooltip, Spin, Select, message } from "antd";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import api from "../../../../config/api";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../../Redux/features/counterSlice";
+import { fetchUserData, updateUserProfile } from "../../../../services/UserServices/UserProfileServices/UserProfileServices";
 
 const { Option } = Select;
 
@@ -30,20 +30,16 @@ const MyProfile = ({
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchUserData = async () => {
+    (async () => {
       try {
-        const response = await api.get(`User/user-by-email/${user.email}`);
-        const { userId, username, fullname, phone, email, gender } =
-          response.data; // Chỉ lấy các trường cần thiết
-        setFormData({ userId, username, fullname, phone, email, gender }); // Update form data with API response
+        const data = await fetchUserData(user.email);
+        setFormData(data);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
-    };
-
-    fetchUserData();
+    })();
   }, [user.email]);
 
   const handleChange = (e) => {
@@ -62,19 +58,13 @@ const MyProfile = ({
   };
 
   const handleUpdateProfile = async () => {
+    setLoading(true);
     try {
-      setLoading(true);
-      const response = await api.put(`User/update-profile`, formData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      await updateUserProfile(formData);
       message.success("Profile updated successfully!");
-      console.log("Updated Profile:", response.data);
-      setIsEditing(false); // Set isEditing to false on success
-    } catch (error) {
-      message.error("Failed to update profile. Please try again.");
-      console.error("Update Error:", error);
+      setIsEditing(false);
+    } catch (err) {
+      message.error(err.message);
     } finally {
       setLoading(false);
     }
@@ -209,7 +199,6 @@ const MyProfile = ({
               color: "black",
               fontWeight: "bold",
             }}
-            
             whileTap={{
               scale: 0.9,
               backgroundColor: "black",

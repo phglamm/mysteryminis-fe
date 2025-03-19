@@ -1,26 +1,26 @@
 import { useEffect, useState } from "react";
 import { Table, Button, Space, Modal, Input, Form, message, Tabs, Select, Spin, Switch } from "antd";
-import api from "../../../config/api";
+import { getAllUsers } from "../../../services/AdminServices/ManageAccountServices/ManageAccountServices";
 
 const { TabPane } = Tabs;
 
 const ManageAccount = () => {
   const [accounts, setAccounts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const fetchAccounts = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get("User/all-users");
-      const data = await response.data;
-      setAccounts(data);
-    } catch (error) {
-      console.error("Failed to fetch accounts: ", error);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
+    const fetchAccounts = async () => {
+      setLoading(true);
+      try {
+        const data = await getAllUsers();
+        setAccounts(data);
+      } catch (error) {
+        console.error("Failed to fetch accounts:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchAccounts();
   }, []);
   console.log(accounts);

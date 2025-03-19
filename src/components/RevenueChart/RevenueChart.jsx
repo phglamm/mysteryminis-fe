@@ -1,8 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useMemo, useEffect } from "react";
 import { Line } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { Select, Card } from "antd";
-import api from "./../../config/api";
+import { getRevenueData } from "../../services/AdminServices/DashboardServices/DashboardServices";
 
 Chart.register(...registerables);
 
@@ -11,16 +12,17 @@ export default function RevenueChart() {
   const [selectedYear, setSelectedYear] = useState("All");
   const [selectedMonth, setSelectedMonth] = useState("All");
   const [selectedWeek, setSelectedWeek] = useState("All");
-  const fetchRevenue = async () => {
-    try {
-      const response = await api.get("dashboard/revenue");
-      setData(response.data.monthlyData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
 
   useEffect(() => {
+    const fetchRevenue = async () => {
+      try {
+        const revenueData = await getRevenueData();
+        setData(revenueData);
+      } catch (error) {
+        console.error("Error fetching revenue data:", error);
+      }
+    };
+
     fetchRevenue();
   }, []);
 

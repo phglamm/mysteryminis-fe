@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import api from "../../../config/api";
 import toast from "react-hot-toast";
+import { confirmEmail } from "../../../services/UserServices/AuthServices/AuthServices";
 
 export default function ConfirmEmailPage() {
   const navigate = useNavigate();
@@ -12,21 +12,19 @@ export default function ConfirmEmailPage() {
     const token = queryParams.get("token");
     const email = queryParams.get("email");
 
-    const confirmEmail = async () => {
+    const handleConfirmEmail = async () => {
       try {
-        const response = await api.get(
-          `Account/confirm-email?token=${token}&email=${email}`
-        );
-        toast.success(response.data.message);
-        navigate("/login");
-      } catch (error) {
-        toast.error(error.response.data.message);
+        const message = await confirmEmail(token, email);
+        toast.success(message);
+      } catch (errorMessage) {
+        toast.error(errorMessage);
+      } finally {
         navigate("/login");
       }
     };
 
     if (token && email) {
-      confirmEmail();
+      handleConfirmEmail();
     }
   }, [location, navigate]);
 

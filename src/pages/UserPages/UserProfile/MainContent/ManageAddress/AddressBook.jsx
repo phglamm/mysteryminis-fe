@@ -1,38 +1,30 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../../../Redux/features/counterSlice";
-import api from "../../../../../config/api";
 import AddressPUT from "./AddressPUT";
 import { Spin } from "antd";
 import { EditOutlined } from "@ant-design/icons";
 import AddressPOST from "./AddressPOST";
+import { getUserAddresses } from "../../../../../services/UserServices/AddressServices/AddressServices";
 
-const AddressBook = ({ isEditing, setIsEditing, addAddress, setAddAddress }) => {
-  console.log(addAddress)
+const AddressBook = ({
+  isEditing,
+  setIsEditing,
+  addAddress,
+  setAddAddress,
+}) => {
   const [addresses, setAddresses] = useState([]);
-
   const user = useSelector(selectUser);
-  console.log(isEditing);
   const [selectedAddress, setSelectedAddress] = useState(null);
-  console.log(selectedAddress);
-  const fetchAddress = async () => {
-    try {
-      const response = await api.get(`/Address/?userId=${user.userId}`);
-      const fetchedAddresses = Array.isArray(response.data)
-        ? response.data
-        : [response.data];
-      setAddresses(fetchedAddresses);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+
 
   useEffect(() => {
     if (user.userId) {
-      fetchAddress();
+      getUserAddresses(user.userId)
+        .then((fetchedAddresses) => setAddresses(fetchedAddresses))
+        .catch((err) => console.log(err.message));
     }
   }, [user.userId, isEditing]);
 
@@ -41,7 +33,10 @@ const AddressBook = ({ isEditing, setIsEditing, addAddress, setAddAddress }) => 
       {addAddress ? (
         <AddressPOST setAddAddress={setAddAddress} />
       ) : isEditing ? (
-        <AddressPUT setIsEditing={setIsEditing} selectedAddress={selectedAddress} />
+        <AddressPUT
+          setIsEditing={setIsEditing}
+          selectedAddress={selectedAddress}
+        />
       ) : (
         <div className="h-[30vw] pb-28 overflow-y-auto">
           {addresses.length === 0 ? (

@@ -1,15 +1,28 @@
 /* eslint-disable react/prop-types */
 import { Input, Select } from "antd";
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
+=======
+import { useState, useEffect } from "react";
+>>>>>>> MinhLuong/OnlineBlindBox
 import { UserOutlined, InfoCircleOutlined } from "@ant-design/icons";
-import api from "../../../../../config/api";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
+<<<<<<< HEAD
 import axios from "axios";
+=======
+import {
+  fetchDistricts,
+  fetchProvinces,
+  fetchWards,
+  updateAddress,
+} from "../../../../../services/UserServices/AddressServices/AddressServices";
+>>>>>>> MinhLuong/OnlineBlindBox
 
 const { Option } = Select;
 
 const AddressPUT = ({ setIsEditing, selectedAddress }) => {
+<<<<<<< HEAD
   const [formData, setFormData] = useState({
     addressId: selectedAddress.addressId || 0,
     provinceId: selectedAddress.provinceId || null,
@@ -112,11 +125,60 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
     } catch (err) {
       console.error("Error updating address:", err);
     }
+=======
+  const [loading, setLoading] = useState(false);
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+
+  const [formData, setFormData] = useState({
+    addressId: selectedAddress.addressId || 0,
+    phoneNumber: selectedAddress.phoneNumber || "",
+    name: selectedAddress.name || "",
+    provinceId: selectedAddress.provinceId || null,
+    province: selectedAddress.province || "",
+    districtId: selectedAddress.districtId || null,
+    district: selectedAddress.district || "",
+    wardCode: selectedAddress.wardCode || null,
+    ward: selectedAddress.ward || "",
+    addressDetail: selectedAddress.addressDetail || "",
+    note: selectedAddress.note || "",
+  });
+
+  useEffect(() => {
+    (async () => {
+      setProvinces(await fetchProvinces());
+      if (formData.provinceId)
+        setDistricts(await fetchDistricts(formData.provinceId));
+      if (formData.districtId) setWards(await fetchWards(formData.districtId));
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleUpdate = async () => {
+    setLoading(true);
+    const result = await updateAddress(formData);
+    if (result.success) {
+      toast.success("Address updated successfully!");
+      setIsEditing(false);
+    } else {
+      toast.error("Failed to update address");
+    }
+    setLoading(false);
+>>>>>>> MinhLuong/OnlineBlindBox
   };
 
   return (
     <div>
+<<<<<<< HEAD
       {/* Name, Phone Number & Address Detail Inputs */}
+=======
+>>>>>>> MinhLuong/OnlineBlindBox
       {["name", "phoneNumber", "addressDetail"].map((field) => (
         <div
           key={field}
@@ -146,7 +208,11 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
           <Select
             style={{ width: "100%" }}
             placeholder="Select Province"
+<<<<<<< HEAD
             value={formData.provinceId}
+=======
+            value={formData.province}
+>>>>>>> MinhLuong/OnlineBlindBox
             onChange={(value) => {
               const selectedProvince = provinces.find(
                 (p) => p.ProvinceID === value
@@ -177,7 +243,11 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
           <Select
             style={{ width: "100%" }}
             placeholder="Select District"
+<<<<<<< HEAD
             value={formData.districtId}
+=======
+            value={formData.district}
+>>>>>>> MinhLuong/OnlineBlindBox
             onChange={(value) => {
               const selectedDistrict = districts.find(
                 (d) => d.DistrictID === value
@@ -208,7 +278,11 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
           <Select
             style={{ width: "100%" }}
             placeholder="Select Ward"
+<<<<<<< HEAD
             value={formData.wardCode}
+=======
+            value={formData.ward}
+>>>>>>> MinhLuong/OnlineBlindBox
             onChange={(value) => {
               const selectedWard = wards.find((w) => w.WardCode === value);
               setFormData((prev) => ({
@@ -231,7 +305,11 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
 
       {/* Save Button */}
       <div className="flex justify-between">
+<<<<<<< HEAD
         <motion.div
+=======
+        <motion.button
+>>>>>>> MinhLuong/OnlineBlindBox
           className="text-center bg-black text-white rounded-full p-2 w-1/4 mx-auto mt-4 cursor-pointer"
           whileHover={{
             scale: 1.1,
@@ -245,10 +323,18 @@ const AddressPUT = ({ setIsEditing, selectedAddress }) => {
             color: "white",
             fontWeight: "bold",
           }}
+<<<<<<< HEAD
           onClick={updateAddress}
         >
           Save Changes
         </motion.div>
+=======
+          onClick={handleUpdate}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save Changes"}
+        </motion.button>
+>>>>>>> MinhLuong/OnlineBlindBox
       </div>
     </div>
   );

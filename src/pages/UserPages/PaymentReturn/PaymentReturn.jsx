@@ -31,7 +31,13 @@ const PaymentReturnPage = () => {
         // Check the response's success flag
         if (response.status === 200) {
           toast.success(response.data.message);
-          navigate(route.orderSuccess);
+          if (response.data.isOnlineSerieBox === true) {
+            navigate(`${route.onlineBlindBox}/${response.data.boxOptionId}`, {
+              state: { isPlay: true },
+            });
+          } else {
+            navigate(route.orderSuccess);
+          }
           dispatch(clearCart());
         } else {
           toast.error("Payment failed. Please check your order and try again.");

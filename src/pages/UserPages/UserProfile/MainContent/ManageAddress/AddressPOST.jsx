@@ -5,15 +5,18 @@ import { useSelector } from "react-redux";
 import { UserOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { motion } from "framer-motion";
 import toast from "react-hot-toast";
-import axios from "axios";
 import { selectUser } from "../../../../../Redux/features/counterSlice";
-import api from "../../../../../config/api";
+import { addAddress, fetchDistricts, fetchProvinces, fetchWards } from "../../../../../services/UserServices/AddressServices/AddressServices";
 
 const { Option } = Select;
 
 const AddressPOST = ({ setAddAddress }) => {
   const user = useSelector(selectUser);
   const [loading, setLoading] = useState(false);
+  const [provinces, setProvinces] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [wards, setWards] = useState([]);
+
 
   const [formData, setFormData] = useState({
     phoneNumber: "",
@@ -29,78 +32,12 @@ const AddressPOST = ({ setAddAddress }) => {
     note: "",
   });
 
-  const [provinces, setProvinces] = useState([]);
-  const [districts, setDistricts] = useState([]);
-  const [wards, setWards] = useState([]);
+ 
 
   useEffect(() => {
-    fetchProvinces();
+    fetchProvinces().then(setProvinces);
   }, []);
 
-  const fetchProvinces = async () => {
-    try {
-      const response = await axios.get(
-        "https://online-gateway.ghn.vn/shiip/public-api/master-data/province",
-        {
-          headers: { Token: "62417330-f6d2-11ef-91ea-021c91d80158" },
-        }
-      );
-      if (response.data.code === 200) {
-        setProvinces(response.data.data);
-        setDistricts([]);
-        setWards([]);
-      }
-    } catch (err) {
-      console.error("Error fetching provinces:", err);
-    }
-  };
-
-  const fetchDistricts = async (provinceId) => {
-    try {
-      const response = await axios.get(
-        "https://online-gateway.ghn.vn/shiip/public-api/master-data/district",
-        {
-          headers: {
-            Token: "62417330-f6d2-11ef-91ea-021c91d80158",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response.data.code === 200) {
-        const filteredDistricts = response.data.data.filter(
-          (d) => d.ProvinceID === provinceId
-        );
-        setDistricts(filteredDistricts);
-      }
-    } catch (err) {
-      console.error("Error fetching districts:", err);
-    }
-  };
-
-  const fetchWards = async (districtId) => {
-    if (!districtId) return;
-
-    try {
-      const response = await axios.get(
-        `https://online-gateway.ghn.vn/shiip/public-api/master-data/ward`,
-        {
-          params: { district_id: districtId },
-          headers: {
-            Token: "62417330-f6d2-11ef-91ea-021c91d80158",
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.status === 200 && response.data.code === 200) {
-        setWards(response.data.data);
-      } else {
-        console.error("GHN API returned an error:", response.data);
-      }
-    } catch (err) {
-      console.error("Error fetching wards:", err.response?.data || err.message);
-    }
-  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -110,12 +47,10 @@ const AddressPOST = ({ setAddAddress }) => {
   const handleUpdateAddress = async () => {
     setLoading(true);
     try {
-      const response = await api.post("Address", formData);
-      console.log(response.data);
-      toast.success("Address Added successfully");
+      await addAddress(formData);
+      toast.success("Address added successfully!");
     } catch (error) {
-      toast.error("Failed to add address");
-      console.error("Error adding address:", error);
+      toast.error(error.message);
     } finally {
       setLoading(false);
       setAddAddress(false);
@@ -170,7 +105,7 @@ const AddressPOST = ({ setAddAddress }) => {
                 wardCode: null,
                 ward: null,
               }));
-              fetchDistricts(value);
+              fetchDistricts(value).then(setDistricts);
             }}
           >
             {provinces &&
@@ -199,7 +134,7 @@ const AddressPOST = ({ setAddAddress }) => {
                 wardCode: null,
                 ward: null,
               }));
-              fetchWards(value);
+              fetchWards(value).then(setWards);
             }}
             disabled={!formData.provinceId}
           >

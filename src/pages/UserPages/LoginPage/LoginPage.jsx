@@ -4,27 +4,24 @@ import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 import "./LoginPage.scss";
 import { route } from "./../../../routes/index";
-import api from "./../../../config/api";
 import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { login } from "../../../Redux/features/counterSlice";
 import toast from "react-hot-toast";
+import { googleLogin, loginUser } from "../../../services/UserServices/AuthServices/AuthServices";
 export default function LoginPage() {
   const [form] = useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const handleLogin = async (value) => {
-    console.log(value);
     try {
-      const response = await api.post("Account/Login", value);
-      console.log(response.data);
-      Cookies.set("accessToken", response.data?.token, {
-        expires: 7,
-        secure: true,
-      });
-      const user = response.data.user;
+      const data = await loginUser(value);
+      Cookies.set("accessToken", data?.token, { expires: 7, secure: true });
+      const user = data.user;
       dispatch(login(user));
+
       if (user.roleId === 3) {
         navigate(route.home);
       } else if (user.roleId === 2) {
@@ -32,28 +29,20 @@ export default function LoginPage() {
       } else if (user.roleId === 1) {
         navigate(`${route.admin}/${route.boxManagement}`);
       }
+
       toast.success("Login Success");
     } catch (error) {
-      toast.error(error.response.data.message);
-      console.log(error.response.data.message);
+      toast.error(error.response?.data?.message || "Login failed");
     }
   };
 
   const handleLoginSuccess = async (response) => {
-    const token = response.credential;
-    console.log("google credentials: ", token);
-
     try {
-      const response = await api.post("Account/google-login", {
-        credentialToken: token,
-      });
-      console.log(response.data);
-      Cookies.set("accessToken", response.data?.token, {
-        expires: 7,
-        secure: true,
-      });
-      const user = response.data.user;
+      const data = await googleLogin(response.credential);
+      Cookies.set("accessToken", data?.token, { expires: 7, secure: true });
+      const user = data.user;
       dispatch(login(user));
+
       if (user.roleId === 3) {
         navigate(route.home);
       } else if (user.roleId === 2) {
@@ -61,15 +50,15 @@ export default function LoginPage() {
       } else if (user.roleId === 1) {
         navigate(`${route.admin}/${route.boxManagement}`);
       }
+
       toast.success("Login Success");
     } catch (error) {
-      toast.error(error.response.data);
-      console.log(error.response.data);
+      toast.error(error.response?.data || "Google login failed");
     }
   };
 
   const handleLoginFailure = (error) => {
-    console.log(error);
+    console.error(error);
   };
 
   return (

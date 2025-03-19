@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import {
   Button,
   Dropdown,
@@ -11,12 +12,20 @@ import {
   Upload,
 } from "antd";
 import { useEffect, useState } from "react";
-import api from "../../../config/api";
 import Form from "antd/es/form/Form";
 import toast from "react-hot-toast";
-import { render } from "@react-three/fiber";
 import uploadFile from "../../../utils/UploadImage";
 import { EllipsisOutlined, PlusOutlined } from "@ant-design/icons";
+import {
+  addBoxOption,
+  addLuckyBox,
+  deleteBoxOption,
+  fetchLuckyBoxes,
+  publishLuckyBox,
+  updateBoxOption,
+  updateLuckyBox,
+} from "../../../services/AdminServices/ManageBoxOptionServices/ManageBoxOptionServices";
+import { getAllBoxes } from "../../../services/AdminServices/ManageBoxServices/ManageBoxServices";
 
 export default function ManageBoxOption() {
   const [activeTab, setActiveTab] = useState("1");
@@ -27,35 +36,35 @@ export default function ManageBoxOption() {
   const [boxOption, setBoxOption] = useState([]);
   const [luckyBox, setLuckyBox] = useState([]);
   const [box, setBox] = useState([]);
+  const [isModalAddOpen, setIsModalAddOpen] = useState(false);
+  const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
+  const [selectedBoxOption, setSelectedBoxOption] = useState(null);
 
   const fetchBoxOption = async () => {
-    const response = await api.get("BoxOption");
-    console.log(response.data);
-    const sortReponse = response.data.sort(
-      (a, b) => b.boxOptionId - a.boxOptionId
-    );
-    setBoxOption(sortReponse);
+    try {
+      const data = await fetchBoxOptions();
+      setBoxOption(data);
+    } catch (error) {
+      console.error("Error fetching Box Options:", error);
+    }
   };
+
   const fetchLuckyBox = async () => {
     try {
-      const response = await api.get("online-serie-box");
-      console.log(response.data);
-      setLuckyBox(
-        response.data.sort((a, b) => b.onlineSerieBoxId - a.onlineSerieBoxId)
-      );
+      const data = await fetchLuckyBoxes();
+      setLuckyBox(data);
     } catch (error) {
-      console.log(error.response.data);
+      console.error("Error fetching Lucky Boxes:", error);
     }
   };
 
   useEffect(() => {
     const fetchBox = async () => {
       try {
-        const response = await api.get("Box");
-        console.log(response.data);
-        setBox(response.data);
+        const data = await getAllBoxes();
+        setBox(data);
       } catch (error) {
-        console.log(error.response.data);
+        console.error("Error fetching Boxes:", error);
       }
     };
 
@@ -64,19 +73,14 @@ export default function ManageBoxOption() {
     fetchBox();
   }, []);
 
-  const [isModalAddOpen, setIsModalAddOpen] = useState(false);
-  const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
-  const [selectedBoxOption, setSelectedBoxOption] = useState(null);
-
   const handleAdd = async (values) => {
     try {
-      const response = await api.post("BoxOption", values);
-      setBoxOption([...boxOption, response.data]);
+      const data = await addBoxOption(values);
+      setBoxOption([...boxOption, data]);
       toast.success("Box's Option added successfully");
       setIsModalAddOpen(false);
       formAdd.resetFields();
     } catch (error) {
-      console.error("Failed to add BoxOption:", error);
       toast.error("Failed to add BoxOption");
     }
   };
@@ -92,43 +96,26 @@ export default function ManageBoxOption() {
 
   const handleUpdate = async (values) => {
     try {
-      const response = await api.put(
-        `BoxOption/${selectedBoxOption.boxOptionId}`,
-        values
-      );
-      console.log(response.data);
-      setBoxOption(
-        boxOption.map((BoxOption) =>
-          BoxOption.boxOptionId === selectedBoxOption.boxOptionId
-            ? { ...BoxOption, ...values }
-            : BoxOption
-        )
-      );
-      toast.success("Updated successfully");
+      await updateBoxOption(selectedBoxOption.boxOptionId, values);
       fetchBoxOption();
       setIsModalUpdateOpen(false);
       setSelectedBoxOption(null);
+      toast.success("Updated successfully");
     } catch (error) {
-      console.error("Failed to update Box's Option:", error);
-      toast.error("Failed to update Box's Option");
+      toast.error("Failed to update BoxOption");
     }
   };
 
-  const handleDelete = (values) => {
+  const handleDelete = (record) => {
     Modal.confirm({
       title: "Are you sure you want to delete this Box's Option?",
       onOk: async () => {
         try {
-          await api.delete(`BoxOption/${values.boxOptionId}`);
-          toast.success("Box's Option deleted successfully");
-          setBoxOption(
-            boxOption.filter(
-              (BoxOption) => BoxOption.boxOptionId !== values.boxOptionId
-            )
-          );
+          await deleteBoxOption(record.boxOptionId);
           fetchBoxOption();
+          toast.success("Box's Option deleted successfully");
         } catch (error) {
-          toast.error("Failed to delete Box's Option");
+          toast.error("Failed to delete BoxOption");
         }
       },
     });
@@ -338,20 +325,13 @@ export default function ManageBoxOption() {
 
   const handlePublishToggle = async (record) => {
     try {
-      console.log(record.isPublished);
       const newStatus = !record.isPublished;
-      console.log(newStatus);
-      const response = await api.put(
-        `online-serie-box/${record.boxOption.boxOptionId}/publish?status=${newStatus}`
-      );
-      console.log(response.data);
+      await publishLuckyBox(record.boxOption.boxOptionId, newStatus);
+      fetchLuckyBox();
       toast.success(
         newStatus ? "Published successfully" : "Unpublished successfully"
       );
-
-      fetchLuckyBox();
     } catch (error) {
-      console.error("Failed to update publish status:", error);
       toast.error("Failed to update publish status");
     }
   };
@@ -367,8 +347,7 @@ export default function ManageBoxOption() {
   };
 
   const handleAddLucky = async (values) => {
-    const imgURLs = fileList.map((file) => file.url);
-    values.imageUrl = imgURLs[0];
+    values.imageUrl = fileList.length ? fileList[0].url : null;
 
     values.createBoxOptionRequest = {
       boxId: values.BoxId,
@@ -378,43 +357,33 @@ export default function ManageBoxOption() {
       displayPrice: values.displayPrice,
       isOnlineSerieBox: true,
     };
-    console.log(values);
+
     try {
-      const response = await api.post("online-serie-box/create", values);
-      console.log(response);
+      await addLuckyBox(values);
       fetchLuckyBox();
-      toast.success("Box's Option added successfully");
+      toast.success("Lucky Box added successfully");
       setIsModalAddLuckyOpen(false);
       formAddLucky.resetFields();
       setFileList([]);
     } catch (error) {
-      console.error("Failed to add LuckyBox:", error);
-      toast.error("Failed to add Lucky");
+      toast.error("Failed to add Lucky Box");
     }
   };
 
   const handleUpdateLucky = async (values) => {
-    if (fileList && fileList.length > 0) {
-      const imagURLUpdate = fileList.map((file) => file.url);
-      values.imageUrl = imagURLUpdate[0];
-    } else {
-      values.imageUrl = selectedLuckyBox.imageUrl;
-    }
-    console.log(values);
+    values.imageUrl = fileList.length
+      ? fileList[0].url
+      : selectedLuckyBox.imageUrl;
+
     try {
-      const response = await api.put(
-        `online-serie-box/${selectedLuckyBox.onlineSerieBoxId}`,
-        values
-      );
-      console.log(response);
+      await updateLuckyBox(selectedLuckyBox.onlineSerieBoxId, values);
       fetchLuckyBox();
       toast.success("Lucky Box modified successfully");
       setIsModalUpdateLuckyOpen(false);
       formUpdateLucky.resetFields();
       setFileList([]);
     } catch (error) {
-      console.error("Failed to Update LuckyBox:", error);
-      toast.error("Failed to Update Lucky Box");
+      toast.error("Failed to update Lucky Box");
     }
   };
 
