@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { Button } from "antd";
 import api from "../../../config/api";
 import BoxModel from "../../../components/3DBoxModel/BoxModel";
@@ -13,10 +13,10 @@ const OnlineBlindBox = () => {
   const [loading, setLoading] = useState(true); // New loading state
   const [showVideo, setShowVideo] = useState(false);
   const { packageId } = useParams();
-  const [numberBlindBoxItem, setNumberBlindBoxItem] = useState()
+  const [numberBlindBoxItem, setNumberBlindBoxItem] = useState();
   const user = useSelector(selectUser);
   console.log("Selected Box ID from URL:", packageId);
-
+  const isPlay = useLocation().state?.isPlay;
   const fetchBlindBox = useCallback(async () => {
     setLoading(true); // Set loading to true before fetching
     try {
@@ -32,7 +32,9 @@ const OnlineBlindBox = () => {
 
   useEffect(() => {
     fetchBlindBox();
-    setNumberBlindBoxItem(blindbox.boxItemResponseDtos ? blindbox.boxItemResponseDtos.length : 0);
+    setNumberBlindBoxItem(
+      blindbox.boxItemResponseDtos ? blindbox.boxItemResponseDtos.length : 0
+    );
   }, [fetchBlindBox]);
 
   const firstHalfBlindBoxItem = Math.ceil(numberBlindBoxItem / 2);
@@ -65,13 +67,16 @@ const OnlineBlindBox = () => {
       const response = await api.post("Payment/make-Payment", requestData);
       console.log("Payment successful:", response.data);
       window.location.assign(response.data);
-      // setPlays(true);
     } catch (error) {
       console.error("Payment failed:", error);
     }
   };
 
-
+  useEffect(() => {
+    if (isPlay) {
+      setPlays(isPlay);
+    }
+  }, []);
   return (
     <div className="lg:pt-[6.8%] pt-[12%] h-screen justify-center items-center text-center flex flex-col">
       {loading ? ( // Show loading indicator if loading is true
@@ -84,38 +89,38 @@ const OnlineBlindBox = () => {
                 <img src={Logo} alt="Logo" className="w-[50%] h-fit" />
               </div>
               {/* Left Section */}
-                      <div
-                      className={`h-full flex gap-5 flex-col justify-center items-center w-[30%] relative ${
-                        showVideo ? "z-10" : "z-40"
-                      }`}
-                      >
-                      {blindbox.boxItemResponseDtos
-                        ?.slice(0, firstHalfBlindBoxItem)
-                        .map((item, index) => (
-                        <div
-                          key={index}
-                          className={`items-center gap-3 w-[80%] rounded-3xl ${
-                          item?.isSecret ? "bg-gradient-to-r from-amber-200 to-yellow-500" : "bg-white/70"
-                          }  border-2 flex flex-row`}
-                          style={{ height: `${100 / firstHalfBlindBoxItem}%` }}
-                          
-                        >
-                          <div className=" items-center px-3 gap-3 w-[100%] rounded-3x h-[100%] flex flex-row">
-                          <img
-                            src={item.imageUrl}
-                            alt={item.boxItemName}
-                            className=" bg-red-200 w-[40%] h-[70%] relative z-30 rounded-xl"
-                          />
-                          <div className="text-center z-30 relative px-5 w-[60%] font-bold truncate">
-                            {item.boxItemName}
-
-                          </div>
-                          </div>
+              <div
+                className={`h-full flex gap-5 flex-col justify-center items-center w-[30%] relative ${
+                  showVideo ? "z-10" : "z-40"
+                }`}
+              >
+                {blindbox.boxItemResponseDtos
+                  ?.slice(0, firstHalfBlindBoxItem)
+                  .map((item, index) => (
+                    <div
+                      key={index}
+                      className={`items-center gap-3 w-[80%] rounded-3xl ${
+                        item?.isSecret
+                          ? "bg-gradient-to-r from-amber-200 to-yellow-500"
+                          : "bg-white/70"
+                      }  border-2 flex flex-row`}
+                      style={{ height: `${100 / firstHalfBlindBoxItem}%` }}
+                    >
+                      <div className=" items-center px-3 gap-3 w-[100%] rounded-3x h-[100%] flex flex-row">
+                        <img
+                          src={item.imageUrl}
+                          alt={item.boxItemName}
+                          className=" bg-red-200 w-[40%] h-[70%] relative z-30 rounded-xl"
+                        />
+                        <div className="text-center z-30 relative px-5 w-[60%] font-bold truncate">
+                          {item.boxItemName}
                         </div>
-                        ))}
                       </div>
+                    </div>
+                  ))}
+              </div>
 
-                      {/* Center Section */}
+              {/* Center Section */}
               <div className="h-fit justify-between flex flex-col pt-[4%] w-[40%] relative z-40">
                 <div>
                   <div className="text-4xl z-40 font-bold">
@@ -160,7 +165,11 @@ const OnlineBlindBox = () => {
                   ?.slice(firstHalfBlindBoxItem)
                   .map((item, index) => (
                     <div
-                      className={`items-center px-3 gap-3 w-[80%] rounded-3xl ${item?.isSecret ? "bg-gradient-to-r from-amber-200 to-yellow-500" : "bg-white/70" } border-2 h-[25%] flex flex-row`} 
+                      className={`items-center px-3 gap-3 w-[80%] rounded-3xl ${
+                        item?.isSecret
+                          ? "bg-gradient-to-r from-amber-200 to-yellow-500"
+                          : "bg-white/70"
+                      } border-2 h-[25%] flex flex-row`}
                       key={index}
                     >
                       <img
