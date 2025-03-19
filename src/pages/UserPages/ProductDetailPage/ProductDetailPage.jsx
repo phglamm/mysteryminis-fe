@@ -4,10 +4,9 @@ import ReactImageGallery from "react-image-gallery";
 import CardProduct from "../../../components/CardProduct/CardProduct"; // Import CardProduct
 import "react-image-gallery/styles/css/image-gallery.css";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
-import api from "../../../config/api";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, clearCart } from "../../../Redux/features/cartSlice";
+import { addToCart } from "../../../Redux/features/cartSlice";
 import "./ProductDetailPage.scss";
 import {
   addToFavorite,
@@ -15,6 +14,8 @@ import {
   selectFavoriteItems,
 } from "../../../Redux/features/favoriteSlice";
 import toast from "react-hot-toast";
+import { fetchBoxDetail } from "../../../services/UserServices/ProductDetailService/ProductDetailService";
+import { getAllBoxes } from "../../../services/AdminServices/ManageBoxServices/ManageBoxServices";
 const { Panel } = Collapse;
 
 const ProductDetailPage = () => {
@@ -33,49 +34,53 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchBoxDetail = async () => {
+    const fetchBoxData = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`Box/withDTO/${id}`);
-        console.log(response.data);
-        setBox(response.data);
+        const data = await fetchBoxDetail(id);
+        setBox(data);
 
-        const filterResponse = response.data.boxOptions.filter(
-          (option) => option.isOnlineSerieBox === false
+        const filterResponse = data.boxOptions.filter(
+          (option) => !option.isOnlineSerieBox
         );
 
-        console.log(filterResponse);
-        const defaultOption = filterResponse.reduce((minOption, option) => {
-          return option.displayPrice < minOption.displayPrice
-            ? option
-            : minOption;
-        }, filterResponse[0]);
+        const defaultOption = filterResponse.reduce((minOption, option) =>
+          option.displayPrice < minOption.displayPrice ? option : minOption
+        , filterResponse[0]);
+
         setSelectedOptionName(defaultOption.boxOptionName);
         setSelectedPrice(defaultOption.displayPrice);
         setChooseOption(defaultOption);
         setIsOutOfStock(defaultOption.boxOptionStock === 0);
       } catch (error) {
-        console.log("Failed to fetch box detail: ", error);
+        console.error("Failed to fetch box detail:", error);
         toast.error("Failed to fetch box detail");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-    fetchBoxDetail();
+
+    fetchBoxData();
   }, [id]);
 
   useEffect(() => {
     if (box) {
-      const fetchRelevantBox = async () => {
-        const response = await api.get(`Box`);
-        // console.log(response.data);
-        const filterResponse = response.data.filter(
-          (relevantBox) =>
-            relevantBox.brandName === box.brandName &&
-            relevantBox.boxId !== box.boxId
-        );
-        setRelevantBox(filterResponse);
+      const fetchRelevantBoxData = async () => {
+        try {
+          const data = await getAllBoxes();
+          const filteredBoxes = data.filter(
+            (relevantBox) =>
+              relevantBox.brandName === box.brandName &&
+              relevantBox.boxId !== box.boxId
+          );
+          setRelevantBox(filteredBoxes);
+        } catch (error) {
+          console.error("Failed to fetch relevant boxes:", error);
+          toast.error("Failed to fetch relevant boxes");
+        }
       };
-      fetchRelevantBox();
+
+      fetchRelevantBoxData();
     }
   }, [box]);
 
@@ -176,7 +181,7 @@ const ProductDetailPage = () => {
             >
               {box.boxOptions
                 .filter((option) => option.isOnlineSerieBox === false)
-                .map((option, index) => (
+                .map((option) => (
                   <button
                     key={option.boxOptionId}
                     style={{
