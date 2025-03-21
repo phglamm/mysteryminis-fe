@@ -93,6 +93,25 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.cartItems = [];
     },
+
+    addOnlineBoxToCart: (state, action) => {
+      const { boxId, selectedOption } = action.payload;
+
+      // Check if the item with the selected variant already exists in the cart
+      const item = state.cartItems.find(
+        (cartItem) =>
+          cartItem.boxId === boxId &&
+          cartItem.selectedOption?.boxOptionId === selectedOption?.boxOptionId
+      );
+
+      if (item) {
+        // If the item exists, increase its quantity
+      } else {
+        // Add the new item with the selected variant
+        state.cartItems.push({ ...action.payload, quantity: 1 });
+        toast.success("Box added to cart!");
+      }
+    },
   },
 });
 
@@ -105,6 +124,7 @@ export const {
   toggleItemChecked,
   increaseOpen,
   decreaseOpen,
+  addOnlineBoxToCart,
 } = cartSlice.actions;
 
 export const selectCartItems = (state) => state.cart.cartItems;

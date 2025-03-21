@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addOnlineBoxToCart,
   addToCart,
   decreaseOpen,
   decreaseQuantity,
@@ -52,7 +53,7 @@ const Cart = () => {
           },
         }));
         mappingRolledItems.forEach((item) => {
-          dispatch(addToCart(item));
+          dispatch(addOnlineBoxToCart(item));
         });
         setRolledItems(mappingRolledItems);
         console.log(mappingRolledItems);
