@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Form, Input, Button, Card, Table, Badge, Select, Radio } from "antd";
-import { useSelector } from "react-redux";
-import { selectCartItems } from "../../../Redux/features/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { clearCart, selectCartItems } from "../../../Redux/features/cartSlice";
 import { selectUser } from "../../../Redux/features/counterSlice";
 import api from "../../../config/api";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +17,7 @@ const CheckOutPage = () => {
 
   const [form] = useForm();
   const [shippingFee, setShippingFee] = useState(0);
-
+  const dispatch = useDispatch();
   const provisional = cartItems.reduce(
     (acc, item) => acc + item.selectedOption.displayPrice * item.quantity,
     0
@@ -117,6 +117,7 @@ const CheckOutPage = () => {
         const response = await api.post("/Payment/make-Payment", values);
         console.log(response.data);
         navigate(route.orderSuccess);
+        dispatch(clearCart());
       } catch (error) {
         console.log(error.response.data);
       }

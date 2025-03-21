@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Row, Col, Typography, Divider, Checkbox } from "antd";
 import {
   ShoppingCartOutlined,
@@ -7,6 +7,7 @@ import {
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  addToCart,
   decreaseOpen,
   decreaseQuantity,
   increaseOpen,
@@ -17,14 +18,51 @@ import {
 } from "../../../Redux/features/cartSlice";
 import { useNavigate } from "react-router-dom";
 import { route } from "../../../routes";
+import { fetchUserRolledItems } from "../../../services/UserServices/UserRolledItemServices/UserRolledItemServices";
+import { selectUser } from "../../../Redux/features/counterSlice";
 
 const { Title, Text } = Typography;
 
 const Cart = () => {
   const navigate = useNavigate();
   const cartItems = useSelector(selectCartItems);
+  console.log(cartItems);
   const dispatch = useDispatch();
-
+  const user = useSelector(selectUser);
+  const [rolledItems, setRolledItems] = useState([]);
+  useEffect(() => {
+    const fetchUserRolledItem = async () => {
+      try {
+        const rolledItems = await fetchUserRolledItems(user.userId);
+        const mappingRolledItems = rolledItems.map((item) => ({
+          boxDescription: item.boxOptionName,
+          boxId: item.id,
+          boxImage: [{ boxImageUrl: item.boxItem.imageUrl }],
+          boxItem: item.boxItem,
+          boxName: item.boxOptionName,
+          brandName: item.brandName,
+          orderItemOpenRequestNumber: item.orderItemOpenRequestNumber,
+          quantity: item.quantity,
+          selectedOption: {
+            boxOptionId: item.boxOptionId,
+            boxOptionName: item.boxOptionName,
+            displayPrice: item.price,
+            isOnlineSerieBox: item.isOnlineSerieBox,
+            userRolledItemId: item.id,
+          },
+        }));
+        mappingRolledItems.forEach((item) => {
+          dispatch(addToCart(item));
+        });
+        setRolledItems(mappingRolledItems);
+        console.log(mappingRolledItems);
+        console.log(rolledItems);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+    fetchUserRolledItem();
+  }, [cartItems]);
   const totalAmount = cartItems.reduce(
     (acc, item) => acc + item.selectedOption?.displayPrice * item.quantity,
     0
@@ -51,7 +89,7 @@ const Cart = () => {
               >
                 <img
                   alt={item.boxName}
-                  src={item?.boxImage[0]?.boxImageUrl}
+                  src={item?.boxImage[0]?.boxImageUrl || item?.boxImage}
                   style={{
                     width: "250px",
                     height: "250px",
@@ -72,20 +110,24 @@ const Cart = () => {
                       </p>
                     </Col>
                     <Col>
-                      <Button
-                        type="text"
-                        danger
-                        onClick={() =>
-                          dispatch(
-                            removeFromCart({
-                              boxId: item.boxId,
-                              selectedOption: item.selectedOption,
-                            })
-                          )
-                        }
-                      >
-                        Remove
-                      </Button>
+                      {item.selectedOption?.isOnlineSerieBox === false && (
+                        <>
+                          <Button
+                            type="text"
+                            danger
+                            onClick={() =>
+                              dispatch(
+                                removeFromCart({
+                                  boxId: item.boxId,
+                                  selectedOption: item.selectedOption,
+                                })
+                              )
+                            }
+                          >
+                            Remove
+                          </Button>
+                        </>
+                      )}
                     </Col>
                   </Row>
                   <Row
@@ -98,82 +140,92 @@ const Cart = () => {
                         Price:{" "}
                         {item.selectedOption?.displayPrice.toLocaleString()} đ
                       </p>
-                      <div className="flex items-center justify-between gap-3">
-                        <p>How many box you want us to open?</p>
-                        <Button
-                          icon={<MinusOutlined />}
-                          onClick={() =>
-                            dispatch(
-                              decreaseOpen({
-                                boxId: item.boxId,
-                                selectedOption: item.selectedOption || null,
-                              })
-                            )
-                          }
-                          disabled={item.orderItemOpenRequestNumber === 0}
-                        />
-                        <Text
-                          style={{
-                            textAlign: "center",
-                            fontSize: "18px",
-                          }}
-                        >
-                          {item.orderItemOpenRequestNumber}
-                        </Text>
-                        <Button
-                          icon={<PlusOutlined />}
-                          onClick={() =>
-                            dispatch(
-                              increaseOpen({
-                                boxId: item.boxId,
-                                selectedOption: item.selectedOption || null,
-                              })
-                            )
-                          }
-                          disabled={
-                            item.orderItemOpenRequestNumber >= item.quantity
-                          }
-                        />
-                      </div>
+                      {item.selectedOption?.isOnlineSerieBox === true && (
+                        <p>This is Item from Online Serie Box</p>
+                      )}
+                      {item.selectedOption?.isOnlineSerieBox === false && (
+                        <div className="flex items-center justify-between gap-3">
+                          <p>How many box you want us to open?</p>
+                          <Button
+                            icon={<MinusOutlined />}
+                            onClick={() =>
+                              dispatch(
+                                decreaseOpen({
+                                  boxId: item.boxId,
+                                  selectedOption: item.selectedOption || null,
+                                })
+                              )
+                            }
+                            disabled={item.orderItemOpenRequestNumber === 0}
+                          />
+                          <Text
+                            style={{
+                              textAlign: "center",
+                              fontSize: "18px",
+                            }}
+                          >
+                            {item.orderItemOpenRequestNumber}
+                          </Text>
+                          <Button
+                            icon={<PlusOutlined />}
+                            onClick={() =>
+                              dispatch(
+                                increaseOpen({
+                                  boxId: item.boxId,
+                                  selectedOption: item.selectedOption || null,
+                                })
+                              )
+                            }
+                            disabled={
+                              item.orderItemOpenRequestNumber >= item.quantity
+                            }
+                          />
+                        </div>
+                      )}
                     </Col>
                     <Col>
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        <Button
-                          icon={<MinusOutlined />}
-                          onClick={() =>
-                            dispatch(
-                              decreaseQuantity({
-                                boxId: item.boxId,
-                                selectedOption: item.selectedOption || null,
-                              })
-                            )
-                          }
-                          disabled={item.quantity === 1}
-                        />
-                        <Text
-                          style={{
-                            margin: "0 15px",
-                            minWidth: "50px",
-                            textAlign: "center",
-                            fontSize: "18px",
-                          }}
-                        >
-                          {item.quantity}
-                        </Text>
-                        <Button
-                          icon={<PlusOutlined />}
-                          onClick={() =>
-                            dispatch(
-                              increaseQuantity({
-                                boxId: item.boxId,
-                                selectedOption: item.selectedOption || null,
-                              })
-                            )
-                          }
-                          disabled={
-                            item.selectedOption?.boxOptionStock <= item.quantity
-                          }
-                        />
+                        {item.selectedOption?.isOnlineSerieBox === false && (
+                          <>
+                            <Button
+                              icon={<MinusOutlined />}
+                              onClick={() =>
+                                dispatch(
+                                  decreaseQuantity({
+                                    boxId: item.boxId,
+                                    selectedOption: item.selectedOption || null,
+                                  })
+                                )
+                              }
+                              disabled={item.quantity === 1}
+                            />
+                            <Text
+                              style={{
+                                margin: "0 15px",
+                                minWidth: "50px",
+                                textAlign: "center",
+                                fontSize: "18px",
+                              }}
+                            >
+                              {item.quantity}
+                            </Text>
+                            <Button
+                              icon={<PlusOutlined />}
+                              onClick={() =>
+                                dispatch(
+                                  increaseQuantity({
+                                    boxId: item.boxId,
+                                    selectedOption: item.selectedOption || null,
+                                  })
+                                )
+                              }
+                              disabled={
+                                item.selectedOption?.boxOptionStock <=
+                                item.quantity
+                              }
+                            />
+                          </>
+                        )}
                       </div>
                     </Col>
                   </Row>
