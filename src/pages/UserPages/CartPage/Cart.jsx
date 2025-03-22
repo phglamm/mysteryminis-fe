@@ -40,7 +40,7 @@ const Cart = () => {
           boxId: item.id,
           boxImage: [{ boxImageUrl: item.boxItem.imageUrl }],
           boxItem: item.boxItem,
-          boxName: item.boxOptionName,
+          boxName: item.boxItem.boxItemName,
           brandName: item.brandName,
           orderItemOpenRequestNumber: item.orderItemOpenRequestNumber,
           quantity: item.quantity,
