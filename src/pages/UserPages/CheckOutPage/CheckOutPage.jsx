@@ -84,7 +84,7 @@ const CheckOutPage = () => {
     values.subTotal = provisional;
     values.shippingFee = shippingFee;
     values.totalPrice = provisional + shippingFee; // Tổng tiền
-    values.voucherId = 1;
+    values.voucherId = null;
     values.orderItemRequestDto = cartItems.map((item) => ({
       quantity: item.quantity,
       price: item.selectedOption.displayPrice,
