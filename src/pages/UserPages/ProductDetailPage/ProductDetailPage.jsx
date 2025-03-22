@@ -4,10 +4,9 @@ import ReactImageGallery from "react-image-gallery";
 import CardProduct from "../../../components/CardProduct/CardProduct"; // Import CardProduct
 import "react-image-gallery/styles/css/image-gallery.css";
 import { HeartFilled, HeartOutlined } from "@ant-design/icons";
-import api from "../../../config/api";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart, clearCart } from "../../../Redux/features/cartSlice";
+import { addToCart } from "../../../Redux/features/cartSlice";
 import "./ProductDetailPage.scss";
 import {
   addToFavorite,
@@ -16,6 +15,8 @@ import {
 } from "../../../Redux/features/favoriteSlice";
 import toast from "react-hot-toast";
 import moment from "moment";
+import { fetchBoxDetail } from "../../../services/UserServices/ProductDetailService/ProductDetailService";
+import { getAllBoxes } from "../../../services/AdminServices/ManageBoxServices/ManageBoxServices";
 const { Panel } = Collapse;
 
 const ProductDetailPage = () => {
@@ -37,49 +38,55 @@ const ProductDetailPage = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchBoxDetail = async () => {
+    const fetchBoxData = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`Box/withDTO/${id}`);
-        console.log(response.data);
-        setBox(response.data);
+        const data = await fetchBoxDetail(id);
+        setBox(data);
 
-        const filterResponse = response.data.boxOptions.filter(
-          (option) => option.isOnlineSerieBox === false
+        const filterResponse = data.boxOptions.filter(
+          (option) => !option.isOnlineSerieBox
         );
 
-        console.log(filterResponse);
-        const defaultOption = filterResponse.reduce((minOption, option) => {
-          return option.displayPrice < minOption.displayPrice
-            ? option
-            : minOption;
-        }, filterResponse[0]);
+        const defaultOption = filterResponse.reduce(
+          (minOption, option) =>
+            option.displayPrice < minOption.displayPrice ? option : minOption,
+          filterResponse[0]
+        );
+
         setSelectedOptionName(defaultOption.boxOptionName);
         setSelectedPrice(defaultOption.displayPrice);
         setChooseOption(defaultOption);
         setIsOutOfStock(defaultOption.boxOptionStock === 0);
       } catch (error) {
-        console.log("Failed to fetch box detail: ", error);
+        console.error("Failed to fetch box detail:", error);
         toast.error("Failed to fetch box detail");
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
-    fetchBoxDetail();
+
+    fetchBoxData();
   }, [id]);
 
   useEffect(() => {
     if (box) {
-      const fetchRelevantBox = async () => {
-        const response = await api.get(`Box`);
-        // console.log(response.data);
-        const filterResponse = response.data.filter(
-          (relevantBox) =>
-            relevantBox.brandName === box.brandName &&
-            relevantBox.boxId !== box.boxId
-        );
-        setRelevantBox(filterResponse);
+      const fetchRelevantBoxData = async () => {
+        try {
+          const data = await getAllBoxes();
+          const filteredBoxes = data.filter(
+            (relevantBox) =>
+              relevantBox.brandName === box.brandName &&
+              relevantBox.boxId !== box.boxId
+          );
+          setRelevantBox(filteredBoxes);
+        } catch (error) {
+          console.error("Failed to fetch relevant boxes:", error);
+          toast.error("Failed to fetch relevant boxes");
+        }
       };
-      fetchRelevantBox();
+
+      fetchRelevantBoxData();
     }
   }, [box]);
 
@@ -152,7 +159,6 @@ const ProductDetailPage = () => {
     thumbnail: image.boxImageUrl,
   }));
 
-
   const handleImageClick = (imageUrl) => {
     setSelectedImage(imageUrl);
   };
@@ -191,7 +197,9 @@ const ProductDetailPage = () => {
           </h1>
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             <Rate value={Number(averageRating)} disabled />
-            <span>{averageRating} ({totalFeedbackCount} feedbacks)</span>
+            <span>
+              {averageRating} ({totalFeedbackCount} feedbacks)
+            </span>
           </div>
 
           <p style={{ fontSize: "20px", color: "#e60000", fontWeight: "bold" }}>
@@ -213,7 +221,7 @@ const ProductDetailPage = () => {
             >
               {box.boxOptions
                 .filter((option) => option.isOnlineSerieBox === false)
-                .map((option, index) => (
+                .map((option) => (
                   <button
                     key={option.boxOptionId}
                     style={{
@@ -329,32 +337,42 @@ const ProductDetailPage = () => {
         {displayedVotes.length > 0 ? (
           <>
             <div className="grid grid-cols-1 gap-4">
-              {displayedVotes.slice(0, showAllComments ? undefined : 3).map((vote) => (
-                <div key={vote.feedbackId} className="p-4 rounded-lg shadow-md">
-                  <p className="text-lg">
-                    <strong>User: </strong> {vote.userName}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Content: </strong> 
-                    {vote.feedbackContent}
-                  </p>
-                  <p className="text-lg">
-                    <strong>Rating: </strong> <Rate value={vote.rating} disabled />
-                  </p>
-                  <p className="text-lg">
-                    <strong>Date: </strong>{" "}
-                    {moment(vote.updatedAt).format("DD-MM-YYYY")}
-                  </p>
-                  {/* Hiển thị hình ảnh từ imageUrl trong feedback */}
-                  {vote.imageUrl && (
-                    <img
-                      src={vote.imageUrl}
-                      alt="Feedback image"
-                      style={{ width: "10%", height: "auto", marginTop: "10px" }}
-                    />
-                  )}
-                </div>
-              ))}
+              {displayedVotes
+                .slice(0, showAllComments ? undefined : 3)
+                .map((vote) => (
+                  <div
+                    key={vote.feedbackId}
+                    className="p-4 rounded-lg shadow-md"
+                  >
+                    <p className="text-lg">
+                      <strong>User: </strong> {vote.userName}
+                    </p>
+                    <p className="text-lg">
+                      <strong>Content: </strong>
+                      {vote.feedbackContent}
+                    </p>
+                    <p className="text-lg">
+                      <strong>Rating: </strong>{" "}
+                      <Rate value={vote.rating} disabled />
+                    </p>
+                    <p className="text-lg">
+                      <strong>Date: </strong>{" "}
+                      {moment(vote.updatedAt).format("DD-MM-YYYY")}
+                    </p>
+                    {/* Hiển thị hình ảnh từ imageUrl trong feedback */}
+                    {vote.imageUrl && (
+                      <img
+                        src={vote.imageUrl}
+                        alt="Feedback image"
+                        style={{
+                          width: "10%",
+                          height: "auto",
+                          marginTop: "10px",
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
             </div>
             {displayedVotes.length > 3 && (
               <div className="mt-4 text-center">

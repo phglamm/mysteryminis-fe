@@ -1,24 +1,23 @@
 import { Badge, Card, Tooltip } from "antd";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import api from "../../../config/api";
 import { UpSquareOutlined } from "@ant-design/icons";
+import { fetchOnlineSeriesBoxes } from "../../../services/UserServices/OnlinePackageService/OnlinePackageService";
 
 const OnlinePackage = () => {
     const navigate = useNavigate();
     const [Package, setPackage] = useState([]);
 
-    const fetchPackages = async () => {
-        try {
-            const response = await api.get("online-serie-box");
-            setPackage(response.data);
-        } catch (error) {   
-            console.error(error);
-        }
-    };
-
     useEffect(() => {
-        fetchPackages();
+        const getPackages = async () => {
+            try {
+                const data = await fetchOnlineSeriesBoxes();
+                setPackage(data);
+            } catch (error) {
+                console.error("Failed to fetch online packages:", error);
+            }
+        };
+        getPackages();
     }, []);
 
     const handleSelectedBox = (box) => {
