@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/prop-types */
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
@@ -16,17 +17,29 @@ const AddressBook = ({
   setAddAddress,
 }) => {
   const [addresses, setAddresses] = useState([]);
+  const [timeoutMessage, setTimeoutMessage] = useState(false); // New state for timeout message
   const user = useSelector(selectUser);
   const [selectedAddress, setSelectedAddress] = useState(null);
-
 
   useEffect(() => {
     if (user.userId) {
       getUserAddresses(user.userId)
-        .then((fetchedAddresses) => setAddresses(fetchedAddresses))
+        .then((fetchedAddresses) => {
+          setAddresses(fetchedAddresses);
+          setTimeoutMessage(false); // Reset timeout message if addresses are fetched
+        })
         .catch((err) => console.log(err.message));
     }
-  }, [user.userId, isEditing]);
+
+    // Set a timeout to display the message if addresses remain empty
+    const timeout = setTimeout(() => {
+      if (addresses.length === 0) {
+        setTimeoutMessage(true);
+      }
+    }, 5000); // 5 seconds timeout
+
+    return () => clearTimeout(timeout); // Cleanup timeout on component unmount or re-render
+  }, [user.userId, isEditing, addresses.length]);
 
   return (
     <div>
@@ -39,7 +52,11 @@ const AddressBook = ({
         />
       ) : (
         <div className="h-[30vw] pb-28 overflow-y-auto">
-          {addresses.length === 0 ? (
+          {timeoutMessage ? (
+            <p className="w-full h-full flex justify-center items-center text-gray-500">
+              You don't have any addresses yet.
+            </p>
+          ) : addresses.length === 0 ? (
             <p className="w-full h-full flex justify-center items-center">
               <Spin size="large" />
             </p>
