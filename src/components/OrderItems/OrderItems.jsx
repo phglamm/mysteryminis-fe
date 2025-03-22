@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Button, Image } from "antd";
 import { cancelOrder, fetchOrders, requestRefund } from "../../services/UserServices/ManageOrderServices/ManageOrderServices";
+import { useSelector } from "react-redux";
+import { selectUser } from "../../Redux/features/counterSlice";
 
 
 
@@ -18,12 +20,20 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [visible, setVisible] = useState(false);
   const [checkCard, setCheckCard] = useState(null);
 
+  const user = useSelector(selectUser);
+
   const loadOrders = async () => {
     try {
-      const data = await fetchOrders();
-      setOrders(data);
+      const data = await fetchOrders(user);
+      if (Array.isArray(data)) {
+        setOrders(data);
+      } else {
+        console.error("Expected an array but got:", data);
+        setOrders([]); // Fallback to an empty array
+      }
     } catch (error) {
-      console.error(error);
+      console.error("Error fetching orders:", error);
+      setOrders([]); // Fallback to an empty array
     }
   };
 
@@ -92,6 +102,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
         ViewDetails ? { delay: 0.8, duration: 1 } : { delay: 0.5, duration: 1 }
       }
     >
+     {orders && orders.length > 0 ? (
       <AnimatePresence>
         {(ViewDetails && selectedOrder ? [selectedOrder] : filteredOrders).map(
           (order, index) => (
@@ -453,6 +464,9 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
           )
         )}
       </AnimatePresence>
+     ) : (
+       <div className="text-center text-gray-400">No orders </div>
+     )}
     </motion.div>
   );
 };
