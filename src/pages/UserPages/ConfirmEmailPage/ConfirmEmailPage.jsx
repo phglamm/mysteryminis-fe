@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
 import { confirmEmail } from "../../../services/UserServices/AuthServices/AuthServices";
+import { route } from "../../../routes";
 
 export default function ConfirmEmailPage() {
   const navigate = useNavigate();
@@ -15,11 +16,11 @@ export default function ConfirmEmailPage() {
     const handleConfirmEmail = async () => {
       try {
         const message = await confirmEmail(token, email);
-        toast.success(message);
-      } catch (errorMessage) {
-        toast.error(errorMessage);
-      } finally {
-        navigate("/login");
+        toast.success(message.message);
+        console.log(message);
+        navigate(route.login);
+      } catch (error) {
+        toast.error(error.response.data.message);
       }
     };
 
