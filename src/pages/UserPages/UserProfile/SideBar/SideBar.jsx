@@ -73,8 +73,11 @@ const Sidebar = ({ setActiveSection }) => {
             Sign Out
           </motion.div>
           <div className="flex justify-center mb-2 text-5xl">
-            {" "}
-            <GithubOutlined />{" "}
+          {user.avatarUrl ? (
+            <img src={user.avatarUrl} alt="avatar" className="w-30 h-30 bg-white rounded-full" />
+          ) : (
+            <GithubOutlined />
+          )}
           </div>
           <div className="flex justify-center text-2xl">{user.username}</div>
         </div>

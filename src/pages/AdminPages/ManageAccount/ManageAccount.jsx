@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Space, Modal, Input, Form, message, Tabs, Select, Spin, Switch } from "antd";
+import { Table, Button, Space, Modal, Input, Form, message, Tabs, Select, Spin, Switch, Upload, Image } from "antd";
 import { getAllUsers } from "../../../services/AdminServices/ManageAccountServices/ManageAccountServices";
+import { UploadOutlined } from "@ant-design/icons";
 
 const { TabPane } = Tabs;
 
@@ -80,6 +81,7 @@ const ManageAccount = () => {
 
   const columns = [
     { title: "ID", dataIndex: "userId", key: "userId", width: 80 },
+    { title: "Avatar", dataIndex: "avatarUrl", key: "avatarUrl", width: 80, render: (url) => url ? <Image src={url} alt="avatar" style={{ width: 40, height: 40, borderRadius: "50%" }} /> : "No Avatar" },
     { title: "Username", dataIndex: "username", key: "username", width: 150 },
     { title: "Name", dataIndex: "fullname", key: "fullname", width: 150 },
     { title: "Email", dataIndex: "email", key: "email", width: 250 },
@@ -200,6 +202,11 @@ const ManageAccount = () => {
         }}
       >
         <Form form={form} layout="vertical">
+        <Form.Item name="avatarUrl" label="Avatar">
+            <Upload listType="picture" maxCount={1}>
+              <Button icon={<UploadOutlined />}>Upload Avatar</Button>
+            </Upload>
+          </Form.Item>
           <Form.Item
             name="username"
             label="Username"

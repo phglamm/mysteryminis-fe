@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
-import { Button } from "antd";
 import api from "../../../config/api";
 import BoxModel from "../../../components/3DBoxModel/BoxModel";
 import Logo from "../../../assets/images/Logo-removebg.png";
