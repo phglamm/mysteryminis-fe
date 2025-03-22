@@ -15,7 +15,7 @@ const OnlineBlindBox = () => {
   const { packageId } = useParams();
   const [numberBlindBoxItem, setNumberBlindBoxItem] = useState();
   const user = useSelector(selectUser);
- 
+
   console.log("Selected Box ID from URL:", packageId);
   const isPlay = useLocation().state?.isPlay;
   const fetchBlindBox = useCallback(async () => {
@@ -82,12 +82,12 @@ const OnlineBlindBox = () => {
     <div className="lg:pt-[6.8%] pt-[12%] h-screen justify-center items-center text-center flex flex-col">
       {loading ? ( // Show loading indicator if loading is true
         <div className="flex bg-black flex-col h-full justify-center items-center w-full">
-            <div className="flex justify-center h-full w-full relative">
-              <div className="w-[50%] flex justify-center items-center h-[100%] absolute z-10">
-                <img src={Logo} alt="Logo" className="w-[50%] h-fit" />
-              </div>
+          <div className="flex justify-center h-full w-full relative">
+            <div className="w-[50%] flex justify-center items-center h-[100%] absolute z-10">
+              <img src={Logo} alt="Logo" className="w-[50%] h-fit" />
             </div>
           </div>
+        </div>
       ) : (
         blindbox.boxOption && (
           <div className="flex bg-black flex-col h-full justify-center items-center w-full">
@@ -111,7 +111,10 @@ const OnlineBlindBox = () => {
                           ? "bg-gradient-to-r from-amber-200 to-yellow-500"
                           : "bg-white/70"
                       }  border-2 flex flex-row`}
-                      style={{ height: `${100 / firstHalfBlindBoxItem}%`, maxHeight: "25%" }}
+                      style={{
+                        height: `${100 / firstHalfBlindBoxItem}%`,
+                        maxHeight: "25%",
+                      }}
                     >
                       <div className=" items-center px-3 gap-3 w-[100%] rounded-3x h-[100%] flex flex-row">
                         <img
@@ -137,29 +140,48 @@ const OnlineBlindBox = () => {
                     {blindbox.brandDtoResponse?.brandName}
                   </div>
                   <div className="flex flex-row justify-center gap-2 z-40">
-                    <div className={`text-sm px-3 py-1 rounded-md ${blindbox.isSecretOpen ? "bg-gray-500" : "bg-gradient-to-r from-amber-200 to-yellow-500" }`}>
-                      {blindbox.isSecretOpen ? 'Secret Opened' : 'Secret'}
+                    <div
+                      className={`text-sm px-3 py-1 rounded-md ${
+                        blindbox.isSecretOpen
+                          ? "bg-gray-500"
+                          : "bg-gradient-to-r from-amber-200 to-yellow-500"
+                      }`}
+                    >
+                      {blindbox.isSecretOpen ? "Secret Opened" : "Secret"}
                     </div>
-                    <div className={`text-sm px-3 gap-1 py-1 items-center justify-center flex rounded-md ${blindbox.isSecretOpen ? "bg-white border-2" : blindbox.priceIncreasePercent > 20 ? "bg-gradient-to-r from-red-500 to-orange-500" : "bg-gradient-to-b from-sky-400 to-sky-200" }`}>
-                      <UpSquareOutlined /> {blindbox.isSecretOpen ? '0' : blindbox.priceIncreasePercent}%
+                    <div
+                      className={`text-sm px-3 gap-1 py-1 items-center justify-center flex rounded-md ${
+                        blindbox.isSecretOpen
+                          ? "bg-white border-2"
+                          : blindbox.priceIncreasePercent > 20
+                          ? "bg-gradient-to-r from-red-500 to-orange-500"
+                          : "bg-gradient-to-b from-sky-400 to-sky-200"
+                      }`}
+                    >
+                      <UpSquareOutlined />{" "}
+                      {blindbox.isSecretOpen
+                        ? "0"
+                        : blindbox.priceIncreasePercent}
+                      %
                     </div>
-                    <div className={`text-sm px-3 py-1 rounded-md bg-gradient-to-r from-green-400 to-blue-500`}>
+                    <div
+                      className={`text-sm px-3 py-1 rounded-md bg-gradient-to-r from-green-400 to-blue-500`}
+                    >
                       Turn {blindbox.turn}/{blindbox.maxTurn}
                     </div>
                   </div>
-                  
                 </div>
               </div>
 
               {/* Button - Foreground */}
               <div className="absolute bottom-20 z-40">
-                <motion.button 
-                  className=" p-1 px-6 rounded-2xl bg-gradient-to-tl from-amber-500 to-yellow-400" 
+                <motion.button
+                  className=" p-1 px-6 rounded-2xl bg-gradient-to-tl from-amber-500 to-yellow-400"
                   onClick={paymentHandler}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  >
-                  {blindbox.boxOption.displayPrice}
+                >
+                  {blindbox.boxOption.displayPrice.toLocaleString()} VNĐ
                 </motion.button>
               </div>
 
