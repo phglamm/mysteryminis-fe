@@ -6,9 +6,7 @@ import api from "../../../config/api";
 
 export const fetchOrders = async (user) => {
   try {
-    const response = await api.get(`Order`, {
-      data: { userId: user.userId }
-    });
+    const response = await api.get(`Order?userId=${user.userId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching orders:", error);
