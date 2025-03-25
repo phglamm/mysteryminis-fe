@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unknown-property */
 /* eslint-disable react/prop-types */
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
 import { useGLTF, useAnimations, OrbitControls } from "@react-three/drei";
@@ -49,7 +50,7 @@ const BoxModel = ({ plays, setPlays, onlineSerieBoxId, fetchBlindBox, showVideo,
       setInteractionDisabled(true);
       setTimeout(() => setInteractionDisabled(false), 1000);
     }
-  }, [isInteracting]);
+  }, [isInteracting ]);
 
   const unboxOnlineBlindBox = async () => {
     setReward(null);

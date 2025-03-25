@@ -52,7 +52,7 @@ const PaymentReturnPage = () => {
     };
 
     fetchPaymentData();
-  }, [location.search, navigate]);
+  }, [location.search, navigate ,dispatch]);
 
   return (
     <div className="flex items-center justify-center min-h-screen">

@@ -10,7 +10,7 @@ import { UpSquareOutlined } from "@ant-design/icons";
 const OnlineBlindBox = () => {
   const [plays, setPlays] = useState(false);
   const [blindbox, setBlindBox] = useState([]);
-  const [loading, setLoading] = useState(true); // New loading state
+  const [loading, setLoading] = useState(true); 
   const [showVideo, setShowVideo] = useState(false);
   const { packageId } = useParams();
   const [numberBlindBoxItem, setNumberBlindBoxItem] = useState();
@@ -31,12 +31,13 @@ const OnlineBlindBox = () => {
     }
   }, [packageId]);
 
+  
   useEffect(() => {
     fetchBlindBox();
     setNumberBlindBoxItem(
       blindbox.boxItemResponseDtos ? blindbox.boxItemResponseDtos.length : 0
     );
-  }, [fetchBlindBox]);
+  }, [plays, fetchBlindBox, blindbox.boxItemResponseDtos]);
 
   const firstHalfBlindBoxItem = Math.ceil(numberBlindBoxItem / 2);
 
