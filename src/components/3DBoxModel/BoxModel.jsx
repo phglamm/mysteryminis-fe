@@ -1,5 +1,10 @@
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
-import { useGLTF, useAnimations, OrbitControls, Environment } from "@react-three/drei";
+import {
+  useGLTF,
+  useAnimations,
+  OrbitControls,
+  Environment,
+} from "@react-three/drei";
 import { motion, useSpring } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import * as THREE from "three";
@@ -12,7 +17,14 @@ import bg360 from "../../assets/images/360pic2.jpg";
 import secretRun from "../../assets/images/secretVid.mp4";
 import commontRun from "../../assets/images/commonVid.mp4";
 
-const BoxModel = ({ plays, setPlays, onlineSerieBoxId, fetchBlindBox, showVideo, setShowVideo }) => {
+const BoxModel = ({
+  plays,
+  setPlays,
+  onlineSerieBoxId,
+  fetchBlindBox,
+  showVideo,
+  setShowVideo,
+}) => {
   const [isInteracting, setIsInteracting] = useState(false);
   const [rewardModalVisible, setRewardModalVisible] = useState(false);
 
@@ -38,7 +50,6 @@ const BoxModel = ({ plays, setPlays, onlineSerieBoxId, fetchBlindBox, showVideo,
     texture.mapping = THREE.EquirectangularReflectionMapping;
     texture.colorSpace = THREE.SRGBColorSpace;
   }, [texture]);
-  
 
   useEffect(() => {
     if (!isInteracting && hasInteracted.current) {
@@ -91,7 +102,7 @@ const BoxModel = ({ plays, setPlays, onlineSerieBoxId, fetchBlindBox, showVideo,
       if (!isInteracting && cameraRef.current) {
         cameraRef.current.position.lerp(
           new THREE.Vector3(smoothX.get(), smoothY.get(), smoothZ.get()),
-          0.009  
+          0.009
         );
         cameraRef.current.lookAt(0, 0, 0);
       }
@@ -100,7 +111,7 @@ const BoxModel = ({ plays, setPlays, onlineSerieBoxId, fetchBlindBox, showVideo,
   };
 
   const Model = () => {
-    const { scene, animations } = useGLTF("../../../public/BoxModel3D/box.glb");
+    const { scene, animations } = useGLTF("/BoxModel3D/box.glb");
     const { actions } = useAnimations(animations, scene);
 
     useEffect(() => {
@@ -161,19 +172,21 @@ const BoxModel = ({ plays, setPlays, onlineSerieBoxId, fetchBlindBox, showVideo,
             setTimeout(() => setRewardModalVisible(true), 3000);
           }}
         >
-          <source src={reward?.isSecret ? secretRun : commontRun} type="video/mp4" />
+          <source
+            src={reward?.isSecret ? secretRun : commontRun}
+            type="video/mp4"
+          />
         </video>
       )}
 
-      <ShowRewardModal 
-        reward={reward} 
-        visible={rewardModalVisible} 
-        onClose={() => { 
-          setRewardModalVisible(false); 
-          setShowVideo(false); 
+      <ShowRewardModal
+        reward={reward}
+        visible={rewardModalVisible}
+        onClose={() => {
+          setRewardModalVisible(false);
+          setShowVideo(false);
           fetchBlindBox();
         }}
-        
       />
     </div>
   );
