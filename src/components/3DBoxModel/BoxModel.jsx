@@ -1,12 +1,12 @@
+/* eslint-disable react/prop-types */
 import { Canvas, useFrame, useLoader } from "@react-three/fiber";
-import { useGLTF, useAnimations, OrbitControls, Environment } from "@react-three/drei";
-import { motion, useSpring } from "framer-motion";
+import { useGLTF, useAnimations, OrbitControls } from "@react-three/drei";
+import {  useSpring } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import * as THREE from "three";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../Redux/features/counterSlice";
 import ShowRewardModal from "../ShowRewardModal/ShowRewardModal";
-import { TextureLoader } from "three";
 import api from "../../config/api";
 import bg360 from "../../assets/images/360pic2.jpg";
 import secretRun from "../../assets/images/secretVid.mp4";

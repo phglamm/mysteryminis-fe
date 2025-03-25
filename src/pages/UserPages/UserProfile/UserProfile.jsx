@@ -36,7 +36,10 @@ const UserProfile = () => {
             <div className="p-5">
                 <div className="grid grid-cols-4">
                     {/* Sidebar Component */}
-                    <Sidebar setActiveSection={setActiveSection} />
+                    <div className=" pt-4 pr-4 pb-4 pl-2">
+                        <Sidebar setActiveSection={setActiveSection} />
+                    </div>
+                    
 
                     {/* Main Content */}
                     <div className="col-span-3 pt-4 pr-4 pb-4 pl-2">

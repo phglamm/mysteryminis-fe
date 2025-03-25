@@ -88,12 +88,12 @@ const Sidebar = ({ setActiveSection }) => {
 
         <div>
           {sections.map((section, index) => (
-            <div key={index} className="border-t-1 border-gray-300 pt-4">
+            <div key={index} className="border-t-1 border-gray-300 pt-[4%]">
               <motion.div
                 initial={{ scale: 1, color: "black" }}
                 whileTap={{ scale: 0.9, color: "red" }}
                 whileHover={{ scale: 1.1, color: "red" }}
-                className="flex gap-3 items-center mb-4 cursor-pointer"
+                className="flex gap-3 items-center mb-[4%] cursor-pointer"
                 onClick={() => {
                   if (section.title === "Admin Page") {
                     navigate("/admin/order-management");
