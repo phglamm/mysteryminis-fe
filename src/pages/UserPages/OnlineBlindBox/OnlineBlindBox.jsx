@@ -37,7 +37,7 @@ const OnlineBlindBox = () => {
     setNumberBlindBoxItem(
       blindbox.boxItemResponseDtos ? blindbox.boxItemResponseDtos.length : 0
     );
-  }, [plays, fetchBlindBox, blindbox.boxItemResponseDtos]);
+  }, [plays]);
 
   const firstHalfBlindBoxItem = Math.ceil(numberBlindBoxItem / 2);
 
@@ -78,7 +78,7 @@ const OnlineBlindBox = () => {
     if (isPlay) {
       setPlays(isPlay);
     }
-  }, [isPlay]);
+  }, []);
   return (
     <div className="lg:pt-[6.8%] pt-[12%] h-screen justify-center items-center text-center flex flex-col">
       {loading ? ( // Show loading indicator if loading is true
