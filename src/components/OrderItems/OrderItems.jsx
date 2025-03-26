@@ -154,6 +154,11 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const filteredOrders = orders
     .filter((order) => {
       if (selectedCategory === "All Orders") return true;
+      if (selectedCategory === "Online BlindBox") {
+        return order.orderItems.some(
+          (item) => item.userRolledItemForManageOrder != null
+        );
+      }
       return (
         order.orderStatusDetailsSimple?.slice(-1)[0]?.statusName ===
         selectedCategory
@@ -461,9 +466,31 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                   No items in this order
                 </div>
               )}
-
+                
               <div className=" gap-4 px-8 p-2 bg-white h-fit border-dashed border-t-1">
-                <div className="flex flex-col text-end text-2xl w-full gap-4 py-4">
+                <div className="flex flex-col text-end items-end text-2xl w-full gap-4 py-4">
+                {order.isReadyForShipBoxItem === false &&
+                    order.orderItems.some(
+                      (item) => item.userRolledItemForManageOrder != null
+                    ) && (
+                      <motion.button 
+                      className="border-1 px-3 py-1 w-[20%] text-[0.9vw] rounded-md font-bold"
+                        initial={{
+                          backgroundColor: "#ef4444",
+                          color: "white",
+                          border: "1px solid #f3f4f6",
+                        }}
+                        whileHover={{
+                          backgroundColor: "#ef4444",
+                          color: "white",
+                          border: "1px solid white",
+                          scale: 1.1,
+                        }}
+                        whileTap={{ scale: 0.9 }}
+                      onClick={() => handleReadyForShip(order.orderId)}>
+                        Ready for shipping
+                      </motion.button>
+                    )}
                   <div>Subtotal: {order.subTotal.toLocaleString() + " đ"}</div>
                   <div>
                     Discount: - {order.discountAmount.toLocaleString() + " đ"}
@@ -478,14 +505,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                     Payment Method: {order.paymentMethod}{" "}
                   </div>
 
-                  {order.isReadyForShipBoxItem === false &&
-                    order.orderItems.some(
-                      (item) => item.userRolledItemForManageOrder != null
-                    ) && (
-                      <Button onClick={() => handleReadyForShip(order.orderId)}>
-                        Ready for shipping
-                      </Button>
-                    )}
+                  
                 </div>
 
                 <div className="flex justify-end gap-4">
