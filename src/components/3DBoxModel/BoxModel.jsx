@@ -5,27 +5,23 @@ import { useGLTF, useAnimations, OrbitControls } from "@react-three/drei";
 import {  useSpring } from "framer-motion";
 import { useEffect, useState, useRef } from "react";
 import * as THREE from "three";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../Redux/features/counterSlice";
 import ShowRewardModal from "../ShowRewardModal/ShowRewardModal";
-import api from "../../config/api";
+
 import bg360 from "../../assets/images/360pic2.jpg";
 import secretRun from "../../assets/images/secretVid.mp4";
 import commontRun from "../../assets/images/commonVid.mp4";
 
-const BoxModel = ({ plays, setPlays, onlineSerieBoxId, fetchBlindBox, showVideo, setShowVideo }) => {
+const BoxModel = ({ plays, setPlays, reward, fetchBlindBox, showVideo, setShowVideo }) => {
   const [isInteracting, setIsInteracting] = useState(false);
   const [rewardModalVisible, setRewardModalVisible] = useState(false);
-
+  console.log(reward);
   const [interactionDisabled, setInteractionDisabled] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
-  const [reward, setReward] = useState(null);
   const hasInteracted = useRef(false);
   const videoRef = useRef(null);
   const controlsRef = useRef(null);
   const cameraRef = useRef(null);
 
-  const user = useSelector(selectUser);
 
   const initialCameraPosition = new THREE.Vector3(-150, 20, 0);
   const IntroCameraPosition = new THREE.Vector3(60, 70, 80);
@@ -52,28 +48,23 @@ const BoxModel = ({ plays, setPlays, onlineSerieBoxId, fetchBlindBox, showVideo,
     }
   }, [isInteracting ]);
 
-  const unboxOnlineBlindBox = async () => {
-    setReward(null);
-    try {
-      const response = await api.post(`online-serie-box/unbox`, {
-        userId: user.userId,
-        onlineSerieBoxId: onlineSerieBoxId,
-      });
-      if (response && response.data) {
-        setReward(response.data);
-      } else {
-        console.error("Unexpected response format:", response);
-      }
-    } catch (error) {
-      console.error("Error unboxing online blind box:", error);
-    }
-  };
+  // const unboxOnlineBlindBox = async () => {
+  //   setReward(null);
+  //   try {
+  //     const response = await api.post(`online-serie-box/unbox`, {
+  //       userId: user.userId,
+  //       onlineSerieBoxId: onlineSerieBoxId,
+  //     });
+  //     if (response && response.data) {
+  //       setReward(response.data);
+  //     } else {
+  //       console.error("Unexpected response format:", response);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error unboxing online blind box:", error);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (plays) {
-      unboxOnlineBlindBox();
-    }
-  }, [plays]);
 
   const CameraAnimation = () => {
     useEffect(() => {

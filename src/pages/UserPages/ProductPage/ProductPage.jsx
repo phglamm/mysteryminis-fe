@@ -23,8 +23,13 @@ const ProductPage = () => {
   useEffect(() => {
     if (SelectedBrand) {
       setBrands([SelectedBrand]);
+      window.scrollTo(0, 550);
+    }
+    else {
+      window.scrollTo(0, 0);
     }
   }, [SelectedBrand]);
+
 
   const brandsList = Array.from(
     new Set(boxes.map((product) => product.brandName))
