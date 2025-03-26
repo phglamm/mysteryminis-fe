@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import OrderSteps from "../OrderStepper/OrderStepper";
 import toast from "react-hot-toast";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Image } from "antd";
+import { Button, Form, Image, Select } from "antd";
 import {
   cancelOrder,
   fetchOrders,
@@ -13,6 +13,8 @@ import {
 } from "../../services/UserServices/ManageOrderServices/ManageOrderServices";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../Redux/features/counterSlice";
+import api from "./../../config/api";
+import { Modal } from "antd";
 
 const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [ViewDetails, setViewDetailsState] = useState(false);
@@ -21,9 +23,84 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [loadingCancel, setLoadingCancel] = useState(false);
   const [visible, setVisible] = useState(false);
   const [checkCard, setCheckCard] = useState(null);
-
+  const [userAddress, setUserAddress] = useState([]);
+  const [isModalAddressVisible, setIsModalAddressVisible] = useState(false);
   const user = useSelector(selectUser);
+  const [shippingFee, setShippingFee] = useState(0);
+  const [formUpdateShipping] = Form.useForm();
+  const fetchUserAddress = async () => {
+    try {
+      const response = await api.get(`/Address/?userId=${user.userId}`);
+      console.log(response.data);
+      setUserAddress(response.data);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  };
 
+  const handleMakePayment = async (values) => {
+    console.log(selectedOrder);
+    const requestData = {
+      userId: user.userId,
+      orderId: selectedOrder.orderId,
+      paymentMethod: selectedOrder.paymentMethod,
+      totalPrice: shippingFee,
+      subTotal: selectedOrder.subTotal,
+      discountAmount: selectedOrder.discountAmount,
+      isShipBoxItem: false,
+      orderItemRequestDto: selectedOrder.orderItems.map((item) => ({
+        originPrice: item.orderItemId,
+        boxItemId: item.boxItemId,
+        quantity: item.quantity,
+        price: item.orderPrice,
+        boxOptionId: item.boxOptionId,
+      })),
+      addressId: values.addressId,
+      shippingFee: shippingFee,
+    };
+    console.log(requestData);
+    try {
+      const response = await api.post("/Payment/make-Payment", requestData);
+      console.log(response.data);
+      window.location.assign(response.data);
+      loadOrders();
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to make payment");
+    }
+  };
+  useEffect(() => {
+    fetchUserAddress();
+  }, []);
+
+  const handleAddressChange = (value) => {
+    const selectedAddress = userAddress.find(
+      (address) => address.addressId === value
+    );
+
+    handleCalculateShippingFee(selectedAddress);
+  };
+  const handleCalculateShippingFee = async (selectedAddress) => {
+    console.log(selectedAddress);
+    const shippingFeeRequest = {
+      service_id: 53320,
+      to_district_id: selectedAddress.districtId,
+      weight: 500 * 1,
+    };
+    console.log(shippingFeeRequest);
+    try {
+      const response = await api.post("Shipping/fee", shippingFeeRequest);
+      console.log(response.data);
+      setShippingFee(response.data.data.total);
+    } catch (error) {
+      setShippingFee(40000);
+      console.log(error.response.data);
+    }
+  };
+
+  const handleReadyForShip = async (orderId) => {
+    setIsModalAddressVisible(true);
+  };
   const loadOrders = async () => {
     try {
       const data = await fetchOrders(user);
@@ -251,7 +328,10 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                       </div>
                       <div className="w-3/4 flex flex-col">
                         <span className="font-bold text-xl">
-                          {item.boxName}
+                          {item.userRolledItemForManageOrder != null
+                            ? item.userRolledItemForManageOrder.boxItemDto
+                                .boxItemName
+                            : item.boxName}
                         </span>
                         <span className="text-sm text-gray-500">
                           Option: {item.boxOptionName}
@@ -397,6 +477,15 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                   <div className="text-sm text-gray-500">
                     Payment Method: {order.paymentMethod}{" "}
                   </div>
+
+                  {order.isReadyForShipBoxItem === false &&
+                    order.orderItems.some(
+                      (item) => item.userRolledItemForManageOrder != null
+                    ) && (
+                      <Button onClick={() => handleReadyForShip(order.orderId)}>
+                        Ready for shipping
+                      </Button>
+                    )}
                 </div>
 
                 <div className="flex justify-end gap-4">
@@ -473,6 +562,43 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
       ) : (
         <div className="text-center text-gray-400">No orders </div>
       )}
+
+      <Modal
+        visible={isModalAddressVisible}
+        onCancel={() => setIsModalAddressVisible(false)}
+        onOk={() => formUpdateShipping.submit()}
+        width={700}
+        height={900}
+        okText="Make Payment"
+        cancelText="Cancel"
+      >
+        <Form
+          onFinish={handleMakePayment}
+          layout="vertical"
+          form={formUpdateShipping}
+        >
+          <Form.Item label="Choose your Shipping Address" name="addressId">
+            <Select
+              size="large"
+              placeholder="Select Address"
+              onChange={handleAddressChange}
+              className="w-full"
+            >
+              {userAddress.map((address, index) => (
+                <Select.Option value={address.addressId} key={index}>
+                  {address.name}, {address.phoneNumber}, {address.addressDetail}
+                  , {address.ward}, {address.district}, {address.province}
+                </Select.Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <div className="flex justify-end items-center gap-4">
+            <p>Shipping Fee</p>
+            <p>{shippingFee.toLocaleString()} đ</p>
+          </div>
+        </Form>
+      </Modal>
     </motion.div>
   );
 };

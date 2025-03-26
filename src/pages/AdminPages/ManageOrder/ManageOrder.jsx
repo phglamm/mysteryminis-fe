@@ -379,7 +379,13 @@ const ManageOrder = () => {
                             className="h-20  w-20 border "
                           />
                           <div>
-                            <p>Name: {item.boxName}</p>
+                            <p>
+                              Name:{" "}
+                              {item.userRolledItemForManageOrder != null
+                                ? item.userRolledItemForManageOrder.boxItemDto
+                                    .boxItemName
+                                : item.boxName}
+                            </p>
                             <p>Option: {item.boxOptionName}</p>
                             <p>From Online Lucky Box</p>
                             <p>Quantity: {item.quantity}</p>
