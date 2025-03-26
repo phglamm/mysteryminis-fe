@@ -32,37 +32,37 @@ const Cart = () => {
   const user = useSelector(selectUser);
   const [rolledItems, setRolledItems] = useState([]);
   useEffect(() => {
-    const fetchUserRolledItem = async () => {
-      try {
-        const rolledItems = await fetchUserRolledItems(user.userId);
-        const mappingRolledItems = rolledItems.map((item) => ({
-          boxDescription: item.boxOptionName,
-          boxId: item.id,
-          boxImage: [{ boxImageUrl: item.boxItem.imageUrl }],
-          boxItem: item.boxItem,
-          boxName: item.boxItem.boxItemName,
-          brandName: item.brandName,
-          orderItemOpenRequestNumber: item.orderItemOpenRequestNumber,
-          quantity: item.quantity,
-          selectedOption: {
-            boxOptionId: item.boxOptionId,
-            boxOptionName: item.boxOptionName,
-            displayPrice: item.price,
-            isOnlineSerieBox: item.isOnlineSerieBox,
-            userRolledItemId: item.id,
-          },
-        }));
-        mappingRolledItems.forEach((item) => {
-          dispatch(addOnlineBoxToCart(item));
-        });
-        setRolledItems(mappingRolledItems);
-        console.log(mappingRolledItems);
-        console.log(rolledItems);
-      } catch (error) {
-        console.error(error.message);
-      }
-    };
-    fetchUserRolledItem();
+    // const fetchUserRolledItem = async () => {
+    //   try {
+    //     const rolledItems = await fetchUserRolledItems(user.userId);
+    //     const mappingRolledItems = rolledItems.map((item) => ({
+    //       boxDescription: item.boxOptionName,
+    //       boxId: item.id,
+    //       boxImage: [{ boxImageUrl: item.boxItem.imageUrl }],
+    //       boxItem: item.boxItem,
+    //       boxName: item.boxItem.boxItemName,
+    //       brandName: item.brandName,
+    //       orderItemOpenRequestNumber: item.orderItemOpenRequestNumber,
+    //       quantity: item.quantity,
+    //       selectedOption: {
+    //         boxOptionId: item.boxOptionId,
+    //         boxOptionName: item.boxOptionName,
+    //         displayPrice: item.price,
+    //         isOnlineSerieBox: item.isOnlineSerieBox,
+    //         userRolledItemId: item.id,
+    //       },
+    //     }));
+    //     mappingRolledItems.forEach((item) => {
+    //       dispatch(addOnlineBoxToCart(item));
+    //     });
+    //     setRolledItems(mappingRolledItems);
+    //     console.log(mappingRolledItems);
+    //     console.log(rolledItems);
+    //   } catch (error) {
+    //     console.error(error.message);
+    //   }
+    // };
+    // fetchUserRolledItem();
   }, [cartItems]);
   const totalAmount = cartItems.reduce(
     (acc, item) => acc + item.selectedOption?.displayPrice * item.quantity,

@@ -5,7 +5,12 @@ import uploadFile from "./../../../utils/UploadImage";
 import { PlusOutlined } from "@ant-design/icons";
 import api from "./../../../config/api";
 import toast from "react-hot-toast";
-import { addBoxImage, deleteBoxImage, getAllBoxImages, updateBoxImage } from "../../../services/AdminServices/ManageBoxImageServices.js/ManageBoxImageServices";
+import {
+  addBoxImage,
+  deleteBoxImage,
+  getAllBoxImages,
+  updateBoxImage,
+} from "../../../services/AdminServices/ManageBoxImageServices.js/ManageBoxImageServices";
 import { getAllBoxes } from "../../../services/AdminServices/ManageBoxServices/ManageBoxServices";
 
 export default function ManageBoxImage() {
@@ -68,8 +73,18 @@ export default function ManageBoxImage() {
       render: (_index, record) => (
         <>
           <div className="flex justify-around items-center">
-            <Button onClick={() => handleModalUpdate(record)}>Update</Button>
-            <Button onClick={() => handleDelete(record)}>Delete</Button>
+            <Button
+              className="!bg-[#ff4d4f] !text-white "
+              onClick={() => handleDelete(record)}
+            >
+              Delete
+            </Button>
+            <Button
+              className="!bg-[#313857] !text-white "
+              onClick={() => handleModalUpdate(record)}
+            >
+              Update
+            </Button>
           </div>
         </>
       ),
@@ -125,9 +140,13 @@ export default function ManageBoxImage() {
   const [isModalAddOpen, setIsModalAddOpen] = useState(false);
 
   const handleAdd = async (values) => {
+    const imgURLs = fileList.map((file) => file.url);
+    values.boxImageUrl = imgURLs[0];
+    if (values.boxImageUrl === undefined) {
+      toast.error("Please upload image");
+      return;
+    }
     try {
-      const imgURLs = fileList.map((file) => file.url);
-      values.boxImageUrl = imgURLs[0];
       await addBoxImage(values);
       toast.success("Box image added successfully");
       setIsModalAddOpen(false);
@@ -151,7 +170,8 @@ export default function ManageBoxImage() {
 
   const handleUpdate = async (values) => {
     try {
-      values.boxImageUrl = fileList.length > 0 ? fileList[0].url : selectedBoxImage.boxImageUrl;
+      values.boxImageUrl =
+        fileList.length > 0 ? fileList[0].url : selectedBoxImage.boxImageUrl;
       await updateBoxImage(selectedBoxImage.boxImageId, values);
       toast.success("Box image updated successfully");
       setIsModalUpdateOpen(false);
@@ -166,6 +186,9 @@ export default function ManageBoxImage() {
   const handleDelete = (boxImage) => {
     Modal.confirm({
       title: "Are you sure you want to delete this box image?",
+      okText: "Yes",
+      cancelText: "No",
+      okType: "danger",
       onOk: async () => {
         try {
           await deleteBoxImage(boxImage.boxImageId);
@@ -180,7 +203,10 @@ export default function ManageBoxImage() {
 
   return (
     <div>
-      <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
+      <Button
+        className="mb-5 !bg-[#313857] !text-white"
+        onClick={() => setIsModalAddOpen(true)}
+      >
         Create Image for Box
       </Button>
 
@@ -199,8 +225,15 @@ export default function ManageBoxImage() {
           setFileList([]);
         }}
         onOk={() => formAdd.submit()}
+        okText="Add"
+        cancelText="Cancel"
       >
-        <Form form={formAdd} layout="vertical" onFinish={handleAdd}>
+        <Form
+          form={formAdd}
+          layout="vertical"
+          onFinish={handleAdd}
+          requiredMark={false}
+        >
           <Form.Item name="boxImageUrl" label="Box's Images">
             <Upload
               className="label-form-image"
@@ -210,7 +243,7 @@ export default function ManageBoxImage() {
               onPreview={handlePreview}
               onChange={handleChange}
             >
-              {fileList.length >= 2 ? null : uploadButton}
+              {fileList.length >= 1 ? null : uploadButton}
             </Upload>
             {previewImage && (
               <Image
@@ -230,7 +263,7 @@ export default function ManageBoxImage() {
           <Form.Item
             name="BoxId"
             label="For Box's Name"
-            rules={[{ required: true, message: "Please enter the Box name" }]}
+            rules={[{ required: true, message: "Please Select the Box" }]}
           >
             <Select
               placeholder="Select Box"
@@ -261,8 +294,15 @@ export default function ManageBoxImage() {
         onOk={() => {
           formUpdate.submit();
         }}
+        okText="Update"
+        cancelText="Cancel"
       >
-        <Form form={formUpdate} layout="vertical" onFinish={handleUpdate}>
+        <Form
+          form={formUpdate}
+          layout="vertical"
+          onFinish={handleUpdate}
+          requiredMark={false}
+        >
           <Form.Item name="boxImageUrl" label="Box's Images">
             <Upload
               className="label-form-image"
@@ -272,7 +312,7 @@ export default function ManageBoxImage() {
               onPreview={handlePreview}
               onChange={handleChange}
             >
-              {fileList.length >= 2 ? null : uploadButton}
+              {fileList.length >= 1 ? null : uploadButton}
             </Upload>
             {previewImage && (
               <Image

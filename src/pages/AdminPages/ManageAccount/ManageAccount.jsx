@@ -1,5 +1,19 @@
 import { useEffect, useState } from "react";
-import { Table, Button, Space, Modal, Input, Form, message, Tabs, Select, Spin, Switch, Upload, Image } from "antd";
+import {
+  Table,
+  Button,
+  Space,
+  Modal,
+  Input,
+  Form,
+  message,
+  Tabs,
+  Select,
+  Spin,
+  Switch,
+  Upload,
+  Image,
+} from "antd";
 import { getAllUsers } from "../../../services/AdminServices/ManageAccountServices/ManageAccountServices";
 import { UploadOutlined } from "@ant-design/icons";
 
@@ -29,18 +43,6 @@ const ManageAccount = () => {
   const [editingAccount, setEditingAccount] = useState(null);
   const [form] = Form.useForm();
   const [activeTab, setActiveTab] = useState("User");
-
-  const handleDelete = (id) => {
-    Modal.confirm({
-      title: "Are you sure you want to delete this account?",
-      okText: "Yes",
-      cancelText: "No",
-      onOk: () => {
-        setAccounts(accounts.filter((account) => account.userId !== id));
-        message.success("Account deleted successfully");
-      },
-    });
-  };
 
   const handleEdit = (record) => {
     setEditingAccount(record);
@@ -81,14 +83,47 @@ const ManageAccount = () => {
 
   const columns = [
     { title: "ID", dataIndex: "userId", key: "userId", width: 80 },
-    { title: "Avatar", dataIndex: "avatarUrl", key: "avatarUrl", width: 80, render: (url) => url ? <Image src={url} alt="avatar" style={{ width: 40, height: 40, borderRadius: "50%" }} /> : "No Avatar" },
+    {
+      title: "Avatar",
+      dataIndex: "avatarUrl",
+      key: "avatarUrl",
+      width: 80,
+      render: (url) =>
+        url ? (
+          <Image
+            src={url}
+            alt="avatar"
+            style={{ width: 40, height: 40, borderRadius: "50%" }}
+          />
+        ) : (
+          "No Avatar"
+        ),
+    },
     { title: "Username", dataIndex: "username", key: "username", width: 150 },
     { title: "Name", dataIndex: "fullname", key: "fullname", width: 150 },
     { title: "Email", dataIndex: "email", key: "email", width: 250 },
     { title: "Phone", dataIndex: "phone", key: "phone", width: 150 },
-    { title: "Gender", dataIndex: "gender", key: "gender", render: (text) => (text ? "Male" : "Female"), width: 100 },
-    { title: "Role", dataIndex: "roleId", key: "roleId", render: (text) => (text === 2 ? "Staff" : "User"), width: 100 },
-    { title: "Status", dataIndex: "isActive", key: "isActive", render: (text) => (text ? "Active" : "Inactive"), width: 120 },
+    {
+      title: "Gender",
+      dataIndex: "gender",
+      key: "gender",
+      render: (text) => (text ? "Male" : "Female"),
+      width: 100,
+    },
+    {
+      title: "Role",
+      dataIndex: "roleId",
+      key: "roleId",
+      render: (text) => (text === 2 ? "Staff" : "User"),
+      width: 100,
+    },
+    {
+      title: "Status",
+      dataIndex: "isActive",
+      key: "isActive",
+      render: (text) => (text ? "Active" : "Inactive"),
+      width: 120,
+    },
     {
       title: "Action",
       key: "action",
@@ -105,18 +140,6 @@ const ManageAccount = () => {
             onClick={() => handleEdit(record)}
           >
             Update
-          </Button>
-
-          <Button
-            type="default"
-            style={{
-              backgroundColor: "#ff4d4f",
-              borderColor: "#ff4d4f",
-              color: "#fff",
-            }}
-            onClick={() => handleDelete(record.userId)}
-          >
-            Delete
           </Button>
         </Space>
       ),
@@ -172,9 +195,7 @@ const ManageAccount = () => {
           <div style={{ minHeight: "500px" }}>
             <Table
               columns={columns}
-              dataSource={accounts.filter(
-                (account) => account.roleId === 2
-              )}
+              dataSource={accounts.filter((account) => account.roleId === 2)}
               scroll={{ y: "calc(100vh - 300px)" }} // Giữ chiều cao cố định
             />
           </div>
@@ -202,7 +223,7 @@ const ManageAccount = () => {
         }}
       >
         <Form form={form} layout="vertical">
-        <Form.Item name="avatarUrl" label="Avatar">
+          <Form.Item name="avatarUrl" label="Avatar">
             <Upload listType="picture" maxCount={1}>
               <Button icon={<UploadOutlined />}>Upload Avatar</Button>
             </Upload>
@@ -255,11 +276,7 @@ const ManageAccount = () => {
               <Select.Option value={2}>Staff</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item
-            name="isActive"
-            label="Status"
-            valuePropName="checked"
-          >
+          <Form.Item name="isActive" label="Status" valuePropName="checked">
             <Switch />
           </Form.Item>
         </Form>

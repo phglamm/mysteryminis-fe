@@ -20,6 +20,7 @@ import {
   addBoxOption,
   addLuckyBox,
   deleteBoxOption,
+  fetchBoxOptions,
   fetchLuckyBoxes,
   publishLuckyBox,
   updateBoxOption,
@@ -109,6 +110,9 @@ export default function ManageBoxOption() {
   const handleDelete = (record) => {
     Modal.confirm({
       title: "Are you sure you want to delete this Box's Option?",
+      okText: "Yes",
+      cancelText: "No",
+      okType: "danger",
       onOk: async () => {
         try {
           await deleteBoxOption(record.boxOptionId);
@@ -177,8 +181,18 @@ export default function ManageBoxOption() {
       render: (_index, record) => (
         <>
           <div className="flex justify-around items-center">
-            <Button onClick={() => handleModalUpdate(record)}>Update</Button>
-            <Button onClick={() => handleDelete(record)}>Delete</Button>
+            <Button
+              className="!bg-[#ff4d4f] !text-white"
+              onClick={() => handleDelete(record)}
+            >
+              Delete
+            </Button>
+            <Button
+              className="!bg-[#313857] !text-white"
+              onClick={() => handleModalUpdate(record)}
+            >
+              Update
+            </Button>
           </div>
         </>
       ),
@@ -348,7 +362,10 @@ export default function ManageBoxOption() {
 
   const handleAddLucky = async (values) => {
     values.imageUrl = fileList.length ? fileList[0].url : null;
-
+    if (!values.imageUrl) {
+      toast.error("Please upload an image");
+      return;
+    }
     values.createBoxOptionRequest = {
       boxId: values.BoxId,
       boxOptionName: values.boxOptionName,
@@ -396,7 +413,10 @@ export default function ManageBoxOption() {
       >
         <Tabs.TabPane tab="Manage Box Option" key="1">
           <div>
-            <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
+            <Button
+              className="mb-5 !bg-[#313857] !text-white"
+              onClick={() => setIsModalAddOpen(true)}
+            >
               Create Options for Box
             </Button>
 
@@ -407,7 +427,7 @@ export default function ManageBoxOption() {
         <Tabs.TabPane tab="Manage Online Lucky Box" key="2">
           <div>
             <Button
-              className="mb-5"
+              className="mb-5 !bg-[#313857] !text-white"
               onClick={() => setIsModalAddLuckyOpen(true)}
             >
               Create Online Lucky Box
@@ -418,17 +438,26 @@ export default function ManageBoxOption() {
       </Tabs>
 
       <Modal
-        title="Add BoxOption"
+        title="Add Box Option"
         visible={isModalAddOpen}
         onCancel={() => setIsModalAddOpen(false)}
         onOk={() => formAdd.submit()}
       >
-        <Form form={formAdd} layout="vertical" onFinish={handleAdd}>
+        <Form
+          form={formAdd}
+          layout="vertical"
+          onFinish={handleAdd}
+          requiredMark={false}
+        >
           <Form.Item
             name="boxOptionName"
             label="Box Option's Name"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              { required: true, message: "Please enter the Box Option's name" },
+              {
+                max: 20,
+                message: "Box Option name must be less than 20 characters",
+              },
             ]}
           >
             <Input />
@@ -438,36 +467,37 @@ export default function ManageBoxOption() {
             name="boxOptionStock"
             label="Box Option's Stock"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              {
+                required: true,
+                message: "Please enter the Box Option's stock",
+              },
             ]}
           >
-            <Input />
+            <Input type="number" />
           </Form.Item>
 
           <Form.Item
             name="originPrice"
             label="Origin Price"
-            rules={[
-              { required: true, message: "Please enter the BoxOption name" },
-            ]}
+            rules={[{ required: true, message: "Please enter the cost price" }]}
           >
-            <Input />
+            <Input type="number" min={1000} />
           </Form.Item>
 
           <Form.Item
             name="displayPrice"
             label="Display Price"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              { required: true, message: "Please enter the display price" },
             ]}
           >
-            <Input />
+            <Input type="number" min={1000} />
           </Form.Item>
 
           <Form.Item
             name="BoxId"
             label="For Box's Name"
-            rules={[{ required: true, message: "Please enter the Box name" }]}
+            rules={[{ required: true, message: "Please select the Box name" }]}
           >
             <Select
               placeholder="Select Box"
@@ -488,17 +518,26 @@ export default function ManageBoxOption() {
       </Modal>
 
       <Modal
-        title="Update BoxOption"
+        title="Update Box Option"
         visible={isModalUpdateOpen}
         onCancel={() => setIsModalUpdateOpen(false)}
         onOk={() => formUpdate.submit()}
       >
-        <Form form={formUpdate} layout="vertical" onFinish={handleUpdate}>
+        <Form
+          form={formUpdate}
+          layout="vertical"
+          onFinish={handleUpdate}
+          requiredMark={false}
+        >
           <Form.Item
             name="boxOptionName"
             label="Box Option's Name"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              { required: true, message: "Please enter the Box Option's name" },
+              {
+                max: 20,
+                message: "Box Option name must be less than 20 characters",
+              },
             ]}
           >
             <Input />
@@ -508,36 +547,37 @@ export default function ManageBoxOption() {
             name="boxOptionStock"
             label="Box Option's Stock"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              {
+                required: true,
+                message: "Please enter the Box Option's stock",
+              },
             ]}
           >
-            <Input />
+            <Input type="number" />
           </Form.Item>
 
           <Form.Item
             name="originPrice"
             label="Origin Price"
-            rules={[
-              { required: true, message: "Please enter the BoxOption name" },
-            ]}
+            rules={[{ required: true, message: "Please enter the cost price" }]}
           >
-            <Input />
+            <Input type="number" min={1000} />
           </Form.Item>
 
           <Form.Item
             name="displayPrice"
             label="Display Price"
             rules={[
-              { required: true, message: "Please enter the BoxOption name" },
+              { required: true, message: "Please enter the display price" },
             ]}
           >
-            <Input />
+            <Input type="number" min={1000} />
           </Form.Item>
 
           <Form.Item
             name="BoxId"
             label="For Box's Name"
-            rules={[{ required: true, message: "Please enter the Box name" }]}
+            rules={[{ required: true, message: "Please select the Box name" }]}
           >
             <Select
               placeholder="Select Box"
@@ -560,8 +600,14 @@ export default function ManageBoxOption() {
       <Modal
         title="Add Online Lucky Box"
         visible={isModalAddLuckyOpen}
-        onCancel={() => setIsModalAddLuckyOpen(false)}
+        onCancel={() => {
+          setIsModalAddLuckyOpen(false),
+            formAddLucky.resetFields(),
+            setFileList([]);
+        }}
         onOk={() => formAddLucky.submit()}
+        okText="Add"
+        cancelText="Cancel"
       >
         <Form
           form={formAddLucky}
@@ -574,7 +620,7 @@ export default function ManageBoxOption() {
             label="Price after Open Secret"
             rules={[{ required: true, message: "Please enter Price" }]}
           >
-            <Input type="number" />
+            <Input type="number" min={1000} />
           </Form.Item>
 
           <Form.Item
@@ -582,7 +628,7 @@ export default function ManageBoxOption() {
             label="Increase Price Percent per Turn"
             rules={[{ required: true, message: "Please enter the Percent" }]}
           >
-            <Input type="number" />
+            <Input type="number" min={1} />
           </Form.Item>
 
           <Form.Item name="imageUrl" label="Image">
@@ -640,9 +686,14 @@ export default function ManageBoxOption() {
                 required: true,
                 message: "Please enter the Online Lucky Box name",
               },
+              {
+                max: 30,
+                message:
+                  "Online Lucky Box name must be less than 30 characters",
+              },
             ]}
           >
-            <Input />
+            <Input maxLength={30} />
           </Form.Item>
 
           <Form.Item
@@ -655,7 +706,7 @@ export default function ManageBoxOption() {
               },
             ]}
           >
-            <Input type="number" />
+            <Input type="number" min={1} />
           </Form.Item>
 
           <Form.Item
@@ -668,7 +719,7 @@ export default function ManageBoxOption() {
               },
             ]}
           >
-            <Input type="number" />
+            <Input type="number" min={1000} />
           </Form.Item>
 
           <Form.Item
@@ -681,7 +732,7 @@ export default function ManageBoxOption() {
               },
             ]}
           >
-            <Input type="number" />
+            <Input type="number" min={1000} />
           </Form.Item>
         </Form>
       </Modal>
@@ -691,26 +742,29 @@ export default function ManageBoxOption() {
         visible={isModalUpdateLuckyOpen}
         onCancel={() => setIsModalUpdateLuckyOpen(false)}
         onOk={() => formUpdateLucky.submit()}
+        okText="Update"
+        cancelText="Cancel"
       >
         <Form
           form={formUpdateLucky}
           layout="vertical"
           onFinish={handleUpdateLucky}
+          requiredMark={false}
         >
-          <Form.Item
-            name="priceIncreasePercent"
-            label="Increase Price Percent per Turn"
-            rules={[{ required: true, message: "Please enter the Percent" }]}
-          >
-            <Input type="number" />
-          </Form.Item>
-
           <Form.Item
             name="priceAfterSecret"
             label="Price after Open Secret"
             rules={[{ required: true, message: "Please enter Price" }]}
           >
-            <Input type="number" />
+            <Input type="number" min={1000} />
+          </Form.Item>
+
+          <Form.Item
+            name="priceIncreasePercent"
+            label="Increase Price Percent per Turn"
+            rules={[{ required: true, message: "Please enter the Percent" }]}
+          >
+            <Input type="number" min={1} />
           </Form.Item>
 
           <Form.Item name="imageUrl" label="Image">
@@ -749,7 +803,7 @@ export default function ManageBoxOption() {
               },
             ]}
           >
-            <Input type="number" />
+            <Input type="number" min={1000} />
           </Form.Item>
 
           <Form.Item
@@ -762,7 +816,7 @@ export default function ManageBoxOption() {
               },
             ]}
           >
-            <Input type="number" />
+            <Input type="number" min={1000} />
           </Form.Item>
         </Form>
       </Modal>

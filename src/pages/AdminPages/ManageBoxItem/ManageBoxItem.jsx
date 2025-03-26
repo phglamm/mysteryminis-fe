@@ -3,7 +3,12 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/UploadImage";
-import { addBoxItem, deleteBoxItem, fetchBoxItems, updateBoxItem } from "../../../services/AdminServices/ManageBoxItemServices/ManageBoxItemServices";
+import {
+  addBoxItem,
+  deleteBoxItem,
+  fetchBoxItems,
+  updateBoxItem,
+} from "../../../services/AdminServices/ManageBoxItemServices/ManageBoxItemServices";
 import { getAllBoxes } from "../../../services/AdminServices/ManageBoxServices/ManageBoxServices";
 
 export default function ManageBoxItem() {
@@ -19,7 +24,7 @@ export default function ManageBoxItem() {
     const data = await fetchBoxItems();
     setBoxItem(data);
   };
-  
+
   useEffect(() => {
     const fetchBox = async () => {
       const data = await getAllBoxes();
@@ -81,8 +86,18 @@ export default function ManageBoxItem() {
       render: (_index, record) => (
         <>
           <div className="flex justify-around items-center">
-            <Button onClick={() => handleModalUpdate(record)}>Update</Button>
-            <Button onClick={() => handleDelete(record)}>Delete</Button>
+            <Button
+              className=" !bg-[#ff4d4f] !text-white"
+              onClick={() => handleDelete(record)}
+            >
+              Delete
+            </Button>
+            <Button
+              className=" !bg-[#313857] !text-white"
+              onClick={() => handleModalUpdate(record)}
+            >
+              Update
+            </Button>
           </div>
         </>
       ),
@@ -106,7 +121,6 @@ export default function ManageBoxItem() {
       };
     });
   };
-
 
   const handlePreview = async (file) => {
     if (!file.url && !file.preview) {
@@ -138,18 +152,18 @@ export default function ManageBoxItem() {
   const [isModalAddOpen, setIsModalAddOpen] = useState(false);
 
   const handleAdd = async (values) => {
-  try {
-    values.imageUrl = fileList.map((file) => file.url)[0];
-    await addBoxItem(values);
-    fetchBoxItem();
-    setIsModalAddOpen(false);
-    setFileList([]);
-    formAdd.resetFields();
-    toast.success("Box item added successfully");
-  } catch {
-    toast.error("Failed to add BoxItem");
-  }
-};
+    try {
+      values.imageUrl = fileList.map((file) => file.url)[0];
+      await addBoxItem(values);
+      fetchBoxItem();
+      setIsModalAddOpen(false);
+      setFileList([]);
+      formAdd.resetFields();
+      toast.success("Box item added successfully");
+    } catch {
+      toast.error("Failed to add BoxItem");
+    }
+  };
 
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
   const [selectedBoxItem, setSelectedBoxItem] = useState(null);
@@ -166,7 +180,9 @@ export default function ManageBoxItem() {
 
   const handleUpdate = async (values) => {
     try {
-      values.imageUrl = fileList.length ? fileList[0].url : selectedBoxItem.imageUrl;
+      values.imageUrl = fileList.length
+        ? fileList[0].url
+        : selectedBoxItem.imageUrl;
       await updateBoxItem(selectedBoxItem.boxItemId, values);
       fetchBoxItem();
       setIsModalUpdateOpen(false);
@@ -180,6 +196,9 @@ export default function ManageBoxItem() {
   const handleDelete = async (record) => {
     Modal.confirm({
       title: "Are you sure you want to delete this Box's Item?",
+      okText: "Yes",
+      cancelText: "No",
+      okType: "danger",
       onOk: async () => {
         try {
           await deleteBoxItem(record.boxItemId);
@@ -191,10 +210,13 @@ export default function ManageBoxItem() {
       },
     });
   };
-  
+
   return (
     <div>
-      <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
+      <Button
+        className="mb-5 !bg-[#313857] !text-white"
+        onClick={() => setIsModalAddOpen(true)}
+      >
         Create Items for Box
       </Button>
 
@@ -213,13 +235,24 @@ export default function ManageBoxItem() {
           setFileList([]);
         }}
         onOk={() => formAdd.submit()}
+        okText="Create"
+        cancelText="Cancel"
       >
-        <Form form={formAdd} layout="vertical" onFinish={handleAdd}>
+        <Form
+          form={formAdd}
+          layout="vertical"
+          onFinish={handleAdd}
+          requiredMark={false}
+        >
           <Form.Item
             name="boxItemName"
             label="Box's Item Name"
             rules={[
               { required: true, message: "Please enter the Box's Item name" },
+              {
+                max: 60,
+                message: "Box's Item name must be less than 60 characters",
+              },
             ]}
           >
             <Input />
@@ -246,6 +279,10 @@ export default function ManageBoxItem() {
                 required: true,
                 message: "Please enter the Box's Item Eyes",
               },
+              {
+                max: 20,
+                message: "Box's Item Eyes must be less than 20 characters",
+              },
             ]}
           >
             <Input />
@@ -258,6 +295,10 @@ export default function ManageBoxItem() {
               {
                 required: true,
                 message: "Please enter the Box's Item Color",
+              },
+              {
+                max: 20,
+                message: "Box's Item Eyes must be less than 20 characters",
               },
             ]}
           >
@@ -273,7 +314,7 @@ export default function ManageBoxItem() {
               onPreview={handlePreview}
               onChange={handleChange}
             >
-              {fileList.length >= 2 ? null : uploadButton}
+              {fileList.length >= 1 ? null : uploadButton}
             </Upload>
             {previewItem && (
               <Image
@@ -340,13 +381,24 @@ export default function ManageBoxItem() {
         onOk={() => {
           formUpdate.submit();
         }}
+        okText="Update"
+        cancelText="Cancel"
       >
-        <Form form={formUpdate} layout="vertical" onFinish={handleUpdate}>
+        <Form
+          form={formUpdate}
+          layout="vertical"
+          onFinish={handleUpdate}
+          requiredMark={false}
+        >
           <Form.Item
             name="boxItemName"
             label="Box's Item Name"
             rules={[
               { required: true, message: "Please enter the Box's Item name" },
+              {
+                max: 60,
+                message: "Box's Item name must be less than 60 characters",
+              },
             ]}
           >
             <Input />
@@ -373,6 +425,10 @@ export default function ManageBoxItem() {
                 required: true,
                 message: "Please enter the Box's Item Eyes",
               },
+              {
+                max: 20,
+                message: "Box's Item Eyes must be less than 20 characters",
+              },
             ]}
           >
             <Input />
@@ -385,6 +441,10 @@ export default function ManageBoxItem() {
               {
                 required: true,
                 message: "Please enter the Box's Item Color",
+              },
+              {
+                max: 20,
+                message: "Box's Item Eyes must be less than 20 characters",
               },
             ]}
           >
@@ -400,7 +460,7 @@ export default function ManageBoxItem() {
               onPreview={handlePreview}
               onChange={handleChange}
             >
-              {fileList.length >= 2 ? null : uploadButton}
+              {fileList.length >= 1 ? null : uploadButton}
             </Upload>
             {previewItem && (
               <Image

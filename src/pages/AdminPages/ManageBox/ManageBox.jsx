@@ -3,7 +3,12 @@ import { Button, Form, Table, Tabs, Modal, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import toast from "react-hot-toast";
-import { addBox, deleteBox, getAllBoxes, updateBox } from "../../../services/AdminServices/ManageBoxServices/ManageBoxServices";
+import {
+  addBox,
+  deleteBox,
+  getAllBoxes,
+  updateBox,
+} from "../../../services/AdminServices/ManageBoxServices/ManageBoxServices";
 import { fetchBrands } from "../../../services/AdminServices/ManageBrandServices/ManageBrandServices";
 
 export default function ManageBox() {
@@ -17,8 +22,8 @@ export default function ManageBox() {
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
   const [selectedBox, setSelectedBox] = useState(null);
 
-   // Fetch all boxes and brands
-   useEffect(() => {
+  // Fetch all boxes and brands
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const fetchedBoxes = await getAllBoxes();
@@ -72,6 +77,9 @@ export default function ManageBox() {
   const handleDelete = (boxId) => {
     Modal.confirm({
       title: "Are you sure you want to delete this Box?",
+      okText: "Yes",
+      cancelText: "No",
+      okType: "danger",
       onOk: async () => {
         try {
           await deleteBox(boxId);
@@ -135,10 +143,19 @@ export default function ManageBox() {
         <>
           <div className="flex flex-col gap-3 items-center">
             <div className="flex justify-between items-center gap-7">
-              <Button onClick={() => handleModalUpdate(record)}>Update</Button>
-              <Button onClick={() => handleDelete(record)}>Delete</Button>
+              <Button
+                className="!bg-[#ff4d4f] !text-white"
+                onClick={() => handleDelete(record)}
+              >
+                Delete
+              </Button>
+              <Button
+                className="!bg-[#313857] !text-white"
+                onClick={() => handleModalUpdate(record)}
+              >
+                Update
+              </Button>
             </div>
-            <Button>Create Online Blindbox</Button>
           </div>
         </>
       ),
@@ -147,7 +164,10 @@ export default function ManageBox() {
 
   return (
     <div>
-      <Button className="mb-5" onClick={() => setIsModalAddOpen(true)}>
+      <Button
+        className="!bg-[#313857] !text-white mb-5"
+        onClick={() => setIsModalAddOpen(true)}
+      >
         Create Box
       </Button>
       <Table dataSource={boxes} columns={columnsBox} />
@@ -160,12 +180,25 @@ export default function ManageBox() {
           formAdd.resetFields();
         }}
         onOk={() => formAdd.submit()}
+        okText="Add"
+        cancelText="Cancel"
       >
-        <Form form={formAdd} layout="vertical" onFinish={handleAdd}>
+        <Form
+          form={formAdd}
+          layout="vertical"
+          onFinish={handleAdd}
+          requiredMark={false}
+        >
           <Form.Item
             name="boxName"
             label="Box's Name"
-            rules={[{ required: true, message: "Please enter the Box name" }]}
+            rules={[
+              { required: true, message: "Please enter the Box name" },
+              {
+                max: 60,
+                message: "Box name must be less than 60 characters",
+              },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -205,8 +238,15 @@ export default function ManageBox() {
         visible={isModalUpdateOpen}
         onCancel={() => setIsModalUpdateOpen(false)}
         onOk={() => formUpdate.submit()}
+        okText="Update"
+        cancelText="Cancel"
       >
-        <Form form={formUpdate} layout="vertical" onFinish={handleUpdate}>
+        <Form
+          form={formUpdate}
+          layout="vertical"
+          onFinish={handleUpdate}
+          requiredMark={false}
+        >
           <Form.Item
             name="boxName"
             label="Box's Name"
