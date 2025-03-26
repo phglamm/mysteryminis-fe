@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const OrderCategories = ({ selectedCategory, setSelectedCategory, ViewDetails }) => {
     const categories = [
-        "All Orders", "Pending", "Processing", "Shipping", "Arrived", "Cancelled", "Return Refund"
+        "All Orders", "Pending", "Processing", "Shipping", "Arrived", "Cancelled", "Return Refund", "Online BlindBox"
     ];
 
     return (
