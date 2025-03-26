@@ -33,10 +33,12 @@ const ProductPage = () => {
   const handleBrandChange = (checkedValues) => {
     setBrands(checkedValues);
     setCurrentPage(1); // Reset to page 1 when filtering
+    window.scrollTo(0, 550);
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    window.scrollTo(0, 550);
   };
 
   // Filter products by selected brands
@@ -62,7 +64,7 @@ const ProductPage = () => {
   }
 
   return (
-    <div className="container mx-auto mt-[10%]">
+    <div className="container pb-[4%] mx-auto mt-[10%]">
       <TiltedCard
         imageSrc="https://global-static.popmart.com/globalAdmin/1740726833285____pc-buy____.jpg?x-oss-process=image/format,webp"
         captionText="Welcome to Mystery Minis"
@@ -85,7 +87,7 @@ const ProductPage = () => {
             style={{
               minWidth: "250px",
               position: "sticky",
-              top: "100px",
+              top: "140px",
               marginRight: "20px",
               padding: "10px",
               border: "1px solid #ddd",

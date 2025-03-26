@@ -35,7 +35,7 @@ const OnlinePackage = () => {
     return (
         <div className="flex h-fit min-h-screen flex-col pt-[10%] items-center justify-center">
             {Object.keys(groupedByBrand).map((brand) => (
-                <div key={brand} className="mb-6 w-full text-center px-[12%]">
+                <div key={brand} className="mb-6 mt-5 w-full text-center px-[12%]">
                     <h2 className="text-2xl font-bold mb-4 border-b-1 border-gray-600">{brand}</h2>
                     <div className="flex flex-wrap gap-10 justify-center">
                         {groupedByBrand[brand].map((box) => (

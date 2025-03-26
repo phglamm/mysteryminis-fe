@@ -197,7 +197,7 @@ export default function Header() {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3 + index * 0.1 }}
-                  className=" rounded-xl text-[1vw]  bg-white w-full flex justify-center items-center"
+                  className=" rounded-xl text-[1vw]  w-full flex justify-center items-center"
                 >
                   <motion.div
                     whileHover={{ scale: 1.1, color: "red" }}
@@ -207,9 +207,9 @@ export default function Header() {
                         state: { brand: item.brandName },
                       })
                     }
-                    className="border-1 rounded-xl p-[5%] bg-white w-full flex justify-center items-center"
+                    className=" rounded-xl p-[5%] bg-white  shadow-black shadow-md  w-full flex justify-center items-center"
                   >
-                    <motion.div className="flex flex-row justify-center items-center gap-2">
+                    <motion.div className="flex flex-row justify-center min-h-12 items-center gap-2">
                       <span className="w-[30%] h-full rounded-xl flex justify-center items-center">
                         <img src={item.imageUrl} alt="brand" />
                       </span>

@@ -1,11 +1,13 @@
 /* eslint-disable react/prop-types */
 import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
-import { Input, Tooltip, Spin, Select, message } from "antd";
+import { Input, Tooltip, Spin, Select, message, Upload, Image } from "antd";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../../../Redux/features/counterSlice";
 import { fetchUserData, updateUserProfile } from "../../../../services/UserServices/UserProfileServices/UserProfileServices";
+import uploadFile from "../../../../utils/UploadImage"; // Import the upload utility
+import toast from "react-hot-toast"; // Import toast for notifications
 
 const { Option } = Select;
 
@@ -24,10 +26,14 @@ const MyProfile = ({
     phone: "",
     email: user.email,
     gender: true, // Default to true (Male)
+    avatarUrl: "",
   });
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [fileList, setFileList] = useState([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewItem, setPreviewItem] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -42,11 +48,27 @@ const MyProfile = ({
     })();
   }, [user.email]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = async ({ fileList: newFileList }) => {
+    const updatedFileList = await Promise.all(
+      newFileList.map(async (file) => {
+        if (file.status !== "done") {
+          try {
+            const url = await uploadFile(file.originFileObj); // Upload the file and get the URL
+            toast.success("Upload Success");
+            return { ...file, url, status: "done" }; // Update the file status and add the URL
+          } catch (error) {
+            console.error("Upload failed", error);
+            toast.error("Upload failed");
+            return { ...file, status: "error" }; // Set status to error on failure
+          }
+        }
+        return file; // Keep already uploaded files as-is
+      })
+    );
+    setFileList(updatedFileList);
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      avatarUrl: updatedFileList.length ? updatedFileList[0].url : "", // Update avatarUrl in formData
     }));
   };
 
@@ -70,6 +92,17 @@ const MyProfile = ({
     }
   };
 
+  const handlePreview = async (file) => {
+    setPreviewItem(file.url || file.thumbUrl);
+    setPreviewOpen(true);
+  };
+
+  const uploadButton = (
+    <div>
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
+
   if (loading)
     return (
       <div className="w-full h-[27vw] flex justify-center items-center">
@@ -84,6 +117,40 @@ const MyProfile = ({
       <div className="max-h-[27vw]">
         {!resetPassword ? (
           <>
+        {isEditing ? (
+          <>
+            {/* Upload Field */}
+            <div className="flex flex-row items-center border-t-1 pt-2 mb-2 border-gray-300">
+              <span className="basis-1/4">Avatar</span>
+              <span className="basis-2/4">
+                <Upload
+                  className="label-form-Item"
+                  maxCount={1}
+                  listType="picture-card"
+                  fileList={fileList}
+                  onPreview={handlePreview}
+                  onChange={handleChange}
+                >
+                  {fileList.length >= 1 ? null : uploadButton}
+                </Upload>
+                {previewItem && (
+                  <Image
+                    wrapperStyle={{
+                      display: "none",
+                    }}
+                    preview={{
+                      visible: previewOpen,
+                      onVisibleChange: (visible) => setPreviewOpen(visible),
+                      afterOpenChange: (visible) =>
+                        !visible && setPreviewItem(""),
+                    }}
+                    src={previewItem}
+                  />
+                )}
+              </span>
+            </div>
+          </>
+        ) : null}
             {/* User Information Fields */}
             {["username", "fullname", "phone", "email"].map((field) => (
               <div
@@ -137,6 +204,7 @@ const MyProfile = ({
                 </span>
               )}
             </div>
+
           </>
         ) : (
           <>

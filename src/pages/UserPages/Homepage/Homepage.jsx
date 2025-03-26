@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { Card, Spin } from "antd";
 import { motion } from "framer-motion";
-import BlurText from "../../../components/React_Bits/BlurText/BlurText";
 import FadeContent from "../../../components/React_Bits/FadeContent/FadeContent";
 import CountUp from "../../../components/React_Bits/CountUp/CountUp";
 import ImageContent from "./ImageContent/ImageContent";
@@ -111,7 +110,7 @@ export default function Homepage() {
               className="w-[20%]"
             >
               <motion.button
-                className={`lg:px-[30%] px-[10%] w-full py-1 mt-2 font-bold text-[1vw] rounded-full border-2 transition-all ${
+                className={`lg:px-[30%] px-[10%] w-full py-1 mt-2 font-bold text-[1vw] rounded-full shadow-black shadow-md transition-all ${
                   selectedCategory === label
                     ? "bg-red-500 text-white"
                     : "bg-white text-black"
