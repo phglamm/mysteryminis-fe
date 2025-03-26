@@ -18,6 +18,8 @@ const OnlineBlindBox = () => {
 
   console.log("Selected Box ID from URL:", packageId);
   const isPlay = useLocation().state?.isPlay;
+  const reward = useLocation().state?.reward;
+
   const fetchBlindBox = useCallback(async () => {
     setLoading(true); // Set loading to true before fetching
     try {
@@ -38,6 +40,10 @@ const OnlineBlindBox = () => {
       blindbox.boxItemResponseDtos ? blindbox.boxItemResponseDtos.length : 0
     );
   }, [plays]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const firstHalfBlindBoxItem = Math.ceil(numberBlindBoxItem / 2);
 
@@ -134,7 +140,9 @@ const OnlineBlindBox = () => {
                   </div>
 
                   {/* Center Section */}
-                  <div className="h-fit justify-between flex flex-col pt-[2%] w-[40%] relative z-40">
+                  <div className={`h-fit justify-between flex flex-col pt-[2%] w-[40%] relative ${
+                      showVideo ? "z-10" : "z-40"
+                    }`}>
                     <div>
                       <div className="text-4xl z-40 font-bold">
                         {blindbox.boxOption.boxOptionName}
@@ -179,7 +187,9 @@ const OnlineBlindBox = () => {
                   {/* Button - Foreground */}
                   <div className="absolute bottom-20 z-40">
                     <motion.button
-                      className=" p-1 px-6 rounded-2xl bg-gradient-to-tl from-amber-500 to-yellow-400"
+                      className={`p-1 px-6 rounded-2xl bg-gradient-to-tl from-amber-500 to-yellow-400 ${
+                      showVideo ? "z-10" : "z-40"
+                    }`}
                       onClick={paymentHandler}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
@@ -230,7 +240,7 @@ const OnlineBlindBox = () => {
                     <BoxModel
                       plays={plays}
                       setPlays={setPlays}
-                      onlineSerieBoxId={blindbox.onlineSerieBoxId}
+                      reward={reward}
                       fetchBlindBox={fetchBlindBox}
                       showVideo={showVideo}
                       setShowVideo={setShowVideo}

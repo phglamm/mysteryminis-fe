@@ -18,6 +18,7 @@ const OnlinePackage = () => {
             }
         };
         getPackages();
+        window.scrollTo(0, 0);
     }, []);
 
     const handleSelectedBox = (box) => {
