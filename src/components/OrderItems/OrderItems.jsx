@@ -9,6 +9,8 @@ import { Button, Image } from "antd";
 import { cancelOrder, fetchOrders, requestRefund } from "../../services/UserServices/ManageOrderServices/ManageOrderServices";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../Redux/features/counterSlice";
+import FeedbackModal from "../FeedbackModal/FeedbackModal";
+// import { FeedbackModal } from "../FeedbackModel/FeedbackModal";
 
 
 
@@ -19,6 +21,8 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [loadingCancel, setLoadingCancel] = useState(false);
   const [visible, setVisible] = useState(false);
   const [checkCard, setCheckCard] = useState(null);
+  const [selectedOrderForFeedback, setSelectedOrderForFeedback] = useState(null); // State lưu đơn hàng đang chọn để feedback
+
 
   const user = useSelector(selectUser);
 
@@ -91,6 +95,11 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleRateClick = (order) => {
+    setSelectedOrderForFeedback(order);  // Set the selected order for feedback
+    setVisible(true);  // Hiển thị modal feedback
   };
 
   return (
@@ -423,7 +432,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                   ) : order.orderStatusDetailsSimple?.slice(-1)[0]
                       ?.statusName === "Arrived" ? (
                     <>
-                      <motion.button
+                        <motion.button
                         className="border-1 px-3 py-1 w-[20%] text-[0.9vw] rounded-md font-bold"
                         initial={{
                           backgroundColor: "#ef4444",
@@ -437,6 +446,8 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                           scale: 1.1,
                         }}
                         whileTap={{ scale: 0.9 }}
+                        onClick={() => handleRateClick(order)}
+                        disabled={order.hasFeedback} // Disable rate button if feedback exists
                       >
                         Rate
                       </motion.button>
@@ -467,6 +478,21 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
      ) : (
        <div className="text-center text-gray-400">No orders </div>
      )}
+
+      {/* Feedback Modal */}
+      {selectedOrderForFeedback && (
+  <FeedbackModal
+    orderId={selectedOrderForFeedback.orderId}
+    visible={visible}
+    setVisible={setVisible}
+    onFeedbackSubmitted={() => {
+      loadOrders(); 
+      setVisible(false); 
+    }}
+    selectedOrderForFeedback={selectedOrderForFeedback} 
+
+  />
+)}
     </motion.div>
   );
 };
