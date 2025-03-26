@@ -62,6 +62,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
     try {
       const response = await api.post("/Payment/make-Payment", requestData);
       console.log(response.data);
+      window.location.assign(response.data);
       loadOrders();
     } catch (error) {
       console.error(error);
