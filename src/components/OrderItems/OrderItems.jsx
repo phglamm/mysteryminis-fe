@@ -323,19 +323,39 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                     </div>
                     <div className="flex justify-center items-center w-1/4">
                       {ViewDetails ? (
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col h-full gap-3 items-center justify-end">
                           <div>{item.orderPrice.toLocaleString() + " đ"}</div>
 
                           {order.currentStatusId === 5 && (
                             <>
                               {item.refundStatus === "Available" ? (
-                                <>
-                                  <div>
+                                <div className="flex flex-row gap-x-3 items-end">
+                                <motion.button
+                                    className="border-1 px-3 h-full text-[0.9vw] rounded-md font-bold"
+                                    initial={{
+                                      backgroundColor: "#ef4444",
+                                      color: "white",
+                                      border: "1px solid #f3f4f6",
+                                    }}
+                                    whileHover={{
+                                      backgroundColor: "#ef4444",
+                                      color: "white",
+                                      border: "1px solid white",
+                                      scale: 1.1,
+                                    }}
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={() => handleRateClick(order)}
+                                    disabled={order.hasFeedback} // Disable rate button if feedback exists
+                                  >
+                                    Rate
+                                  </motion.button>
+                                  <div className="items-end flex">
                                     <Button onClick={() => handleRefund(item)}>
                                       Request Refund
                                     </Button>
                                   </div>
-                                </>
+                                  
+                                </div>
                               ) : (
                                 <></>
                               )}
@@ -430,7 +450,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                       )}
                     </motion.button>
                   ) : order.orderStatusDetailsSimple?.slice(-1)[0]
-                      ?.statusName === "Arrived" ? (
+                      ?.statusName === "Arrived" && !ViewDetails ? (
                     <>
                         <motion.button
                         className="border-1 px-3 py-1 w-[20%] text-[0.9vw] rounded-md font-bold"
@@ -446,8 +466,11 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                           scale: 1.1,
                         }}
                         whileTap={{ scale: 0.9 }}
-                        onClick={() => handleRateClick(order)}
-                        disabled={order.hasFeedback} // Disable rate button if feedback exists
+                        onClick={() => {
+                            setSelectedOrder(order); // Set the specific order to display
+                            setViewDetailsState(true);
+                          }}
+                        
                       >
                         Rate
                       </motion.button>
