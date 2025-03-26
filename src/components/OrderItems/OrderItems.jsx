@@ -6,11 +6,13 @@ import OrderSteps from "../OrderStepper/OrderStepper";
 import toast from "react-hot-toast";
 import { LoadingOutlined } from "@ant-design/icons";
 import { Button, Image } from "antd";
-import { cancelOrder, fetchOrders, requestRefund } from "../../services/UserServices/ManageOrderServices/ManageOrderServices";
+import {
+  cancelOrder,
+  fetchOrders,
+  requestRefund,
+} from "../../services/UserServices/ManageOrderServices/ManageOrderServices";
 import { useSelector } from "react-redux";
 import { selectUser } from "../../Redux/features/counterSlice";
-
-
 
 const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [ViewDetails, setViewDetailsState] = useState(false);
@@ -102,10 +104,12 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
         ViewDetails ? { delay: 0.8, duration: 1 } : { delay: 0.5, duration: 1 }
       }
     >
-     {orders && orders.length > 0 ? (
-      <AnimatePresence>
-        {(ViewDetails && selectedOrder ? [selectedOrder] : filteredOrders).map(
-          (order, index) => (
+      {orders && orders.length > 0 ? (
+        <AnimatePresence>
+          {(ViewDetails && selectedOrder
+            ? [selectedOrder]
+            : filteredOrders
+          ).map((order, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 50 }}
@@ -382,6 +386,9 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                 <div className="flex flex-col text-end text-2xl w-full gap-4 py-4">
                   <div>Subtotal: {order.subTotal.toLocaleString() + " đ"}</div>
                   <div>
+                    Discount: - {order.discountAmount.toLocaleString() + " đ"}
+                  </div>
+                  <div>
                     Shipping Fee: {order.shippingFee.toLocaleString() + " đ"}
                   </div>
                   <div>
@@ -461,12 +468,11 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                 </div>
               </div>
             </motion.div>
-          )
-        )}
-      </AnimatePresence>
-     ) : (
-       <div className="text-center text-gray-400">No orders </div>
-     )}
+          ))}
+        </AnimatePresence>
+      ) : (
+        <div className="text-center text-gray-400">No orders </div>
+      )}
     </motion.div>
   );
 };

@@ -236,6 +236,9 @@ const ManageOrder = () => {
     try {
       await uploadOrderItemFiles(selectedItem.orderItemId, imgURLs);
       setFileList([]);
+      setIsModalUpload(false);
+      setSelectedItem(null);
+      setIsModalVisible(false);
       toast.success("Upload Success");
       setOrders(await fetchOrders());
     } catch (error) {
@@ -413,10 +416,14 @@ const ManageOrder = () => {
                 {selectedOrder.subTotal?.toLocaleString()} đ
               </p>
               <p>
+                <strong>Discount:</strong>{" "}
+                {selectedOrder.discountAmount?.toLocaleString()} đ
+              </p>
+              <p>
                 <strong>Shipping:</strong>{" "}
                 {selectedOrder.shippingFee.toLocaleString()} đ
               </p>
-              <p>
+              <p className="!texl-3xl">
                 <strong>Total:</strong>{" "}
                 {selectedOrder.totalPrice.toLocaleString()} đ
               </p>
@@ -436,7 +443,7 @@ const ManageOrder = () => {
       <Modal
         title={`Order Item number ${selectedItem?.orderItemId}`}
         visible={isModalUpload}
-        onCancel={handleCancelUpload}
+        onCancel={() => handleCancelUpload()}
         onOk={() => formUpload.submit()}
         okText="Update"
         cancelText="Close"

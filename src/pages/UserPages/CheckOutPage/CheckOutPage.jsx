@@ -10,10 +10,12 @@ import { useForm } from "antd/es/form/Form";
 import toast from "react-hot-toast";
 
 const CheckOutPage = () => {
-  const [discountCode, setDiscountCode] = useState("");
   const navigate = useNavigate();
   const cartItems = useSelector(selectCartItems);
   const user = useSelector(selectUser);
+  const [voucher, setVoucher] = useState([]);
+  const [selectedVoucherId, setSelectedVoucherId] = useState(null);
+  const [selectedVoucher, setSelectedVoucher] = useState(null);
 
   const [form] = useForm();
   const [shippingFee, setShippingFee] = useState(0);
@@ -23,11 +25,12 @@ const CheckOutPage = () => {
     0
   );
 
-  const totalAmount =
-    cartItems.reduce(
-      (acc, item) => acc + item.selectedOption.displayPrice * item.quantity,
-      0
-    ) + shippingFee;
+  const saleOffPrice =
+    provisional * (selectedVoucher?.voucherDiscount / 100) >
+    selectedVoucher?.maxDiscount
+      ? selectedVoucher?.maxDiscount
+      : provisional * (selectedVoucher?.voucherDiscount / 100) || 0;
+  const totalAmount = provisional + shippingFee - saleOffPrice;
 
   const [userAddress, setUserAddress] = useState([]);
 
@@ -41,6 +44,17 @@ const CheckOutPage = () => {
         console.log(error.response.data);
       }
     };
+
+    const fetchVoucher = async () => {
+      try {
+        const response = await api.get(`/Voucher`);
+        console.log("voucher", response.data);
+        setVoucher(response.data);
+      } catch (error) {
+        console.log(error.response.data);
+      }
+    };
+    fetchVoucher();
     fetchUserAddress();
   }, []);
 
@@ -82,9 +96,10 @@ const CheckOutPage = () => {
   const handleCheckout = async (values) => {
     values.userId = user.userId;
     values.subTotal = provisional;
+    values.discountAmount = saleOffPrice;
     values.shippingFee = shippingFee;
-    values.totalPrice = provisional + shippingFee; // Tổng tiền
-    values.voucherId = null;
+    values.totalPrice = totalAmount; // Tổng tiền
+    values.voucherId = selectedVoucher ? selectedVoucher.voucherId : null;
     values.orderItemRequestDto = cartItems.map((item) => ({
       quantity: item.quantity,
       price: item.selectedOption.displayPrice,
@@ -194,6 +209,14 @@ const CheckOutPage = () => {
 
   const buttonHoverStyle = {
     backgroundColor: "#495a72",
+  };
+  const handleVoucherChange = (value) => {
+    setSelectedVoucherId(value);
+  };
+
+  const handleApplyVoucher = () => {
+    const selected = voucher.find((v) => v.voucherId === selectedVoucherId);
+    setSelectedVoucher(selected);
   };
 
   return (
@@ -350,14 +373,20 @@ const CheckOutPage = () => {
             showHeader={false}
             style={{ marginBottom: "10px" }}
           />
-          <Input
-            placeholder="Enter discount code"
-            value={discountCode}
-            onChange={(e) => setDiscountCode(e.target.value)}
-            style={inputStyle}
-            onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
-            onBlur={(e) => Object.assign(e.target.style, inputStyle)}
-          />
+          <Select
+            placeholder="Select Voucher"
+            className="!h-[40px] !my-[10px] !w-[100%]"
+            allowClear
+            onChange={handleVoucherChange}
+          >
+            {voucher.map((voucher, index) => (
+              <Select.Option value={voucher.voucherId} key={index}>
+                {voucher.voucherName} - {voucher.voucherDiscount}% - Max off{" "}
+                {voucher.maxDiscount.toLocaleString()}₫
+              </Select.Option>
+            ))}
+          </Select>
+
           <Button
             block
             style={buttonStyle}
@@ -365,6 +394,7 @@ const CheckOutPage = () => {
               Object.assign(e.target.style, buttonHoverStyle)
             }
             onMouseLeave={(e) => Object.assign(e.target.style, buttonStyle)}
+            onClick={handleApplyVoucher}
           >
             Apply
           </Button>
@@ -372,6 +402,10 @@ const CheckOutPage = () => {
             <div style={{ display: "flex", justifyContent: "space-between" }}>
               <span>Subtotal</span>
               <span>{provisional.toLocaleString()}₫</span>
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span>Sale off</span>
+              <span>- {saleOffPrice.toLocaleString()}₫</span>
             </div>
             <div
               style={{
