@@ -18,6 +18,7 @@ import { useForm } from "antd/es/form/Form";
 import {
   fetchOrders,
   refundOrderItem,
+  updateOrderStatus,
   uploadOrderItemFiles,
 } from "../../../services/AdminServices/ManageOrderServices/ManageOrderServices";
 const { TabPane } = Tabs;
@@ -163,6 +164,26 @@ const ManageOrder = () => {
           >
             View
           </Button>
+
+          {record.currentStatusId === 2 && (
+            <Button
+              type="primary"
+              style={{ backgroundColor: "#313857", color: "#FFF1F2" }}
+              onClick={() => handleUpdateStatus(record.orderId, 3)}
+            >
+              Update to Shipping
+            </Button>
+          )}
+
+          {record.currentStatusId === 3 && (
+            <Button
+              type="primary"
+              style={{ backgroundColor: "#313857", color: "#FFF1F2" }}
+              onClick={() => handleUpdateStatus(record.orderId, 5)}
+            >
+              Update to Arrived
+            </Button>
+          )}
         </Space>
       ),
     },
@@ -245,6 +266,25 @@ const ManageOrder = () => {
       console.error("Upload failed", error);
       toast.error("Upload failed");
     }
+  };
+
+  const handleUpdateStatus = async (orderId, status) => {
+    Modal.confirm({
+      title: "Are you sure you want to update the order status?",
+      okText: "Yes",
+      cancelText: "No",
+      okType: "primary",
+      onOk: async function () {
+        try {
+          await updateOrderStatus(orderId, status);
+          setOrders(await fetchOrders());
+          toast.success("Update success");
+        } catch (error) {
+          console.error("Error updating order status:", error);
+          toast.error("Failed to update order status");
+        }
+      },
+    });
   };
 
   return (

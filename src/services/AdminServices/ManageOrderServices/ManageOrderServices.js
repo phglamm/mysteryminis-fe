@@ -17,3 +17,8 @@ export const uploadOrderItemFiles = async (orderItemId, imgURLs) => {
   );
   return response.data;
 };
+
+export const updateOrderStatus = async (orderId, status) => {
+  const response = await api.put(`Shipping/order/${orderId}?status=${status}`);
+  return response.data;
+};
