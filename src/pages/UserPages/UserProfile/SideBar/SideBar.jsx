@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react/prop-types */
 import {
   BookOutlined,
@@ -9,12 +10,14 @@ import {
 import { motion } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { logout, selectUser } from "../../../../Redux/features/counterSlice";
+import { login, logout, selectUser } from "../../../../Redux/features/counterSlice";
 import Cookies from "js-cookie";
 import { route } from "../../../../routes";
 import { clearCart } from "../../../../Redux/features/cartSlice";
+import { useEffect } from "react";
+import { fetchUserData } from "../../../../services/UserServices/UserProfileServices/UserProfileServices";
 
-const Sidebar = ({ setActiveSection }) => {
+const Sidebar = ({ setActiveSection, isEditing }) => {
   const user = useSelector(selectUser);
   const navigate = useNavigate();
   const sections = [
@@ -34,6 +37,17 @@ const Sidebar = ({ setActiveSection }) => {
       description: "Manage your address",
     },
   ];
+
+   useEffect(() => {
+      (async () => {
+        try {
+          const data = await fetchUserData(user.email);
+          dispatch(login(data));
+        } catch (err) {
+          console.error(err);
+        } 
+      })();
+    }, [isEditing]);
 
   if (user.roleId === 1) {
     sections.push({

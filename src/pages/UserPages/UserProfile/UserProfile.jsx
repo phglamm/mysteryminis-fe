@@ -37,7 +37,7 @@ const UserProfile = () => {
                 <div className="grid grid-cols-4">
                     {/* Sidebar Component */}
                     <div className=" pt-4 pr-4 pb-4 pl-2">
-                        <Sidebar setActiveSection={setActiveSection} />
+                        <Sidebar setActiveSection={setActiveSection} isEditing={isEditing} />
                     </div>
                     
 
