@@ -208,6 +208,7 @@ const ManageOrder = () => {
       if (activeTab === "Shipping") return order.currentStatusId === 3;
       if (activeTab === "Arrived") return order.currentStatusId === 5;
       if (activeTab === "Processing") return order.currentStatusId === 2;
+      if (activeTab === "Pending") return order.currentStatusId === 1;
       if (activeTab === "Open Request") return order.openRequest === true;
       return false;
     })
@@ -316,6 +317,7 @@ const ManageOrder = () => {
       <Tabs defaultActiveKey="PROCESSING" onChange={setActiveTab}>
         \
         <TabPane tab="All Order" key="All" />
+        <TabPane tab="Pending" key="Pending" />
         <TabPane tab="Processing" key="Processing" />
         <TabPane tab="Shipping" key="Shipping" />
         <TabPane tab="Arrived" key="Arrived" />
