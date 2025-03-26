@@ -62,7 +62,6 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
     try {
       const response = await api.post("/Payment/make-Payment", requestData);
       console.log(response.data);
-      window.location.assign(response.data);
       loadOrders();
     } catch (error) {
       console.error(error);
@@ -472,7 +471,12 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                     Shipping Fee: {order.shippingFee.toLocaleString() + " đ"}
                   </div>
                   <div>
-                    Total Order: {order.totalPrice.toLocaleString() + " đ"}
+                    Total Order:{" "}
+                    {(
+                      order.subTotal +
+                      order.shippingFee -
+                      order.discountAmount
+                    ).toLocaleString() + " đ"}
                   </div>
                   <div className="text-sm text-gray-500">
                     Payment Method: {order.paymentMethod}{" "}
