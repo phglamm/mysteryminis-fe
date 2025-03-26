@@ -165,6 +165,16 @@ const ManageOrder = () => {
             View
           </Button>
 
+          {record.currentStatusId === 1 && (
+            <Button
+              type="primary"
+              style={{ backgroundColor: "#313857", color: "#FFF1F2" }}
+              onClick={() => handleUpdateStatus(record.orderId, 2)}
+            >
+              Update to Processing
+            </Button>
+          )}
+
           {record.currentStatusId === 2 && (
             <Button
               type="primary"
@@ -195,8 +205,10 @@ const ManageOrder = () => {
       if (activeTab === "All") return true;
       if (activeTab === "Refund") return order.refundRequest === true;
       if (activeTab === "Cancelled") return order.currentStatusId === 4;
+      if (activeTab === "Shipping") return order.currentStatusId === 3;
       if (activeTab === "Arrived") return order.currentStatusId === 5;
-      if (activeTab === "Processing") return order.openRequest === true;
+      if (activeTab === "Processing") return order.currentStatusId === 2;
+      if (activeTab === "Open Request") return order.openRequest === true;
       return false;
     })
     .sort(
@@ -305,9 +317,11 @@ const ManageOrder = () => {
         \
         <TabPane tab="All Order" key="All" />
         <TabPane tab="Processing" key="Processing" />
+        <TabPane tab="Shipping" key="Shipping" />
         <TabPane tab="Arrived" key="Arrived" />
-        <TabPane tab="Refund" key="Refund" />
+        <TabPane tab="Open Request" key="Open Request" />
         <TabPane tab="Cancelled" key="Cancelled" />
+        <TabPane tab="Refund" key="Refund" />
       </Tabs>
       <Table
         columns={columns}
