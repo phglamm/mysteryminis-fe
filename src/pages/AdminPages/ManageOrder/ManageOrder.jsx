@@ -109,7 +109,21 @@ const ManageOrder = () => {
   }, []);
 
   const columns = [
-    { title: "Order Number", dataIndex: "orderId", key: "orderId" },
+    {
+      title: "Order Number",
+      dataIndex: "orderId",
+      key: "orderId",
+      filters: [
+        ...Array.from(new Set(orders.map((order) => order.orderId))).map(
+          (orderId) => ({
+            text: orderId,
+            value: orderId,
+          })
+        ),
+      ],
+      onFilter: (value, record) => record.orderId === value,
+      filterSearch: true,
+    },
     {
       title: "Date Time",
       dataIndex: "orderCreatedAt",
@@ -118,7 +132,21 @@ const ManageOrder = () => {
       sorter: (a, b) =>
         dayjs(b.orderCreatedAt).unix() - dayjs(a.orderCreatedAt).unix(), // Sắp xếp theo ngày mới nhất
     },
-    { title: "Customer Name", dataIndex: "userName", key: "userName" },
+    {
+      title: "Customer Name",
+      dataIndex: "userName",
+      key: "userName",
+      filters: [
+        ...Array.from(new Set(orders.map((order) => order.userName))).map(
+          (userName) => ({
+            text: userName,
+            value: userName,
+          })
+        ),
+      ],
+      onFilter: (value, record) => record.userName === value,
+      filterSearch: true,
+    },
     {
       title: "Items",
       dataIndex: "orderItems",

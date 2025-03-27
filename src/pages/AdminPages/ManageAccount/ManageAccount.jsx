@@ -16,6 +16,7 @@ import {
 } from "antd";
 import { getAllUsers } from "../../../services/AdminServices/ManageAccountServices/ManageAccountServices";
 import { UploadOutlined } from "@ant-design/icons";
+import { a } from "@react-spring/web";
 
 const { TabPane } = Tabs;
 
@@ -82,7 +83,13 @@ const ManageAccount = () => {
   };
 
   const columns = [
-    { title: "ID", dataIndex: "userId", key: "userId", width: 80 },
+    {
+      title: "ID",
+      dataIndex: "userId",
+      key: "userId",
+      width: 80,
+      sorter: (a, b) => a.userId - b.userId,
+    },
     {
       title: "Avatar",
       dataIndex: "avatarUrl",
@@ -99,7 +106,22 @@ const ManageAccount = () => {
           "No Avatar"
         ),
     },
-    { title: "Username", dataIndex: "username", key: "username", width: 150 },
+    {
+      title: "Username",
+      dataIndex: "username",
+      key: "username",
+      width: 150,
+      filters: [
+        ...new Set(
+          accounts.map((item) => ({
+            text: item.username,
+            value: item.username,
+          }))
+        ),
+      ],
+      onFilter: (value, record) => record.username === value,
+      filterSearch: true,
+    },
     { title: "Name", dataIndex: "fullname", key: "fullname", width: 150 },
     { title: "Email", dataIndex: "email", key: "email", width: 250 },
     { title: "Phone", dataIndex: "phone", key: "phone", width: 150 },

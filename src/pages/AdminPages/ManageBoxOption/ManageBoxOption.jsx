@@ -135,6 +135,16 @@ export default function ManageBoxOption() {
       title: "Name",
       dataIndex: "boxOptionName",
       key: "boxOptionName",
+      filters: [
+        ...new Set(
+          boxOption.map((item) => ({
+            text: item.boxOptionName,
+            value: item.boxOptionName,
+          }))
+        ),
+      ],
+      onFilter: (value, record) => record.boxOptionName === value,
+      filterSearch: true,
     },
     {
       title: "Cost Price",
