@@ -123,8 +123,38 @@ const ManageAccount = () => {
       filterSearch: true,
     },
     { title: "Name", dataIndex: "fullname", key: "fullname", width: 150 },
-    { title: "Email", dataIndex: "email", key: "email", width: 250 },
-    { title: "Phone", dataIndex: "phone", key: "phone", width: 150 },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      width: 250,
+      filters: [
+        ...new Set(
+          accounts.map((account) => ({
+            text: account.email,
+            value: account.email,
+          }))
+        ),
+      ], // 👈 Auto-generate filters
+      onFilter: (value, record) => record.email === value,
+      filterSearch: true,
+    },
+    {
+      title: "Phone",
+      dataIndex: "phone",
+      key: "phone",
+      width: 150,
+      filters: [
+        ...new Set(
+          accounts.map((account) => ({
+            text: account.phone,
+            value: account.phone,
+          }))
+        ),
+      ], // 👈 Auto-generate filters
+      onFilter: (value, record) => record.phone === value,
+      filterSearch: true,
+    },
     {
       title: "Gender",
       dataIndex: "gender",
