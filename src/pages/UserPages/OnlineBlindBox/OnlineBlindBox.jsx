@@ -63,7 +63,7 @@ const OnlineBlindBox = () => {
             quantity: 1,
             price: blindbox.boxOption.displayPrice || 0,
             boxOptionId: blindbox.boxOption.boxOptionId || 0,
-            originPrice: blindbox.boxOption.displayPrice || 0,
+            originPrice: blindbox.boxOption.originPrice || 0,
             isOnlineSerieBox: true,
             orderItemOpenRequestNumber: 0,
           },
