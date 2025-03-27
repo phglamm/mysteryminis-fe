@@ -9,3 +9,13 @@ export const getAllUsers = async () => {
       throw error;
     }
   };
+
+  export const registerAccount = async (payload) => {
+    try {
+      const response = await api.post("Account/register", payload);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to register account:", error);
+      throw error;
+    }
+  };
