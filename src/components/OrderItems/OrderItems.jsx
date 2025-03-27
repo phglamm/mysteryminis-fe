@@ -15,6 +15,8 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../Redux/features/counterSlice";
 import api from "./../../config/api";
 import { Modal } from "antd";
+import FeedbackModal from "../FeedbackModal/FeedbackModal";
+// import { FeedbackModal } from "../FeedbackModel/FeedbackModal";
 
 const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [ViewDetails, setViewDetailsState] = useState(false);
@@ -25,6 +27,9 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [checkCard, setCheckCard] = useState(null);
   const [userAddress, setUserAddress] = useState([]);
   const [isModalAddressVisible, setIsModalAddressVisible] = useState(false);
+  const [selectedOrderForFeedback, setSelectedOrderForFeedback] =
+    useState(null);
+  const [selectedItemForFeedback, setSelectedItemForFeedback] = useState(null);
   const user = useSelector(selectUser);
   const [shippingFee, setShippingFee] = useState(0);
   const [formUpdateShipping] = Form.useForm();
@@ -175,6 +180,12 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const handleRateClick = (order, item) => {
+    setSelectedOrderForFeedback(order); // Store the selected order
+    setVisible(true); // Open the modal
+    setSelectedItemForFeedback(item); // Store the selected item for feedback
   };
 
   return (
@@ -403,19 +414,42 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                     </div>
                     <div className="flex justify-center items-center w-1/4">
                       {ViewDetails ? (
-                        <div className="flex flex-col items-center">
+                        <div className="flex flex-col h-full gap-3 items-center justify-end">
                           <div>{item.orderPrice.toLocaleString() + " đ"}</div>
 
                           {order.currentStatusId === 5 && (
                             <>
                               {item.refundStatus === "Available" ? (
-                                <>
-                                  <div>
+                                <div className="flex flex-row gap-x-3 items-end">
+                                  <motion.button
+                                    className={`border-1 px-3 h-full text-[0.9vw] rounded-md font-bold ${
+                                      item.isFeedback
+                                        ? "cursor-not-allowed opacity-50"
+                                        : ""
+                                    }`}
+                                    initial={{
+                                      backgroundColor: "#ef4444",
+                                      color: "white",
+                                      border: "1px solid #f3f4f6",
+                                    }}
+                                    whileHover={{
+                                      backgroundColor: "#ef4444",
+                                      color: "white",
+                                      border: "1px solid white",
+                                      scale: 1.1,
+                                    }}
+                                    whileTap={{ scale: 0.9 }}
+                                    onClick={() => handleRateClick(order, item)}
+                                    disabled={item.isFeedback} // Disable rate button if feedback exists
+                                  >
+                                    Rates
+                                  </motion.button>
+                                  <div className="items-end flex">
                                     <Button onClick={() => handleRefund(item)}>
                                       Request Refund
                                     </Button>
                                   </div>
-                                </>
+                                </div>
                               ) : (
                                 <></>
                               )}
@@ -466,15 +500,15 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                   No items in this order
                 </div>
               )}
-                
+
               <div className=" gap-4 px-8 p-2 bg-white h-fit border-dashed border-t-1">
                 <div className="flex flex-col text-end items-end text-2xl w-full gap-4 py-4">
-                {order.isReadyForShipBoxItem === false &&
+                  {order.isReadyForShipBoxItem === false &&
                     order.orderItems.some(
                       (item) => item.userRolledItemForManageOrder != null
                     ) && (
-                      <motion.button 
-                      className="border-1 px-3 py-1 w-[20%] text-[0.9vw] rounded-md font-bold"
+                      <motion.button
+                        className="border-1 px-3 py-1 w-[20%] text-[0.9vw] rounded-md font-bold"
                         initial={{
                           backgroundColor: "#ef4444",
                           color: "white",
@@ -487,7 +521,8 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                           scale: 1.1,
                         }}
                         whileTap={{ scale: 0.9 }}
-                      onClick={() => handleReadyForShip(order.orderId)}>
+                        onClick={() => handleReadyForShip(order.orderId)}
+                      >
                         Ready for shipping
                       </motion.button>
                     )}
@@ -509,8 +544,6 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                   <div className="text-sm text-gray-500">
                     Payment Method: {order.paymentMethod}{" "}
                   </div>
-
-                  
                 </div>
 
                 <div className="flex justify-end gap-4">
@@ -542,7 +575,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                       )}
                     </motion.button>
                   ) : order.orderStatusDetailsSimple?.slice(-1)[0]
-                      ?.statusName === "Arrived" ? (
+                      ?.statusName === "Arrived" && !ViewDetails ? (
                     <>
                       <motion.button
                         className="border-1 px-3 py-1 w-[20%] text-[0.9vw] rounded-md font-bold"
@@ -558,6 +591,10 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                           scale: 1.1,
                         }}
                         whileTap={{ scale: 0.9 }}
+                        onClick={() => {
+                          setSelectedOrder(order); // Set the specific order to display
+                          setViewDetailsState(true);
+                        }}
                       >
                         Rate
                       </motion.button>
@@ -624,6 +661,18 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
           </div>
         </Form>
       </Modal>
+      {/* Feedback Modal */}
+      {selectedOrderForFeedback && (
+        <FeedbackModal
+          visible={visible}
+          setVisible={setVisible}
+          onFeedbackSubmitted={() => {
+            setVisible(false);
+          }}
+          selectedOrderForFeedback={selectedOrderForFeedback}
+          selectedItemForFeedback={selectedItemForFeedback}
+        />
+      )}
     </motion.div>
   );
 };
