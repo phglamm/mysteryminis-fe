@@ -14,10 +14,7 @@ import {
   Upload,
   Image,
 } from "antd";
-import {
-  getAllUsers,
-  registerAccount,
-} from "../../../services/AdminServices/ManageAccountServices/ManageAccountServices";
+import { getAllUsers, registerAccount, updateAccount } from "../../../services/AdminServices/ManageAccountServices/ManageAccountServices";
 import { UploadOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/UploadImage";
 
@@ -49,7 +46,7 @@ const ManageAccount = () => {
 
   const handleEdit = (record) => {
     setEditingAccount(record);
-    form.setFieldsValue(record);
+    form.setFieldsValue(record); // Pre-fill the form with current values
     setIsModalVisible(true);
   };
 
@@ -62,56 +59,49 @@ const ManageAccount = () => {
   const handleSave = async () => {
     try {
       const values = await form.validateFields();
-
+  
       let avatarUrl = "";
+  
+      // Kiểm tra xem có tệp avatar mới không
       const uploadField = form.getFieldValue("avatarUrl");
-      const fileList = Array.isArray(uploadField) ? uploadField : uploadField?.fileList;
-
-      if (fileList && fileList.length > 0) {
-        const file = fileList[0].originFileObj;
-        avatarUrl = await uploadFile(file); 
+  
+      if (uploadField && Array.isArray(uploadField) && uploadField.length > 0) {
+        const file = uploadField[0].originFileObj;
+        avatarUrl = await uploadFile(file); // Tải avatar lên nếu có tệp
+      } else {
+        // Nếu không có avatar mới, sử dụng avatar cũ (hoặc để trống nếu không có)
+        avatarUrl = editingAccount?.avatarUrl || "";  
       }
-
+  
+      const payload = {
+        userId: editingAccount ? editingAccount.userId : 0,
+        username: values.username,
+        fullname: values.fullname,
+        phone: values.phone,
+        email: values.email,
+        gender: values.gender,
+        avatarUrl: avatarUrl,  // Sử dụng avatarUrl đã xác định
+      };
+  
       if (!editingAccount) {
-        const payload = {
-          email: values.email,
-          userName: values.username,
-          password: values.password,
-          fullName: values.fullname,
-          phoneNumber: values.phone,
-          gender: values.gender,
-          roleId: values.roleId,
-          isTestAccount: values.isTestAccount || false,
-          avatarUrl: avatarUrl || "", 
-        };
-
+        // Tạo tài khoản mới nếu chưa chỉnh sửa tài khoản cũ
         await registerAccount(payload);
         message.success("Account created successfully");
-        setIsModalVisible(false);
-        fetchAccounts();
       } else {
-        setAccounts(
-          accounts.map((account) =>
-            account.userId === editingAccount.userId
-              ? { ...account, ...values }
-              : account
-          )
-        );
-        message.success("Account updated locally");
-        setIsModalVisible(false);
+        // Cập nhật tài khoản nếu đang chỉnh sửa tài khoản cũ
+        await updateAccount(payload);
+        message.success("Account updated successfully");
       }
+  
+      setIsModalVisible(false);
+      fetchAccounts(); // Lấy lại danh sách tài khoản
     } catch (error) {
       console.error("Account save failed:", error);
-      const msg =
-        error?.response?.data?.[0]?.description ||
-        error?.response?.data?.message ||
-        "Failed to save account";
-      message.error(msg);
+      message.error("Failed to save account");
     }
   };
-
-
-
+  
+  
 
   const columns = [
     {
@@ -286,16 +276,27 @@ const ManageAccount = () => {
         }}
       >
         <Form form={form} layout="vertical">
-          <Form.Item
-            name="avatarUrl"
-            label="Avatar"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-          >
-            <Upload listType="picture" maxCount={1} beforeUpload={() => false}>
-              <Button icon={<UploadOutlined />}>Upload Avatar</Button>
-            </Upload>
-          </Form.Item>
+
+        <Form.Item
+  name="avatarUrl"
+  label="Avatar"
+  valuePropName="fileList"
+  getValueFromEvent={(e) => {
+    // Đảm bảo fileList luôn là một mảng (hoặc mảng rỗng nếu không có tệp)
+    return Array.isArray(e) ? e : e?.fileList || [];
+  }}
+>
+  <Upload
+    listType="picture"
+    maxCount={1}
+    beforeUpload={(file) => {
+      console.log('File selected:', file);
+      return false; // Ngừng tự động tải lên, để bạn có thể xử lý thủ công
+    }}
+  >
+    <Button icon={<UploadOutlined />}>Upload Avatar</Button>
+  </Upload>
+</Form.Item>
 
 
 
@@ -307,14 +308,15 @@ const ManageAccount = () => {
             <Input />
           </Form.Item>
 
-          <Form.Item
-            name="password"
-            label="Password"
-            rules={[{ required: true, message: "Please enter password" }]}
-          >
-            <Input.Password />
-          </Form.Item>
-
+          {!editingAccount && (
+            <Form.Item
+              name="password"
+              label="Password"
+              rules={[{ required: true, message: "Please enter password" }]}
+            >
+              <Input.Password />
+            </Form.Item>
+          )}
 
           <Form.Item
             name="fullname"
@@ -370,7 +372,6 @@ const ManageAccount = () => {
           >
             <Switch />
           </Form.Item>
-
         </Form>
       </Modal>
     </div>
