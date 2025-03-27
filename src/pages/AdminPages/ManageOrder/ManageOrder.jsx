@@ -276,6 +276,11 @@ const ManageOrder = () => {
       (a, b) => dayjs(b.orderCreatedAt).unix() - dayjs(a.orderCreatedAt).unix()
     ); // Sắp xếp giảm dần
 
+  const openRequestCounting = orders.filter(
+    (order) => order.openRequest === true
+  );
+
+  const refundCounting = orders.filter((order) => order.refundRequest === true);
   const uploadButton = (
     <div>
       <PlusOutlined />
