@@ -381,9 +381,12 @@ const ManageOrder = () => {
         <TabPane tab="Processing" key="Processing" />
         <TabPane tab="Shipping" key="Shipping" />
         <TabPane tab="Arrived" key="Arrived" />
-        <TabPane tab="Open Request" key="Open Request" />
+        <TabPane
+          tab={`Open Request (${openRequestCounting.length})`}
+          key="Open Request"
+        />
         <TabPane tab="Cancelled" key="Cancelled" />
-        <TabPane tab="Refund" key="Refund" />
+        <TabPane tab={`Refund (${refundCounting.length})`} key="Refund" />
       </Tabs>
       <Table
         columns={columns}
