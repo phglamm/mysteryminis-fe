@@ -65,11 +65,13 @@ const ManageAccount = () => {
 
       let avatarUrl = "";
       const uploadField = form.getFieldValue("avatarUrl");
-      const fileList = Array.isArray(uploadField) ? uploadField : uploadField?.fileList;
+      const fileList = Array.isArray(uploadField)
+        ? uploadField
+        : uploadField?.fileList;
 
       if (fileList && fileList.length > 0) {
         const file = fileList[0].originFileObj;
-        avatarUrl = await uploadFile(file); 
+        avatarUrl = await uploadFile(file);
       }
 
       if (!editingAccount) {
@@ -82,9 +84,9 @@ const ManageAccount = () => {
           gender: values.gender,
           roleId: values.roleId,
           isTestAccount: values.isTestAccount || false,
-          avatarUrl: avatarUrl || "", 
+          avatarUrl: avatarUrl || "",
         };
-
+        console.log(payload);
         await registerAccount(payload);
         message.success("Account created successfully");
         setIsModalVisible(false);
@@ -109,9 +111,6 @@ const ManageAccount = () => {
       message.error(msg);
     }
   };
-
-
-
 
   const columns = [
     {
@@ -142,6 +141,16 @@ const ManageAccount = () => {
       dataIndex: "username",
       key: "username",
       width: 150,
+      filters: [
+        ...new Set(
+          accounts.map((item) => ({
+            text: item.username,
+            value: item.username,
+          }))
+        ),
+      ],
+      onFilter: (value, record) => record.username === value,
+      filterSearch: true,
     },
     {
       title: "Name",
@@ -297,8 +306,6 @@ const ManageAccount = () => {
             </Upload>
           </Form.Item>
 
-
-
           <Form.Item
             name="username"
             label="Username"
@@ -310,11 +317,17 @@ const ManageAccount = () => {
           <Form.Item
             name="password"
             label="Password"
-            rules={[{ required: true, message: "Please enter password" }]}
+            rules={[
+              { required: true, message: "Please enter password" },
+              {
+                pattern: /^(?=.*[A-Z])(?=.*[a-z]).{8,}$/,
+                message:
+                  "Password must be at least 8 characters long and include at least 1 uppercase and 1 lowercase letter!",
+              },
+            ]}
           >
             <Input.Password />
           </Form.Item>
-
 
           <Form.Item
             name="fullname"
@@ -370,7 +383,6 @@ const ManageAccount = () => {
           >
             <Switch />
           </Form.Item>
-
         </Form>
       </Modal>
     </div>
