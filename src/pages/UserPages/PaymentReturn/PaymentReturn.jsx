@@ -30,7 +30,7 @@ const PaymentReturnPage = () => {
         console.log(response);
         // Check the response's success flag
         if (response.status === 200) {
-          toast.success(response.data.message);
+          toast.success("Payment successful");
           if (response.data.boxOptionId !== undefined) {
             navigate(`${route.onlineBlindBox}/${response.data.boxOptionId}`, {
               state: { isPlay: true, reward: response.data },
