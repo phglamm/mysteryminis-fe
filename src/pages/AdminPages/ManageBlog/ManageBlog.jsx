@@ -19,6 +19,8 @@ export default function ManageBlog() {
   const [isModalUpdateOpen, setIsModalUpdateOpen] = useState(false);
   const [selectedBlog, setSelectedBlog] = useState(null);
 
+  const [isModalViewContent, setIsModalViewContent] = useState(false);
+  const [selectedContent, setSelectedContent] = useState("");
   // Fetch all blogs
   useEffect(() => {
     const fetchBlogs = async () => {
@@ -44,7 +46,11 @@ export default function ManageBlog() {
       toast.error("Failed to add blog");
     }
   };
-
+  const showViewContent = (text) => {
+    setIsModalViewContent(true);
+    console.log(text);
+    setSelectedContent(text);
+  };
   // Handle updating a blog
   const handleModalUpdate = (blog) => {
     setSelectedBlog(blog);
@@ -112,7 +118,11 @@ export default function ManageBlog() {
       title: "Content",
       dataIndex: "blogPostContent",
       key: "blogPostContent",
-      render: (content) => content.slice(0, 50) + "...", // Truncate content to show a preview
+      render: (text) => (
+        <>
+          <Button onClick={() => showViewContent(text)}> View Content</Button>
+        </>
+      ),
     },
     {
       title: "Image",
@@ -218,6 +228,15 @@ export default function ManageBlog() {
             <Input />
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        visible={isModalViewContent}
+        title="Blog Content"
+        onCancel={() => setIsModalViewContent(false)}
+        footer={null}
+      >
+        <p>{selectedContent}</p>
       </Modal>
     </div>
   );
