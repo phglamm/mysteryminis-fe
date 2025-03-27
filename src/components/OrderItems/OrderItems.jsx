@@ -267,12 +267,12 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
               >
                 <OrderSteps order={order} />
 
-                <div className="flex w-full flex-row gap-[7%]">
+                <div className="flex w-full flex-row gap-[18%]">
                   {order.orderItems.length > 0 ? (
                     order.orderStatusDetailsSimple.map((status, index) => (
                       <div
                         key={index}
-                        className=" w-[15%] text-gray-500 text-[70%] h-fit"
+                        className=" w-[25%] flex  text-gray-500 text-[70%] h-fit"
                       >
                         {formatDate(status.updatedAt)}
                       </div>
