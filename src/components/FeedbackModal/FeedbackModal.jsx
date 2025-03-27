@@ -96,38 +96,71 @@ const FeedbackModal = ({
   };
 
   return (
-    <Modal
-      title="Rate Your Order"
-      visible={visible}
-      onOk={handleOk}
-      onCancel={handleCancel}
-      okText="Submit"
-      cancelText="Cancel"
-    >
-      <div>
-        <span>Feedback Content</span>
-        <Input.TextArea
-          value={feedbackContent}
-          onChange={(e) => setFeedbackContent(e.target.value)}
-          rows={4}
-        />
-      </div>
-      <div>
-        <span>Rating</span>
-        <Rate value={rating} onChange={setRating} />
-      </div>
-      <div>
-        <span>Upload Image (Optional)</span>
-        <Upload
-          listType="picture"
-          fileList={fileList}
-          onChange={({ fileList: newFileList }) => setFileList(newFileList)}
-          beforeUpload={handleImageUpload}
-        >
-          <Button icon={<UploadOutlined />}>Upload</Button>
-        </Upload>
-      </div>
-    </Modal>
+<Modal
+  title="Rate Your Order"
+  visible={visible}
+  onOk={handleOk}
+  onCancel={handleCancel}
+  okText="Submit"
+  cancelText="Cancel"
+>
+  <div style={{ padding: "8px 0" }}>
+    <div style={{ marginBottom: 16 }}>
+      <span style={{ display: "block", fontWeight: 500, marginBottom: 8 }}>
+        Feedback Content
+      </span>
+      <Input.TextArea
+        value={feedbackContent}
+        onChange={(e) => setFeedbackContent(e.target.value)}
+        rows={4}
+        placeholder="Write your feedback here..."
+      />
+    </div>
+
+    <div style={{ marginBottom: 16 }}>
+      <span style={{ display: "block", fontWeight: 500, marginBottom: 8 }}>
+        Rating
+      </span>
+      <Rate value={rating} onChange={setRating} />
+    </div>
+
+    <div style={{ marginBottom: 8 }}>
+      <span style={{ display: "block", fontWeight: 500, marginBottom: 8 }}>
+        Upload Image (Optional)
+      </span>
+      <Upload
+        listType="picture"
+        fileList={fileList}
+        onRemove={() => {
+          setFileList([]);
+          setImageUrl("");
+        }}
+        beforeUpload={async (file) => {
+          const isImage = file.type.startsWith("image/");
+          if (!isImage) {
+            message.error("You can only upload image files!");
+            return false;
+          }
+
+          try {
+            const uploadedImageUrl = await uploadFile(file);
+            setImageUrl(uploadedImageUrl);
+            setFileList([{ ...file, url: uploadedImageUrl }]);
+          } catch (error) {
+            message.error("Failed to upload image!");
+            console.error(error);
+          }
+
+          return false;
+        }}
+        maxCount={1}
+      >
+        <Button icon={<UploadOutlined />}>Upload</Button>
+      </Upload>
+    </div>
+  </div>
+</Modal>
+
   );
 };
 
