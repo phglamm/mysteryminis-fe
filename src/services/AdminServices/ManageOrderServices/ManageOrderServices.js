@@ -10,6 +10,15 @@ export const refundOrderItem = async (orderItemId, values) => {
   return response.data;
 };
 
+export const refundOrderItemDetail = async (orderItemId, values) => {
+  const response = await api.put(
+    `order-item/${orderItemId}/refund/details`,
+    values
+  );
+  console.log(response.data);
+  return response.data;
+};
+
 export const uploadOrderItemFiles = async (orderItemId, imgURLs) => {
   const response = await api.post(
     `order-item?orderItemId=${orderItemId}`,

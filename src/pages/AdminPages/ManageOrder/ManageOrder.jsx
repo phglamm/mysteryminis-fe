@@ -18,9 +18,11 @@ import { useForm } from "antd/es/form/Form";
 import {
   fetchOrders,
   refundOrderItem,
+  refundOrderItemDetail,
   updateOrderStatus,
   uploadOrderItemFiles,
 } from "../../../services/AdminServices/ManageOrderServices/ManageOrderServices";
+import { render } from "@react-three/fiber";
 const { TabPane } = Tabs;
 
 const ManageOrder = () => {
@@ -34,7 +36,10 @@ const ManageOrder = () => {
   const [formUpload] = useForm();
 
   const [isModalRefund, setIsModalRefund] = useState(false);
+  const [isModalUpdateRefund, setIsModalUpdateRefund] = useState(false);
+
   const [formRefund] = useForm();
+  const [formUpdateRefund] = useForm();
 
   const handleRefund = async (values) => {
     try {
@@ -48,8 +53,26 @@ const ManageOrder = () => {
     }
   };
 
+  const handleUpdateRefund = async (values) => {
+    try {
+      await refundOrderItemDetail(selectedItem.orderItemId, values);
+      toast.success("Refund success");
+      setIsModalUpdateRefund(false);
+      setOrders(await fetchOrders());
+    } catch (error) {
+      console.error("Error refunding:", error);
+      toast.error(error.response?.data || "Refund failed");
+    }
+  };
+
   const showModalRefund = (item) => {
     setIsModalRefund(true);
+    setSelectedItem(item);
+  };
+
+  const showModalUpdateRefund = (item) => {
+    formUpdateRefund.setFieldsValue(item);
+    setIsModalUpdateRefund(true);
     setSelectedItem(item);
   };
   const showModalUpload = (item) => {
@@ -102,6 +125,7 @@ const ManageOrder = () => {
       key: "items",
       render: (items) => (items ? items.length : 0),
     },
+
     {
       title: "Total",
       dataIndex: "totalPrice",
@@ -151,6 +175,14 @@ const ManageOrder = () => {
       ],
       onFilter: (value, record) => record.currentStatusId === value,
       filterSearch: true,
+    },
+    {
+      title: "Updated At",
+      dataIndex: "orderUpdatedAt",
+      key: "orderUpdatedAt",
+      render: (date) => dayjs(date).format("DD/MM/YYYY HH:mm"),
+      sorter: (a, b) =>
+        dayjs(a.orderUpdatedAt).unix() - dayjs(b.orderUpdatedAt).unix(),
     },
     {
       title: "Action",
@@ -413,9 +445,13 @@ const ManageOrder = () => {
 
                       <>
                         {item.refundStatus === "Request" ? (
-                          <div>
+                          <div className="flex flex-col gap-3">
                             <Button onClick={() => showModalRefund(item)}>
-                              Input number of refund
+                              Resolve Refund
+                            </Button>
+
+                            <Button onClick={() => showModalUpdateRefund(item)}>
+                              Refund Information
                             </Button>
                           </div>
                         ) : (
@@ -424,6 +460,51 @@ const ManageOrder = () => {
                         {item.refundStatus === "Resolved" && (
                           <p>Refund: {item.numOfRefund} quantity</p>
                         )}
+
+                        <Modal
+                          visible={isModalUpdateRefund}
+                          onCancel={() => {
+                            formUpdateRefund.resetFields();
+                            setIsModalUpdateRefund(false);
+                            setSelectedItem(null);
+                            formUpdateRefund.resetFields();
+                          }}
+                          onOk={() => formUpdateRefund.submit()}
+                          okText="Update Information"
+                          title="Refund Information"
+                        >
+                          <Form
+                            layout="vertical"
+                            form={formUpdateRefund}
+                            onFinish={handleUpdateRefund}
+                            requiredMark={false}
+                          >
+                            <Form.Item
+                              name="note"
+                              label="Note"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please enter Note",
+                                },
+                              ]}
+                            >
+                              <Input />
+                            </Form.Item>
+                            <Form.Item
+                              name="numOfRefund"
+                              label="Number of refund"
+                              rules={[
+                                {
+                                  required: true,
+                                  message: "Please input number of refund!",
+                                },
+                              ]}
+                            >
+                              <Input type="number" />
+                            </Form.Item>
+                          </Form>
+                        </Modal>
                       </>
                     </div>
                     {/* {item.openRequestNumber > 0 ? (
@@ -555,9 +636,14 @@ const ManageOrder = () => {
           formRefund.resetFields();
           setIsModalRefund(false);
         }}
-        onOk={formRefund.submit}
+        onOk={() => formRefund.submit()}
       >
-        <Form layout="vertical" form={formRefund} onFinish={handleRefund}>
+        <Form
+          layout="vertical"
+          form={formRefund}
+          onFinish={handleRefund}
+          requiredMark={false}
+        >
           <Form.Item
             name="numOfRefund"
             label="Number of refund"
