@@ -108,6 +108,7 @@ export default function ManageBrand() {
       title: "ID",
       dataIndex: "brandId",
       key: "brandId",
+      sorter: (a, b) => a.brandId - b.brandId,
     },
     {
       title: "Image",

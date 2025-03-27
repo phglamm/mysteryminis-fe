@@ -39,6 +39,7 @@ export default function ManageBoxItem() {
       title: "ID",
       dataIndex: "boxItemId",
       key: "boxItemId",
+      sorter: (a, b) => a.boxItemId - b.boxItemId,
     },
     {
       title: "Box Item's Item",
@@ -52,6 +53,16 @@ export default function ManageBoxItem() {
       title: "Name",
       dataIndex: "boxItemName",
       key: "boxItemName",
+      filters: [
+        ...new Set(
+          boxItem.map((item) => ({
+            text: item.boxItemName,
+            value: item.boxItemName,
+          }))
+        ),
+      ],
+      onFilter: (value, record) => record.boxItemName === value,
+      filterSearch: true,
     },
     {
       title: "Average Rating",

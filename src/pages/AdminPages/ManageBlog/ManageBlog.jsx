@@ -3,7 +3,12 @@ import { Button, Form, Table, Modal, Input, Select } from "antd";
 import { useEffect, useState } from "react";
 import { useForm } from "antd/es/form/Form";
 import toast from "react-hot-toast";
-import { addBlog, deleteBlog, getAllBlogs, updateBlog } from "../../../services/AdminServices/ManageBlogServices/ManageBlogServices";
+import {
+  addBlog,
+  deleteBlog,
+  getAllBlogs,
+  updateBlog,
+} from "../../../services/AdminServices/ManageBlogServices/ManageBlogServices";
 
 export default function ManageBlog() {
   const [formAdd] = useForm();
@@ -52,7 +57,9 @@ export default function ManageBlog() {
       await updateBlog(selectedBlog.blogPostId, values);
       setBlogs(
         blogs.map((blog) =>
-          blog.blogPostId === selectedBlog.blogPostId ? { ...blog, ...values } : blog
+          blog.blogPostId === selectedBlog.blogPostId
+            ? { ...blog, ...values }
+            : blog
         )
       );
       toast.success("Blog updated successfully");
@@ -84,11 +91,22 @@ export default function ManageBlog() {
       title: "ID",
       dataIndex: "blogPostId",
       key: "blogPostId",
+      sorter: (a, b) => a.blogPostId - b.blogPostId,
     },
     {
       title: "Title",
       dataIndex: "blogPostTitle",
       key: "blogPostTitle",
+      filters: [
+        ...new Set(
+          blogs.map((item) => ({
+            text: item.blogPostTitle,
+            value: item.blogPostTitle,
+          }))
+        ),
+      ],
+      onFilter: (value, record) => record.blogPostTitle === value,
+      filterSearch: true,
     },
     {
       title: "Content",
@@ -107,7 +125,11 @@ export default function ManageBlog() {
       render: (_text, record) => (
         <div>
           <Button onClick={() => handleModalUpdate(record)}>Update</Button>
-          <Button onClick={() => handleDelete(record.blogPostId)} type="danger" style={{ marginLeft: 10 }}>
+          <Button
+            onClick={() => handleDelete(record.blogPostId)}
+            type="danger"
+            style={{ marginLeft: 10 }}
+          >
             Delete
           </Button>
         </div>
@@ -144,14 +166,18 @@ export default function ManageBlog() {
           <Form.Item
             name="blogPostContent"
             label="Blog Content"
-            rules={[{ required: true, message: "Please enter the blog content" }]}
+            rules={[
+              { required: true, message: "Please enter the blog content" },
+            ]}
           >
             <Input.TextArea rows={3} />
           </Form.Item>
           <Form.Item
             name="blogPostImage"
             label="Blog Image URL"
-            rules={[{ required: true, message: "Please enter the blog image URL" }]}
+            rules={[
+              { required: true, message: "Please enter the blog image URL" },
+            ]}
           >
             <Input />
           </Form.Item>
@@ -176,14 +202,18 @@ export default function ManageBlog() {
           <Form.Item
             name="blogPostContent"
             label="Blog Content"
-            rules={[{ required: true, message: "Please enter the blog content" }]}
+            rules={[
+              { required: true, message: "Please enter the blog content" },
+            ]}
           >
             <Input.TextArea rows={3} />
           </Form.Item>
           <Form.Item
             name="blogPostImage"
             label="Blog Image URL"
-            rules={[{ required: true, message: "Please enter the blog image URL" }]}
+            rules={[
+              { required: true, message: "Please enter the blog image URL" },
+            ]}
           >
             <Input />
           </Form.Item>
