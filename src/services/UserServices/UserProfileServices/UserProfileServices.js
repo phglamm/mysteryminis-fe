@@ -22,3 +22,15 @@ export const updateUserProfile = async (formData) => {
     throw new Error("Failed to update profile. Please try again.");
   }
 };
+
+export const resetUserPassword = async (passwordData) => {
+  console.log("Password data:", passwordData); // Log the password data for debugging
+  try {
+    const response = await api.post(`Account/change-password`, passwordData);
+
+    return response.data;
+  } catch (error) {
+    console.error('Error resetting password:', error.response?.data.errors[0].description);
+    throw error.response?.data;
+  }
+};
