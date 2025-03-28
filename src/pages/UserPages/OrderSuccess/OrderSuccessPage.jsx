@@ -7,7 +7,7 @@ const OrderSuccessPage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="mt-30" style={{ height: "50vh" }}>
+    <div className="flex items-center justify-center min-h-screen">
       <Result
         status="success"
         title="Order Placed Successfully!"
