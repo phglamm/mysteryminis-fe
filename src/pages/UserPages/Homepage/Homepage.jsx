@@ -142,7 +142,7 @@ export default function Homepage() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                className="h-[20vw]"
+                className="h-[20vw] shadow-xl shadow-gray-600 rounded-lg "
               >
                 <Card
                   hoverable
