@@ -1,6 +1,5 @@
 import api from "../../../config/api";
 
-
 export const fetchBoxOptions = async () => {
   const response = await api.get("BoxOption");
   return response.data.sort((a, b) => b.boxOptionId - a.boxOptionId);

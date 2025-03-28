@@ -108,6 +108,7 @@ export default function ManageBoxOption() {
   };
 
   const handleDelete = (record) => {
+    console.log(record);
     Modal.confirm({
       title: "Are you sure you want to delete this Box's Option?",
       okText: "Yes",
@@ -115,8 +116,9 @@ export default function ManageBoxOption() {
       okType: "danger",
       onOk: async () => {
         try {
-          await deleteBoxOption(record.boxOptionId);
+          await deleteBoxOption(record.onlineSerieBoxId);
           fetchBoxOption();
+          fetchLuckyBox();
           toast.success("Box's Option deleted successfully");
         } catch (error) {
           toast.error("Failed to delete BoxOption");
