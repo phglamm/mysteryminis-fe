@@ -12,11 +12,15 @@ import {
   Switch,
   Upload,
   Image,
+  Dropdown,
+  Menu,
+  Tag,
 } from "antd";
 import {
   getAllUsers,
   registerAccount,
   updateAccount,
+  updateAccountStatus,
 } from "../../../services/AdminServices/ManageAccountServices/ManageAccountServices";
 import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/UploadImage";
@@ -149,6 +153,26 @@ const ManageAccount = () => {
     }
   };
 
+  const showConfirmStatusChange = (record) => {
+    Modal.confirm({
+      title: record.isActive
+        ? "Do you want to ban this user?"
+        : "Do you want to unban this user?",
+      onOk: async () => {
+        try {
+          await updateAccountStatus(record.userId, !record.isActive);
+          toast.success("Status updated successfully");
+          fetchAccounts(); // reload list
+        } catch (error) {
+          toast.error("Failed to update status");
+        }
+      },
+      okText: "Yes",
+      cancelText: "No",
+    });
+  };
+  
+
   const columns = [
     {
       title: "ID",
@@ -215,33 +239,46 @@ const ManageAccount = () => {
       },
       width: 100,
     },
-    {
-      title: "Status",
-      dataIndex: "isActive",
-      key: "isActive",
-      render: (text) => (text ? "Active" : "Inactive"),
-      width: 120,
-    },
+   
+{
+  title: "Status",
+  dataIndex: "isActive",
+  key: "isActive",
+  width: 120,
+  render: (isActive) => (
+    <Tag color={isActive ? "green" : "red"}>
+      {isActive ? "Active" : "Inactive"}
+    </Tag>
+  ),
+},
     {
       title: "Action",
       key: "action",
       width: 180,
       render: (record) => (
-        <Space>
-          <Button
-            type="primary"
-            style={{
-              backgroundColor: "#313857",
-              borderColor: "#FFF1F2",
-              color: "#FFF1F2",
-            }}
-            onClick={() => handleEdit(record)}
-          >
-            Update
+        <Dropdown
+          overlay={
+            <Menu>
+              <Menu.Item key="update" onClick={() => handleEdit(record)}>
+                Update
+              </Menu.Item>
+              <Menu.Item
+                key="toggleStatus"
+                onClick={() => showConfirmStatusChange(record)}
+              >
+                {record.isActive ? "Ban User" : "Unban User"}
+              </Menu.Item>
+            </Menu>
+          }
+          trigger={["click"]}
+        >
+          <Button>
+            ...
           </Button>
-        </Space>
+        </Dropdown>
       ),
-    },
+    }
+    
   ];
 
   if (loading) {
