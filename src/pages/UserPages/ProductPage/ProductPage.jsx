@@ -24,12 +24,10 @@ const ProductPage = () => {
     if (SelectedBrand) {
       setBrands([SelectedBrand]);
       window.scrollTo(0, 550);
-    }
-    else {
+    } else {
       window.scrollTo(0, 0);
     }
   }, [SelectedBrand]);
-
 
   const brandsList = Array.from(
     new Set(boxes.map((product) => product.brandName))
@@ -51,7 +49,11 @@ const ProductPage = () => {
     (product) =>
       (brands.length === 0 || brands.includes(product.brandName)) &&
       (!searchBoxName ||
-        product.boxName.toLowerCase().startsWith(searchBoxName.toLowerCase()))
+        product.boxName
+          .toLowerCase()
+          .startsWith(searchBoxName.toLowerCase())) &&
+      product.boxOptions != null &&
+      product.boxOptions.some((option) => option.isOnlineSerieBox == false)
   );
 
   const startIndex = (currentPage - 1) * pageSize;
