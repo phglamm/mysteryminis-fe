@@ -98,6 +98,7 @@ const ManageOrder = () => {
     const loadOrders = async () => {
       try {
         const ordersData = await fetchOrders();
+        console.log(ordersData);
         setOrders(ordersData);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -234,8 +235,21 @@ const ManageOrder = () => {
             </Button>
           )}
 
+          {record.currentStatusId === 2 && (
+            <Button
+              type="primary"
+              style={{ backgroundColor: "#313857", color: "#FFF1F2" }}
+              onClick={() => handleUpdateStatus(record.orderId, 3)}
+            >
+              Update to Shipping
+            </Button>
+          )}
+
           {record.currentStatusId === 2 &&
-            record.isReadyForShipBoxItem === true && (
+            record.isReadyForShipBoxItem === true &&
+            record.orderItems.some(
+              (item) => item.userRolledItemForManageOrder !== null
+            ) && (
               <Button
                 type="primary"
                 style={{ backgroundColor: "#313857", color: "#FFF1F2" }}

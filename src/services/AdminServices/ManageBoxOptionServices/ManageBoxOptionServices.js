@@ -32,8 +32,13 @@ export const publishLuckyBox = async (boxOptionId, newStatus) => {
 };
 
 export const addLuckyBox = async (values) => {
-  const response = await api.post("online-serie-box/create", values);
-  return response.data;
+  try {
+    const response = await api.post("online-serie-box/create", values);
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 };
 
 export const updateLuckyBox = async (id, values) => {
