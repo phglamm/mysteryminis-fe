@@ -245,19 +245,15 @@ const ManageOrder = () => {
             </Button>
           )}
 
-          {record.currentStatusId === 2 &&
-            record.isReadyForShipBoxItem === true &&
-            record.orderItems.some(
-              (item) => item.userRolledItemForManageOrder !== null
-            ) && (
-              <Button
-                type="primary"
-                style={{ backgroundColor: "#313857", color: "#FFF1F2" }}
-                onClick={() => handleUpdateStatus(record.orderId, 3)}
-              >
-                Update to Shipping
-              </Button>
-            )}
+          {record.currentStatusId === 2 && (
+            <Button
+              type="primary"
+              style={{ backgroundColor: "#313857", color: "#FFF1F2" }}
+              onClick={() => handleUpdateStatus(record.orderId, 3)}
+            >
+              Update to Shipping
+            </Button>
+          )}
 
           {record.currentStatusId === 3 && (
             <Button
@@ -372,7 +368,7 @@ const ManageOrder = () => {
           setOrders(await fetchOrders());
           toast.success("Update success");
         } catch (error) {
-          console.error("Error updating order status:", error);
+          console.error(error.response?.data.message);
           toast.error("Failed to update order status");
         }
       },
