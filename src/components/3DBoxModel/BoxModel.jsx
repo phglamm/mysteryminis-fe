@@ -106,7 +106,10 @@ const BoxModel = ({
           action.reset().setLoop(THREE.LoopOnce, 1).play();
           action.clampWhenFinished = true;
           action.getMixer().addEventListener("finished", () => {
-            setPlays(false);
+            setTimeout(() => {
+              setPlays(false);
+            }, 1000);
+
             setShowVideo(true);
             videoRef.current?.play();
           });
@@ -152,7 +155,7 @@ const BoxModel = ({
           ref={videoRef}
           autoPlay
           muted
-          className="fixed top-0 left-0 w-full h-full object-cover z-20 bg-black"
+          className="fixed top-0 left-0 w-full h-full object-cover z-20"
           onPlay={() => {
             setTimeout(() => setRewardModalVisible(true), 3000);
           }}
