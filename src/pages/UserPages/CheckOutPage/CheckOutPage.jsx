@@ -109,6 +109,18 @@ const CheckOutPage = () => {
       userRolledItemId: item.selectedOption.userRolledItemId,
       orderItemOpenRequestNumber: item.orderItemOpenRequestNumber,
     }));
+
+    if (!user) {
+      toast.error("Please login to checkout");
+      return;
+    }
+
+    if (user.isActive === false) {
+      toast.error(
+        "Your account is not active, please contact admin to active your account"
+      );
+      return;
+    }
     if (
       values.paymentMethod === "COD" &&
       values.orderItemRequestDto.some(
