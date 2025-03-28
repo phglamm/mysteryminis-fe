@@ -79,7 +79,11 @@ const ProductDetailPage = () => {
           const filteredBoxes = data.filter(
             (relevantBox) =>
               relevantBox.brandName === box.brandName &&
-              relevantBox.boxId !== box.boxId
+              relevantBox.boxId !== box.boxId &&
+              relevantBox.boxOptions != null &&
+              relevantBox.boxOptions.some(
+                (option) => option.isOnlineSerieBox == false
+              )
           );
           setRelevantBox(filteredBoxes);
         } catch (error) {
@@ -337,77 +341,81 @@ const ProductDetailPage = () => {
       <div className="mt-10">
         <h2 className="text-2xl font-bold mb-4">Feedback</h2>
         {displayedVotes.length > 0 ? (
-  <>
-    <div className="grid grid-cols-1 gap-4">
-      {displayedVotes
-        .slice(0, showAllComments ? undefined : 3)
-        .map((vote) => (
-          <div
-            key={vote.feedbackId}
-            className="p-4 rounded-lg shadow-md"
-          >
-            <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+          <>
+            <div className="grid grid-cols-1 gap-4">
+              {displayedVotes
+                .slice(0, showAllComments ? undefined : 3)
+                .map((vote) => (
+                  <div
+                    key={vote.feedbackId}
+                    className="p-4 rounded-lg shadow-md"
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "12px",
+                        alignItems: "center",
+                      }}
+                    >
+                      {vote.avatarUrl && (
+                        <img
+                          src={vote.avatarUrl}
+                          alt="Avatar"
+                          style={{
+                            width: "40px",
+                            height: "40px",
+                            borderRadius: "50%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      )}
+                      <p className="text-lg">
+                        <strong>User: </strong> {vote.userName}
+                      </p>
+                    </div>
+                    <p className="text-lg">
+                      <strong>Content: </strong>
+                      {vote.feedbackContent}
+                    </p>
+                    <p className="text-lg">
+                      <strong>Rating: </strong>{" "}
+                      <Rate value={vote.rating} disabled />
+                    </p>
+                    <p className="text-lg">
+                      <strong>Date: </strong>{" "}
+                      {moment(vote.updatedAt).format("DD-MM-YYYY")}
+                    </p>
 
-              {vote.avatarUrl && (
-                <img
-                  src={vote.avatarUrl}
-                  alt="Avatar"
-                  style={{
-                    width: "40px",
-                    height: "40px",
-                    borderRadius: "50%",
-                    objectFit: "cover",
-                  }}
-                />
-              )}
-              <p className="text-lg">
-                <strong>User: </strong> {vote.userName}
-              </p>
+                    {vote.imageUrl && (
+                      <img
+                        src={vote.imageUrl}
+                        alt="Feedback image"
+                        style={{
+                          width: "10%",
+                          height: "auto",
+                          marginTop: "10px",
+                        }}
+                      />
+                    )}
+                  </div>
+                ))}
             </div>
-            <p className="text-lg">
-              <strong>Content: </strong>
-              {vote.feedbackContent}
-            </p>
-            <p className="text-lg">
-              <strong>Rating: </strong>{" "}
-              <Rate value={vote.rating} disabled />
-            </p>
-            <p className="text-lg">
-              <strong>Date: </strong>{" "}
-              {moment(vote.updatedAt).format("DD-MM-YYYY")}
-            </p>
-
-            {vote.imageUrl && (
-              <img
-                src={vote.imageUrl}
-                alt="Feedback image"
-                style={{
-                  width: "10%",
-                  height: "auto",
-                  marginTop: "10px",
-                }}
-              />
+            {displayedVotes.length > 3 && (
+              <div className="mt-4 text-center">
+                <Button
+                  className="!bg-blue-300 !text-white !font-bold !rounded-lg"
+                  onClick={() => setShowAllComments(!showAllComments)}
+                >
+                  {showAllComments ? "Show Less" : "Show More"}
+                </Button>
+              </div>
             )}
+          </>
+        ) : (
+          <div className="text-lg text-center text-gray-500">
+            No feedback yet.
           </div>
-        ))}
-    </div>
-    {displayedVotes.length > 3 && (
-      <div className="mt-4 text-center">
-        <Button
-          className="!bg-blue-300 !text-white !font-bold !rounded-lg"
-          onClick={() => setShowAllComments(!showAllComments)}
-        >
-          {showAllComments ? "Show Less" : "Show More"}
-        </Button>
-      </div>
-    )}
-  </>
-) : (
-  <div className="text-lg text-center text-gray-500">
-    No feedback yet.
-  </div>
-)}
-
+        )}
       </div>
 
       {/* Danh sách sản phẩm liên quan */}
