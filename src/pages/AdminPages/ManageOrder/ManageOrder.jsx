@@ -22,7 +22,6 @@ import {
   updateOrderStatus,
   uploadOrderItemFiles,
 } from "../../../services/AdminServices/ManageOrderServices/ManageOrderServices";
-import { render } from "@react-three/fiber";
 const { TabPane } = Tabs;
 
 const ManageOrder = () => {
