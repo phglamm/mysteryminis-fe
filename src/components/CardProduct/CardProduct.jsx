@@ -53,7 +53,7 @@ const CardProduct = ({ product }) => {
           position: "relative",
           overflow: "hidden",
           minHeight: "320px",
-          minWidth: "220px",
+          width: "280px",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
