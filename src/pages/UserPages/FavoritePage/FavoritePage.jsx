@@ -79,9 +79,6 @@ export default function FavoritePage() {
                         <p className="font-semibold text-black text-md">
                           Brand: {item.brandName}
                         </p>
-                        <span className="text-gray-500">
-                          {item.boxDescription}
-                        </span>
                       </>
                     }
                   />
