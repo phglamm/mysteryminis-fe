@@ -207,7 +207,7 @@ export default function Header() {
                         state: { brand: item.brandName },
                       })
                     }
-                    className=" rounded-xl p-[5%] bg-white  shadow-black shadow-md  w-full flex justify-center items-center"
+                    className=" rounded-xl p-[5%] bg-white  shadow-black shadow-md min-h-[8vh]  w-full flex justify-center items-center"
                   >
                     <motion.div className="flex flex-row justify-center min-h-12 items-center gap-2">
                       <span className="w-[30%] h-full rounded-xl flex justify-center items-center">
