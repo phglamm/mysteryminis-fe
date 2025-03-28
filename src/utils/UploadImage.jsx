@@ -12,7 +12,8 @@ const uploadFile = async (file) => {
     const fileID = response.$id;
     const downloadURL = storage.getFileView(bucketID, fileID);
 
-    console.log(downloadURL);
+    console.log('File uploaded successfully. Download URL:', downloadURL);
+
     return downloadURL;
   } catch (error) {
     console.error("Error uploading file:", error);

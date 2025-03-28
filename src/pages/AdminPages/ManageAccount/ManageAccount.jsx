@@ -6,7 +6,6 @@ import {
   Modal,
   Input,
   Form,
-  message,
   Tabs,
   Select,
   Spin,
@@ -17,9 +16,11 @@ import {
 import {
   getAllUsers,
   registerAccount,
+  updateAccount,
 } from "../../../services/AdminServices/ManageAccountServices/ManageAccountServices";
-import { UploadOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import uploadFile from "../../../utils/UploadImage";
+import toast from "react-hot-toast";
 
 const { TabPane } = Tabs;
 
@@ -30,10 +31,12 @@ const ManageAccount = () => {
   const [editingAccount, setEditingAccount] = useState(null);
   const [form] = Form.useForm();
   const [activeTab, setActiveTab] = useState("User");
-
-  useEffect(() => {
-    fetchAccounts();
-  }, []);
+  const [formAdd] = Form.useForm();
+  const [formUpdate] = Form.useForm();
+  const [fileList, setFileList] = useState([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [isModalUpdateVisible, setIsModalUpdateVisible] = useState(false);
 
   const fetchAccounts = async () => {
     setLoading(true);
@@ -46,12 +49,9 @@ const ManageAccount = () => {
       setLoading(false);
     }
   };
-
-  const handleEdit = (record) => {
-    setEditingAccount(record);
-    form.setFieldsValue(record);
-    setIsModalVisible(true);
-  };
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
 
   const handleAdd = () => {
     setEditingAccount(null);
@@ -59,56 +59,93 @@ const ManageAccount = () => {
     setIsModalVisible(true);
   };
 
-  const handleSave = async () => {
+  const handleEdit = (record) => {
+    setEditingAccount(record);
+    formUpdate.setFieldsValue({
+      ...record,
+      phoneNumber: record.phone,
+    });
+    setIsModalUpdateVisible(true);
+  };
+
+  const getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => {
+        console.log(error);
+        reject(error);
+      };
+    });
+  };
+
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
+  };
+
+  const handleChange = async ({ fileList: newFileList }) => {
+    console.log("uploading...");
+    const updatedFileList = await Promise.all(
+      newFileList.map(async (file) => {
+        if (file.status !== "done") {
+          try {
+            const url = await uploadFile(file.originFileObj); // Upload the file and get the URL
+            toast.success("Upload Success");
+            return { ...file, url, status: "done" }; // Update the file status and add the URL
+          } catch (error) {
+            console.error("Upload failed", error);
+            return { ...file, status: "error" }; // Set status to error on failure
+          }
+        }
+        return file; // Keep already uploaded files as-is
+      })
+    );
+    setFileList(updatedFileList);
+  };
+
+  const handleSave = async (values) => {
+    const imgURLs = fileList.map((file) => file.url);
+    values.avatarUrl = imgURLs[0];
+
     try {
-      const values = await form.validateFields();
-
-      let avatarUrl = "";
-      const uploadField = form.getFieldValue("avatarUrl");
-      const fileList = Array.isArray(uploadField)
-        ? uploadField
-        : uploadField?.fileList;
-
-      if (fileList && fileList.length > 0) {
-        const file = fileList[0].originFileObj;
-        avatarUrl = await uploadFile(file);
-      }
-
-      if (!editingAccount) {
-        const payload = {
-          email: values.email,
-          userName: values.username,
-          password: values.password,
-          fullName: values.fullname,
-          phoneNumber: values.phone,
-          gender: values.gender,
-          roleId: values.roleId,
-          isTestAccount: values.isTestAccount || false,
-          avatarUrl: avatarUrl || "",
-        };
-        console.log(payload);
-        await registerAccount(payload);
-        message.success("Account created successfully");
-        setIsModalVisible(false);
-        fetchAccounts();
-      } else {
-        setAccounts(
-          accounts.map((account) =>
-            account.userId === editingAccount.userId
-              ? { ...account, ...values }
-              : account
-          )
-        );
-        message.success("Account updated locally");
-        setIsModalVisible(false);
-      }
+      const response = await registerAccount(values);
+      console.log(response.data);
+      toast.success("Create Account Success");
+      fetchAccounts();
+      setIsModalVisible(false);
+      setFileList([]);
+      form.resetFields();
     } catch (error) {
-      console.error("Account save failed:", error);
-      const msg =
-        error?.response?.data?.[0]?.description ||
-        error?.response?.data?.message ||
-        "Failed to save account";
-      message.error(msg);
+      toast.error("Create Account Failed");
+      console.log(error.response.data);
+    }
+  };
+
+  const handleEditProfile = async (values) => {
+    const imgURLs = fileList.map((file) => file.url);
+    if (imgURLs.length > 0) {
+      values.avatarUrl = imgURLs[0];
+    } else {
+      values.avatarUrl = editingAccount.avatarUrl;
+    }
+    values.phone = values.phoneNumber;
+
+    try {
+      const response = await updateAccount(values);
+      console.log(response.data);
+      toast.success("Update Account Success");
+      fetchAccounts();
+      setIsModalUpdateVisible(false);
+      setFileList([]);
+      formUpdate.resetFields();
+    } catch (error) {
+      toast.error("Update Account Failed");
+      console.log(error.response.data);
     }
   };
 
@@ -224,7 +261,12 @@ const ManageAccount = () => {
       </div>
     );
   }
-
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </div>
+  );
   return (
     <div style={{ padding: 10 }}>
       <h2 style={{ fontSize: "30px" }}>Manage Accounts</h2>
@@ -275,9 +317,11 @@ const ManageAccount = () => {
       </Tabs>
 
       <Modal
-        title={editingAccount ? "Edit Account" : "Create Account"}
+        title={"Create Account"}
         open={isModalVisible}
-        onOk={handleSave}
+        onOk={() => form.submit()}
+        okText="Create"
+        cancelText="Cancel"
         onCancel={() => setIsModalVisible(false)}
         okButtonProps={{
           style: {
@@ -294,16 +338,31 @@ const ManageAccount = () => {
           },
         }}
       >
-        <Form form={form} layout="vertical">
-          <Form.Item
-            name="avatarUrl"
-            label="Avatar"
-            valuePropName="fileList"
-            getValueFromEvent={(e) => (Array.isArray(e) ? e : e?.fileList)}
-          >
-            <Upload listType="picture" maxCount={1} beforeUpload={() => false}>
-              <Button icon={<UploadOutlined />}>Upload Avatar</Button>
+        <Form form={form} layout="vertical" onFinish={handleSave}>
+          <Form.Item name="avatarURL" label="Avatar">
+            <Upload
+              className="label-form-image"
+              maxCount={1}
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={handlePreview}
+              onChange={handleChange}
+            >
+              {fileList.length >= 1 ? null : uploadButton}
             </Upload>
+            {previewImage && (
+              <Image
+                wrapperStyle={{
+                  display: "none",
+                }}
+                preview={{
+                  visible: previewOpen,
+                  onVisibleChange: (visible) => setPreviewOpen(visible),
+                  afterOpenChange: (visible) => !visible && setPreviewImage(""),
+                }}
+                src={previewImage}
+              />
+            )}
           </Form.Item>
 
           <Form.Item
@@ -346,7 +405,131 @@ const ManageAccount = () => {
           </Form.Item>
 
           <Form.Item
-            name="phone"
+            name="phoneNumber"
+            label="Phone"
+            rules={[{ required: true, message: "Please enter phone number" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="gender"
+            label="Gender"
+            rules={[{ required: true, message: "Please select gender" }]}
+          >
+            <Select>
+              <Select.Option value={true}>Male</Select.Option>
+              <Select.Option value={false}>Female</Select.Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="roleId"
+            label="Role"
+            rules={[{ required: true, message: "Please select role" }]}
+          >
+            <Select>
+              <Select.Option value={1}>Admin</Select.Option>
+              <Select.Option value={2}>Staff</Select.Option>
+              <Select.Option value={3}>User</Select.Option>
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="isTestAccount"
+            label="Test Account?"
+            valuePropName="checked"
+          >
+            <Switch />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      <Modal
+        title={"Edit Account"}
+        open={isModalUpdateVisible}
+        okText="Update"
+        cancelText="Cancel"
+        onOk={() => formUpdate.submit()}
+        onCancel={() => setIsModalUpdateVisible(false)}
+        okButtonProps={{
+          style: {
+            backgroundColor: "#313857",
+            borderColor: "#FFF1F2",
+            color: "#FFF1F2",
+          },
+        }}
+        cancelButtonProps={{
+          style: {
+            backgroundColor: "#FF4D4F",
+            borderColor: "#FF4D4F",
+            color: "#FFF",
+          },
+        }}
+      >
+        <Form form={formUpdate} layout="vertical" onFinish={handleEditProfile}>
+          <Form.Item name="avatarURL" label="Avatar">
+            <Upload
+              className="label-form-image"
+              maxCount={1}
+              listType="picture-card"
+              fileList={fileList}
+              onPreview={handlePreview}
+              onChange={handleChange}
+            >
+              {fileList.length >= 1 ? null : uploadButton}
+            </Upload>
+            {previewImage && (
+              <Image
+                wrapperStyle={{
+                  display: "none",
+                }}
+                preview={{
+                  visible: previewOpen,
+                  onVisibleChange: (visible) => setPreviewOpen(visible),
+                  afterOpenChange: (visible) => !visible && setPreviewImage(""),
+                }}
+                src={previewImage}
+              />
+            )}
+          </Form.Item>
+
+          <Form.Item
+            name="username"
+            label="Username"
+            rules={[{ required: true, message: "Please enter username" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          {!editingAccount && (
+            <Form.Item
+              name="password"
+              label="Password"
+              rules={[{ required: true, message: "Please enter password" }]}
+            >
+              <Input.Password />
+            </Form.Item>
+          )}
+
+          <Form.Item
+            name="fullname"
+            label="Full Name"
+            rules={[{ required: true, message: "Please enter full name" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="email"
+            label="Email"
+            rules={[{ required: true, message: "Please enter email" }]}
+          >
+            <Input />
+          </Form.Item>
+
+          <Form.Item
+            name="phoneNumber"
             label="Phone"
             rules={[{ required: true, message: "Please enter phone number" }]}
           >
