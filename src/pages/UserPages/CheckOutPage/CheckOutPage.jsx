@@ -234,7 +234,7 @@ const CheckOutPage = () => {
 
   return (
     <div
-      className="mt-30"
+      className="mt-[10%] min-h-screen"
       style={{
         display: "flex",
         gap: "20px",
