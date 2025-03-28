@@ -152,7 +152,7 @@ const BoxModel = ({
           ref={videoRef}
           autoPlay
           muted
-          className="fixed top-0 left-0 w-full h-full object-cover z-20"
+          className="fixed top-0 left-0 w-full h-full object-cover z-20 bg-black"
           onPlay={() => {
             setTimeout(() => setRewardModalVisible(true), 3000);
           }}
