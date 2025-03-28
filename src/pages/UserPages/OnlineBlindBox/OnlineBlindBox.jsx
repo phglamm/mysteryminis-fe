@@ -118,7 +118,7 @@ const OnlineBlindBox = () => {
                 <>
                   {/* Left Section */}
                   <div
-                    className={`h-full py-[1%] flex gap-5 flex-col justify-center items-center w-[30%] relative ${
+                    className={`h-full py-[5%] flex gap-5 flex-col justify-center items-center w-[30%] relative ${
                       showVideo ? "z-10" : "z-40"
                     }`}
                   >
