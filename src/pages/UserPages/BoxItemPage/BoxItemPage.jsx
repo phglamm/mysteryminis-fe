@@ -56,7 +56,7 @@ export default function BoxItemPage() {
           transition={{ duration: 1, type: "spring", damping: 10 }}
         >
           <TiltedCard
-            imageSrc="https://global-static.popmart.com/globalAdmin/1738891844056____pc-1____.jpg?x-oss-process=image/format,webp"
+            imageSrc="https://global-static.popmart.com/globalAdmin/1742435234014____pc____.jpg?x-oss-process=image/format,webp"
             captionText="Welcome to Mystery Minis"
             containerHeight="500px"
             containerWidth="100%"

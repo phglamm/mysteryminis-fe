@@ -74,7 +74,7 @@ export default function ManageBox() {
   };
 
   // Handle deleting a box
-  const handleDelete = (boxId) => {
+  const handleDelete = (record) => {
     Modal.confirm({
       title: "Are you sure you want to delete this Box?",
       okText: "Yes",
@@ -82,8 +82,8 @@ export default function ManageBox() {
       okType: "danger",
       onOk: async () => {
         try {
-          await deleteBox(boxId);
-          setBoxes(boxes.filter((box) => box.boxId !== boxId));
+          await deleteBox(record.boxId);
+          setBoxes(boxes.filter((box) => box.boxId !== record.boxId));
           toast.success("Box deleted successfully");
         } catch (error) {
           toast.error("Failed to delete Box");
