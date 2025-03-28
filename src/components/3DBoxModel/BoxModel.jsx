@@ -158,7 +158,7 @@ const BoxModel = ({
           }}
         >
           <source
-            src={reward?.isSecret ? secretRun : commontRun}
+            src={reward?.boxItemResponseDto.isSecret ? secretRun : commontRun}
             type="video/mp4"
           />
         </video>

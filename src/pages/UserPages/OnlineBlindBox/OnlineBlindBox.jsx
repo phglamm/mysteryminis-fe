@@ -198,16 +198,17 @@ const OnlineBlindBox = () => {
                   </div>
 
                   {/* Button - Foreground */}
-                  <div className="absolute bottom-20 z-40">
+                  <div className="absolute bottom-20">
                     <motion.button
-                      className={`p-1 px-6 rounded-2xl bg-gradient-to-tl from-amber-500 to-yellow-400 ${
+                      className={`p-1 px-6 rounded-2xl flex bg-gradient-to-tl relative from-amber-500 to-yellow-400 ${
                         showVideo ? "z-10" : "z-40"
                       }`}
                       onClick={paymentHandler}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}
                     >
-                      {blindbox.boxOption.displayPrice.toLocaleString()} VNĐ
+                      {/* {blindbox.boxOption.displayPrice.toLocaleString()} VNĐ */}
+                      {Number(blindbox.boxOption.displayPrice).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} VNĐ
                     </motion.button>
                   </div>
 

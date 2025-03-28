@@ -22,6 +22,11 @@ const AddressBook = ({
   const [selectedAddress, setSelectedAddress] = useState(null);
 
   useEffect(() => {
+    setIsEditing(false); // Reset isEditing when the component mounts
+    setAddAddress(false); // Reset addAddress when the component mounts
+  }, []);
+  
+  useEffect(() => {
     if (user.userId) {
       getUserAddresses(user.userId)
         .then((fetchedAddresses) => {

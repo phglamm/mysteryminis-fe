@@ -197,7 +197,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
         ViewDetails ? { delay: 0.8, duration: 1 } : { delay: 0.5, duration: 1 }
       }
     >
-      {orders && orders.length > 0 ? (
+      {orders && orders.length > 0 && filteredOrders.length > 0 ? (
         <AnimatePresence>
           {(ViewDetails && selectedOrder
             ? [selectedOrder]

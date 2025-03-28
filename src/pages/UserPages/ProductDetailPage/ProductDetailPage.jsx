@@ -68,6 +68,7 @@ const ProductDetailPage = () => {
     };
 
     fetchBoxData();
+    window.scrollTo(0, 0);
   }, [id]);
 
   useEffect(() => {
