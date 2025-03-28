@@ -57,10 +57,22 @@ const PaymentReturnPage = () => {
   }, [location.search, navigate, dispatch]);
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      {loading ? (
-        <Spin size="large" /> // Show the loading spinner
-      ) : (
+    <div className="relative min-h-screen">
+      {loading && (
+        <>
+          <div
+            className="absolute inset-0 bg-black opacity-50"
+            style={{ zIndex: 100 }} // Overlay to block interactions
+          />
+          <div
+            className="flex items-center justify-center min-h-screen"
+            style={{ zIndex: 101 }}
+          >
+            <Spin size="large" />
+          </div>
+        </>
+      )}
+      {!loading && (
         <h1 className="text-3xl font-bold">Payment Processed</h1> // Optionally show a different message when finished
       )}
     </div>
