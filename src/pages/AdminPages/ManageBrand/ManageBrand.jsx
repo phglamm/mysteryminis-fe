@@ -97,7 +97,7 @@ export default function ManageBrand() {
           toast.success("Brand deleted successfully");
         } catch (error) {
           console.error("Failed to delete brand:", error);
-          toast.error("Failed to delete brand");
+          toast.error(error.response.message);
         }
       },
     });

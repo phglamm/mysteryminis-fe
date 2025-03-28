@@ -121,7 +121,7 @@ export default function ManageBoxOption() {
           fetchLuckyBox();
           toast.success("Box's Option deleted successfully");
         } catch (error) {
-          toast.error(error.response.data.message);
+          toast.error(error.response.message);
         }
       },
     });
