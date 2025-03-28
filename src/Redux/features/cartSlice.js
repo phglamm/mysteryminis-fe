@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import toast from "react-hot-toast";
 
+import Cookies from "js-cookie";
 const initialState = {
   cartItems: [],
 };
@@ -11,7 +12,10 @@ const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const { boxId, selectedOption } = action.payload;
-
+      if (Cookies.get("accessToken") === undefined) {
+        toast.error("Please login to add to cart!");
+        return;
+      }
       // Check if the item with the selected variant already exists in the cart
       const item = state.cartItems.find(
         (cartItem) =>

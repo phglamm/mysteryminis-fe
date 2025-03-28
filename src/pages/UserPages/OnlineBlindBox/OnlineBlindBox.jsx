@@ -7,10 +7,11 @@ import { useSelector } from "react-redux";
 import { selectUser } from "../../../Redux/features/counterSlice";
 import { motion } from "framer-motion";
 import { UpSquareOutlined } from "@ant-design/icons";
+import toast from "react-hot-toast";
 const OnlineBlindBox = () => {
   const [plays, setPlays] = useState(false);
   const [blindbox, setBlindBox] = useState([]);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const [showVideo, setShowVideo] = useState(false);
   const { packageId } = useParams();
   const [numberBlindBoxItem, setNumberBlindBoxItem] = useState();
@@ -33,7 +34,6 @@ const OnlineBlindBox = () => {
     }
   }, [packageId]);
 
-  
   useEffect(() => {
     fetchBlindBox();
     setNumberBlindBoxItem(
@@ -48,6 +48,17 @@ const OnlineBlindBox = () => {
   const firstHalfBlindBoxItem = Math.ceil(numberBlindBoxItem / 2);
 
   const paymentHandler = async () => {
+    if (!user) {
+      toast.error("Please login to checkout");
+      return;
+    }
+
+    if (user.isActive === false) {
+      toast.error(
+        "Your account is not active, please contact admin to active your account"
+      );
+      return;
+    }
     try {
       const requestData = {
         userId: user.userId, // Replace with actual user ID
@@ -140,9 +151,11 @@ const OnlineBlindBox = () => {
                   </div>
 
                   {/* Center Section */}
-                  <div className={`h-fit justify-between flex flex-col pt-[2%] w-[40%] relative ${
+                  <div
+                    className={`h-fit justify-between flex flex-col pt-[2%] w-[40%] relative ${
                       showVideo ? "z-10" : "z-40"
-                    }`}>
+                    }`}
+                  >
                     <div>
                       <div className="text-4xl z-40 font-bold">
                         {blindbox.boxOption.boxOptionName}
@@ -188,8 +201,8 @@ const OnlineBlindBox = () => {
                   <div className="absolute bottom-20 z-40">
                     <motion.button
                       className={`p-1 px-6 rounded-2xl bg-gradient-to-tl from-amber-500 to-yellow-400 ${
-                      showVideo ? "z-10" : "z-40"
-                    }`}
+                        showVideo ? "z-10" : "z-40"
+                      }`}
                       onClick={paymentHandler}
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.9 }}

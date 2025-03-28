@@ -235,15 +235,18 @@ const ManageOrder = () => {
             </Button>
           )}
 
-          {record.currentStatusId === 2 && (
-            <Button
-              type="primary"
-              style={{ backgroundColor: "#313857", color: "#FFF1F2" }}
-              onClick={() => handleUpdateStatus(record.orderId, 3)}
-            >
-              Update to Shipping
-            </Button>
-          )}
+          {record.currentStatusId === 2 &&
+            record.orderItems.some(
+              (item) => item.userRolledItemForManageOrder == null
+            ) && (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "#313857", color: "#FFF1F2" }}
+                onClick={() => handleUpdateStatus(record.orderId, 3)}
+              >
+                Update to Shipping
+              </Button>
+            )}
 
           {record.currentStatusId === 3 && (
             <Button
