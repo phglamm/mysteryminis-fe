@@ -16,7 +16,7 @@ const CheckOutPage = () => {
   const [voucher, setVoucher] = useState([]);
   const [selectedVoucherId, setSelectedVoucherId] = useState(null);
   const [selectedVoucher, setSelectedVoucher] = useState(null);
-
+  const [loading, setLoading] = useState(false);
   const [form] = useForm();
   const [shippingFee, setShippingFee] = useState(0);
   const dispatch = useDispatch();
@@ -94,6 +94,7 @@ const CheckOutPage = () => {
   };
 
   const handleCheckout = async (values) => {
+    setLoading(true);
     values.userId = user.userId;
     values.subTotal = provisional;
     values.discountAmount = saleOffPrice;
@@ -362,6 +363,7 @@ const CheckOutPage = () => {
           </Form.Item>
 
           <Button
+            className={`${loading ? "!bg-gray-400" : ""}`}
             block
             style={buttonStyle}
             onMouseEnter={(e) =>
@@ -369,8 +371,9 @@ const CheckOutPage = () => {
             }
             onMouseLeave={(e) => Object.assign(e.target.style, buttonStyle)}
             htmlType="submit"
+            disabled={loading}
           >
-            Process to Payment
+            {loading ? "Processing" : "Process to Payment"}
           </Button>
         </Form>
       </div>

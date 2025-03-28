@@ -61,7 +61,7 @@ const PaymentReturnPage = () => {
       {loading && (
         <>
           <div
-            className="absolute inset-0 bg-black opacity-50"
+            className="absolute inset-0 "
             style={{ zIndex: 100 }} // Overlay to block interactions
           />
           <div
