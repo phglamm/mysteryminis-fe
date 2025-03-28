@@ -87,6 +87,7 @@ const OnlineBlindBox = () => {
       console.log("Payment successful:", response.data);
       window.location.assign(response.data);
     } catch (error) {
+      toast.error("Payment failed. Please try again.");
       console.error("Payment failed:", error);
     }
   };
@@ -208,7 +209,11 @@ const OnlineBlindBox = () => {
                       whileTap={{ scale: 0.9 }}
                     >
                       {/* {blindbox.boxOption.displayPrice.toLocaleString()} VNĐ */}
-                      {Number(blindbox.boxOption.displayPrice).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })} VNĐ
+                      {Number(blindbox.boxOption.displayPrice).toLocaleString(
+                        undefined,
+                        { minimumFractionDigits: 0, maximumFractionDigits: 0 }
+                      )}{" "}
+                      VNĐ
                     </motion.button>
                   </div>
 

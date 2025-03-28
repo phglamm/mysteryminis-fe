@@ -121,7 +121,7 @@ export default function ManageBoxOption() {
           fetchLuckyBox();
           toast.success("Box's Option deleted successfully");
         } catch (error) {
-          toast.error("Failed to delete BoxOption");
+          toast.error(error.response.data.message);
         }
       },
     });
@@ -395,7 +395,7 @@ export default function ManageBoxOption() {
       formAddLucky.resetFields();
       setFileList([]);
     } catch (error) {
-      toast.error("Failed to add Lucky Box");
+      toast.error(error.response.data.message);
     }
   };
 
@@ -412,7 +412,7 @@ export default function ManageBoxOption() {
       formUpdateLucky.resetFields();
       setFileList([]);
     } catch (error) {
-      toast.error("Failed to update Lucky Box");
+      toast.error(error.response.data.message);
     }
   };
 
