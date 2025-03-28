@@ -122,6 +122,7 @@ export default function ManageBoxOption() {
           toast.success("Box's Option deleted successfully");
         } catch (error) {
           toast.error(error.response.message);
+          console.log(error.response);
         }
       },
     });
