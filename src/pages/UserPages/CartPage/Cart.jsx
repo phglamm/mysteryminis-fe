@@ -259,6 +259,7 @@ const Cart = () => {
               </Title>
             </div>
             <Button
+              disabled={cartItems.length === 0 || user.isActive === false}
               type="primary"
               icon={<ShoppingCartOutlined />}
               size="large"
