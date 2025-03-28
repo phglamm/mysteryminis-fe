@@ -1,33 +1,33 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-
 import api from "../../../config/api";
 import toast from "react-hot-toast";
 import { route } from "../../../routes";
 import { useDispatch } from "react-redux";
 import { clearCart } from "../../../Redux/features/cartSlice";
+import { Spin } from "antd"; // Import the Spin component
 
 const PaymentReturnPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(true); // Manage the loading state
+
   useEffect(() => {
     const fetchPaymentData = async () => {
       const queryParams = new URLSearchParams(location.search);
 
       // Inform the user that the payment is being processed
-      console.log(queryParams.toString());
       try {
         const response = await api.post(
           "Payment/payment-callback",
           queryParams.toString(), // Send URL-encoded data
           {
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
-            // Optionally include credentials if needed:
             withCredentials: false,
           }
         );
-        console.log(response);
+
         // Check the response's success flag
         if (response.status === 200) {
           toast.success("Payment successful");
@@ -48,6 +48,8 @@ const PaymentReturnPage = () => {
         console.error("Payment verification failed:", error);
         // Optionally, navigate back to the order page
         navigate(route.userProfile);
+      } finally {
+        setLoading(false); // Stop loading after the request completes
       }
     };
 
@@ -56,7 +58,11 @@ const PaymentReturnPage = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen">
-      <h1 className="text-3xl font-bold">Processing Payment...</h1>
+      {loading ? (
+        <Spin size="large" /> // Show the loading spinner
+      ) : (
+        <h1 className="text-3xl font-bold">Payment Processed</h1> // Optionally show a different message when finished
+      )}
     </div>
   );
 };
