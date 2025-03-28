@@ -69,8 +69,8 @@ const OnlinePackage = () => {
                                         <h3 className="text-lg font-bold truncate">{box.boxOption.boxOptionName}</h3>
                                     </Tooltip>
                                     <div className="flex flex-col w-full">
-                                        <div className=" text-red-500 font-bold w-full text-[1.3vw] truncate">{box.boxOption.displayPrice.toLocaleString()}</div>
-                                        <div className=" text-gray-300 line-through w-full text-[0.7vw] -mb-[10%] truncate">{box.boxOption.originPrice.toLocaleString()}</div>
+                                        <div className=" text-red-500 font-bold w-full text-[1.3vw] truncate">{Number(box.boxOption.displayPrice).toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
+                                        <div className=" text-gray-300 line-through w-full text-[0.7vw] -mb-[10%] truncate">{Number(box.boxOption.originPrice).toLocaleString()}</div>
                                     </div>
                                 </Card>
                             </Badge.Ribbon>

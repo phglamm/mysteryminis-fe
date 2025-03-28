@@ -48,6 +48,12 @@ const MyProfile = ({
     confirmNewPassword: ''
   });
 
+    useEffect(() => {
+      setIsEditing(false); 
+      setResetPassword(false); 
+    }, []);
+    
+
   useEffect(() => {
     (async () => {
       try {

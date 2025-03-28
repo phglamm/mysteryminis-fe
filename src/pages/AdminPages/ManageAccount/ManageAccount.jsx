@@ -121,7 +121,7 @@ const ManageAccount = () => {
       setFileList([]);
       form.resetFields();
     } catch (error) {
-      toast.error("Create Account Failed");
+      error.response.data.message.forEach((msg) => toast.error(msg.description));
       console.log(error.response.data);
     }
   };
