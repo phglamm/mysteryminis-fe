@@ -216,13 +216,16 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
               }}
               className="w-full h-fit flex flex-col border-1 border-gray-300 mb-4"
             >
-              <div className="grid grid-cols-5  items-center p-4 bg-gray-100">
-                <div className="flex col-span-4 w-full gap-4 justify-start">
+              <div className={`grid grid-cols-5  items-center p-4 ${order.isReadyForShipBoxItem === false &&
+                    order.orderItems.some(
+                      (item) => item.userRolledItemForManageOrder != null
+                    ) ? "bg-red-400" : "bg-gray-100"}`}>
+                <div className="flex col-span-3 w-full gap-4 justify-start">
                   <div>Order ID: {order.orderId}</div>
                   <div>Order Date: {formatDate(order.orderCreatedAt)}</div>
                 </div>
 
-                <div className="flex w-full justify-end">
+                <div className="flex w-full col-span-2 justify-end">
                   {ViewDetails ? (
                     <motion.button
                       className="border-1 px-3 py-1 w-[70%] rounded-md text-center font-bold"
@@ -246,10 +249,21 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                       Back
                     </motion.button>
                   ) : (
-                    <div>
-                      {order.orderStatusDetailsSimple?.slice(-1)[0]
-                        ?.statusName || "Pending"}
-                    </div>
+                    <>
+                    {order.isReadyForShipBoxItem === false &&
+                    order.orderItems.some(
+                      (item) => item.userRolledItemForManageOrder != null
+                    ) ? (
+                      <div>Update Shipping Address</div>
+                    ) : (
+                      <div>
+                        {order.orderStatusDetailsSimple?.slice(-1)[0]
+                          ?.statusName || "Pending"}
+                      </div>
+                    )}
+                    </>
+                  
+                   
                   )}
                 </div>
               </div>
@@ -409,7 +423,31 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                           )}
                         </>
                       ) : (
-                        <> </>
+                        <> 
+                        {order.isReadyForShipBoxItem === false && ViewDetails === true &&
+                    order.orderItems.some(
+                      (item) => item.userRolledItemForManageOrder != null
+                    ) && (
+                      <motion.button
+                        className="border-1 px-3 py-1 w-[100%] text-[0.9vw] rounded-md font-bold"
+                        initial={{
+                          backgroundColor: "#ef4444",
+                          color: "white",
+                          border: "1px solid #f3f4f6",
+                        }}
+                        whileHover={{
+                          backgroundColor: "#ef4444",
+                          color: "white",
+                          border: "1px solid white",
+                          scale: 1.1,
+                        }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => handleReadyForShip(order.orderId)}
+                      >
+                        Ready for shipping
+                      </motion.button>
+                    )}
+                        </>
                       )}
                     </div>
                     <div className="flex justify-center items-center w-1/4">
@@ -503,29 +541,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
 
               <div className=" gap-4 px-8 p-2 bg-white h-fit border-dashed border-t-1">
                 <div className="flex flex-col text-end items-end text-2xl w-full gap-4 py-4">
-                  {order.isReadyForShipBoxItem === false &&
-                    order.orderItems.some(
-                      (item) => item.userRolledItemForManageOrder != null
-                    ) && (
-                      <motion.button
-                        className="border-1 px-3 py-1 w-[20%] text-[0.9vw] rounded-md font-bold"
-                        initial={{
-                          backgroundColor: "#ef4444",
-                          color: "white",
-                          border: "1px solid #f3f4f6",
-                        }}
-                        whileHover={{
-                          backgroundColor: "#ef4444",
-                          color: "white",
-                          border: "1px solid white",
-                          scale: 1.1,
-                        }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => handleReadyForShip(order.orderId)}
-                      >
-                        Ready for shipping
-                      </motion.button>
-                    )}
+
                   <div>Subtotal: {order.subTotal.toLocaleString() + " đ"}</div>
                   <div>
                     Discount: - {order.discountAmount.toLocaleString() + " đ"}
