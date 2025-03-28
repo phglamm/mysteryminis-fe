@@ -134,17 +134,31 @@ export default function ManageBlog() {
       title: "Action",
       render: (_text, record) => (
         <div>
-          <Button onClick={() => handleModalUpdate(record)}>Update</Button>
+          <Button
+            onClick={() => handleModalUpdate(record)}
+            style={{
+              backgroundColor: "#313857",
+              borderColor: "#313857",
+              color: "#FFFFFF",
+            }}
+          >
+            Update
+          </Button>
           <Button
             onClick={() => handleDelete(record.blogPostId)}
-            type="danger"
-            style={{ marginLeft: 10 }}
+            style={{
+              marginLeft: 10,
+              backgroundColor: "#FF4D4F",
+              borderColor: "#FF4D4F",
+              color: "#FFFFFF",
+            }}
           >
             Delete
           </Button>
         </div>
       ),
-    },
+    }
+    
   ];
 
   return (
