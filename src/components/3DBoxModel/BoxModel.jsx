@@ -106,10 +106,7 @@ const BoxModel = ({
           action.reset().setLoop(THREE.LoopOnce, 1).play();
           action.clampWhenFinished = true;
           action.getMixer().addEventListener("finished", () => {
-            setTimeout(() => {
-              setPlays(false);
-            }, 1000);
-
+            setPlays(false);
             setShowVideo(true);
             videoRef.current?.play();
           });

@@ -94,7 +94,9 @@ const OnlineBlindBox = () => {
 
   useEffect(() => {
     if (isPlay) {
-      setPlays(isPlay);
+      setTimeout(() => {
+        setPlays(isPlay);
+      }, 1000);
     }
   }, []);
   return (
