@@ -31,3 +31,16 @@ export const updateAccount = async (payload) => {
     throw error;
   }
 };
+
+
+export const updateAccountStatus = async (userId, status) => {
+  try {
+    const response = await api.put(`User/${userId}/active-status`, null, {
+      params: { status },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update account status:", error);
+    throw error;
+  }
+};
