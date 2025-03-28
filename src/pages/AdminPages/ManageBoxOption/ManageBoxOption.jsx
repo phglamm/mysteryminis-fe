@@ -358,7 +358,7 @@ export default function ManageBoxOption() {
         newStatus ? "Published successfully" : "Unpublished successfully"
       );
     } catch (error) {
-      toast.error("Failed to update publish status");
+      toast.error(error.response.data.message);
     }
   };
 

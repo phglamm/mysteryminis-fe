@@ -215,8 +215,8 @@ export default function ManageBoxItem() {
           await deleteBoxItem(record.boxItemId);
           fetchBoxItem();
           toast.success("Box item deleted successfully");
-        } catch {
-          toast.error("Failed to delete BoxItem");
+        } catch (error) {
+          toast.error(error.response.data.message);
         }
       },
     });
