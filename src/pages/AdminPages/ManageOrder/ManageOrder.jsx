@@ -236,9 +236,7 @@ const ManageOrder = () => {
           )}
 
           {record.currentStatusId === 2 &&
-            record.orderItems.some(
-              (item) => item.userRolledItemForManageOrder == null
-            ) && (
+            record.isReadyForShipBoxItem === true && (
               <Button
                 type="primary"
                 style={{ backgroundColor: "#313857", color: "#FFF1F2" }}
