@@ -98,6 +98,14 @@ const MyProfile = ({
     }));
   };
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
   const handleUpdateProfile = async () => {
     setLoading(true);
     try {
@@ -281,7 +289,7 @@ const MyProfile = ({
                     <Input
                       name={field}
                       value={formData[field] || ""}
-                      onChange={handleChange}
+                      onChange={handleInputChange}
                       placeholder={`Enter your ${field}`}
                       disabled={field === "email"}
                       prefix={
