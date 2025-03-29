@@ -462,7 +462,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
                     </div>
                     <div className="flex justify-center items-center w-1/4">
                       {ViewDetails ? (
-                        <div className="flex flex-col h-full gap-3 items-center justify-end">
+                        <div className="flex flex-col h-full gap-3 items-center justify-center">
                           <div>{item.orderPrice.toLocaleString() + " đ"}</div>
 
                           {order.currentStatusId === 5 && (
