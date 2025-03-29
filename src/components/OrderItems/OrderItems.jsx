@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import OrderSteps from "../OrderStepper/OrderStepper";
 import toast from "react-hot-toast";
 import { LoadingOutlined } from "@ant-design/icons";
-import { Button, Form, Image, Select } from "antd";
+import { Button, Form, Image, Select, Spin } from "antd";
 import {
   cancelOrder,
   fetchOrders,
@@ -25,6 +25,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
   const [loadingCancel, setLoadingCancel] = useState(false);
   const [visible, setVisible] = useState(false);
   const [visibleFeedback, setVisibleFeedback] = useState(false);
+  const [loadingOrders, setLoadingOrders] = useState(false);
 
   const [checkCard, setCheckCard] = useState(null);
   const [userAddress, setUserAddress] = useState([]);
@@ -109,6 +110,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
     setIsModalAddressVisible(true);
   };
   const loadOrders = async () => {
+    setLoadingOrders(true);
     try {
       const data = await fetchOrders(user);
       if (Array.isArray(data)) {
@@ -120,6 +122,8 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
     } catch (error) {
       console.error("Error fetching orders:", error);
       setOrders([]); // Fallback to an empty array
+    } finally {
+      setLoadingOrders(false);
     }
   };
 
@@ -192,14 +196,19 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
 
   return (
     <motion.div
-      className={`overflow-y-scroll flex flex-col mb-[5%]  `}
+      className={`overflow-y-scroll flex flex-col mb-[5%]`}
       initial={{ width: "75%" }}
       animate={{ width: ViewDetails ? "100%" : "75%" }}
       transition={
         ViewDetails ? { delay: 0.8, duration: 1 } : { delay: 0.5, duration: 1 }
       }
     >
-      {orders && orders.length > 0 && filteredOrders.length > 0 ? (
+      {loadingOrders ? (
+        <div className="w-full flex flex-col mb-4">
+         <Spin />
+        </div>
+        
+      ) : orders && orders.length > 0 && filteredOrders.length > 0 ? (
         <AnimatePresence>
           {(ViewDetails && selectedOrder
             ? [selectedOrder]
@@ -647,7 +656,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
           ))}
         </AnimatePresence>
       ) : (
-        <div className="text-center text-gray-400">No orders </div>
+        <div className="text-center text-gray-400">No orders</div>
       )}
 
       <Modal
@@ -656,7 +665,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
         onOk={() => formUpdateShipping.submit()}
         width={700}
         height={900}
-        okText="Make Payment"
+        okText="Arrange Shipping"
         cancelText="Cancel"
       >
         <Form
@@ -664,7 +673,11 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
           layout="vertical"
           form={formUpdateShipping}
         >
-          <Form.Item label="Choose your Shipping Address" name="addressId">
+          <Form.Item
+            label="Choose your Shipping Address"
+            name="addressId"
+            rules={[{ required: true, message: "Please select a shipping address" }]}
+          >
             <Select
               size="large"
               placeholder="Select Address"
