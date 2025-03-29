@@ -5,14 +5,12 @@ import { Steps } from 'antd';
 const OrderSteps = ({ order }) => {
     const statusOrder = ['Pending', 'Processing', 'Shipping', 'Arrived', 'Cancelled'];
     const getCurrentStepIndex = (order) => {
-    
-    
         // Get the latest status from orderStatusDetail
         const latestStatus = order.orderStatusDetailsSimple[order.orderStatusDetailsSimple.length - 1]?.statusName;
         const latestIndex = statusOrder.indexOf(latestStatus);
-    
-        // If the latest status is 'Arrived', return the last step index
-        return latestStatus === 'Arrived' ? latestIndex : latestIndex + 1;
+        
+        // Simply return the index of the latest status
+        return latestIndex;
     };
     
     return (

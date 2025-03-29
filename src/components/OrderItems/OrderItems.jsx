@@ -287,7 +287,7 @@ const OrderItems = ({ selectedCategory, setViewDetails }) => {
               >
                 <OrderSteps order={order} />
 
-                <div className="flex w-full flex-row gap-[18%]">
+                <div className={`flex w-full flex-row ${order.currentStatusId === 4 ? "" : order.currentStatusId === 2 ? "gap-[7%]" : order.currentStatusId === 3 ? "gap-[6.2%]" : order.currentStatusId === 5 ? "gap-[18%]" : null}`}>
                   {order.orderItems.length > 0 ? (
                     order.orderStatusDetailsSimple.map((status, index) => (
                       <div
