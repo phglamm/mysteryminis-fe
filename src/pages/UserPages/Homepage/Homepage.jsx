@@ -153,7 +153,7 @@ export default function Homepage() {
                       className="lg:h-[12vw] h-[20vw] bg-amber-200"
                     />
                   }
-                  className="w-[100%]"
+                  className="w-[100%] h-[310px]"
                   onClick={() => navigate(`/product/detail/${card.id}`)}
                 >
                   {card.name}
