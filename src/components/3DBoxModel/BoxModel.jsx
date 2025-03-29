@@ -107,12 +107,8 @@ const BoxModel = ({
           action.clampWhenFinished = true;
           action.getMixer().addEventListener("finished", () => {
             setShowVideo(true);
-
+            setPlays(false);
             videoRef.current?.play();
-
-            setTimeout(() => {
-              setPlays(false);
-            }, 5000);
           });
         }
       }
