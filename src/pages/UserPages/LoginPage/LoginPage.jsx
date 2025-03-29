@@ -9,7 +9,10 @@ import Cookies from "js-cookie";
 import { useDispatch } from "react-redux";
 import { login } from "../../../Redux/features/counterSlice";
 import toast from "react-hot-toast";
-import { googleLogin, loginUser } from "../../../services/UserServices/AuthServices/AuthServices";
+import {
+  googleLogin,
+  loginUser,
+} from "../../../services/UserServices/AuthServices/AuthServices";
 export default function LoginPage() {
   const [form] = useForm();
   const dispatch = useDispatch();
@@ -137,7 +140,7 @@ export default function LoginPage() {
 
               <p className="text-center text-2xl font-bold mt-3 mb-3">or</p>
 
-              <div className="google-btn-container w-full !rounded-lg">
+              <div className="google-btn-container w-full justify-center items-center !rounded-lg">
                 <GoogleLogin
                   onSuccess={handleLoginSuccess}
                   onFailure={handleLoginFailure}
